@@ -7,6 +7,8 @@ using UnityEngine.Assertions;
 
 public sealed class EntityCollisionHandler : MonoBehaviour
 {
+	[SerializeField] private bool allowOnTriggerStay;
+
 	private Entity entity;
 
 	private void Start()
@@ -26,5 +28,11 @@ public sealed class EntityCollisionHandler : MonoBehaviour
 			Assert.IsNotNull(tileCollider);
 			entity.Entities.HandleCollision(entity, gameObject.layer, tileCollider.tile, other.gameObject.layer);
 		}
+	}
+
+	private void OnTriggerStay(Collider other)
+	{
+		if (allowOnTriggerStay)
+			OnTriggerEnter(other);
 	}
 }

@@ -97,7 +97,7 @@ public sealed class LevelEntities
 		collisionRules.Remove(entity);
 	}
 
-	private Vector2 GetKnockbackDir(Entity pusher, Entity moving, KnockbackType type)
+	private Vector2 GetKnockbackDir(Entity pusher, Entity other, KnockbackType type)
 	{
 		switch (type)
 		{
@@ -106,9 +106,11 @@ public sealed class LevelEntities
 
 			case KnockbackType.VariableDirection:
 			{
+				Entity moving = pusher.velocity.sqrMagnitude > other.velocity.sqrMagnitude ? pusher : other;
+
 				if (moving == pusher)
-					return Vec2i.Directions[pusher.facing].ToVector2();
-				else return -Vec2i.Directions[moving.facing].ToVector2();
+					return pusher.FacingDir;
+				else return -moving.FacingDir;
 			}
 		}
 

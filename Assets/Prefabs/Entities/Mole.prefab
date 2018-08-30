@@ -201,6 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 497bc6523e78b4e4080d17bd0ff8a145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allowOnTriggerStay: 1
 --- !u!143 &143894086051093968
 CharacterController:
   m_ObjectHideFlags: 1

@@ -70,6 +70,11 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		get { return TilePos(t.position); }
 	}
 
+	public Vector2 FacingDir
+	{
+		get { return velocity.normalized; }
+	}
+
 	public void Init(LevelEntities entities, Room room)
 	{
 		t = GetComponent<Transform>();
