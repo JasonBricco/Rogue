@@ -62,6 +62,7 @@ public sealed class GenPlains : LevelGenerator
 		room.SetTile(midX, 0, MainLayer, TileType.PlainsDoor);
 		room.SetTile(midX - 1, 0, MainLayer, TileType.Barrier);
 		room.SetTile(midX + 1, 0, MainLayer, TileType.Barrier);
+		room.SetTile(midX, 1, MainLayer, TileType.Barrier);
 
 		spawnRoom = new Vec2i(1, 1);
 		spawnCell = new Vec2i(4, 4);

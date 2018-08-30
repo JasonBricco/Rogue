@@ -28,16 +28,7 @@ public sealed class GameCamera : MonoBehaviour
 	/// </summary>
 	public void SetPosition()
 	{
-		if (Input.GetKeyDown(KeyCode.Backspace))
-			SetFollow(!following);
-
-		if (following)
-		{
-			Vector3 target = player.Pos;
-			target.z = t.position.z;
-			t.position = Vector3.SmoothDamp(t.position, target, ref velocity, 0.2f);
-		}
-		else
+		if (!following)
 		{
 			Room room = player.Room;
 			Vec2i wPos = room.Pos * new Vec2i(Room.SizeX, Room.SizeY);
@@ -51,8 +42,15 @@ public sealed class GameCamera : MonoBehaviour
 	/// </summary>
 	public void SetFollow(bool follow)
 	{
-		if (follow && player == null)
-			player = GameObject.FindWithTag("Player").GetComponent<Entity>();
+		if (follow)
+		{
+			if (player == null)
+				player = GameObject.FindWithTag("Player").GetComponent<Entity>();
+
+			t.SetParent(player.transform, false);
+			t.position = new Vector3(0.0f, 0.0f, t.position.z);
+		}
+		else t.SetParent(null);
 
 		following = follow;
 	}

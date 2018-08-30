@@ -14,7 +14,7 @@ public sealed class EntityOnTouch : MonoBehaviour
 {
 	[SerializeField] private int damage;
 	[SerializeField] private bool knockback;
-	[SerializeField] private int amount;
+	[SerializeField] private float force;
 	[SerializeField] private KnockbackType type;
 
 	public int Damage
@@ -27,9 +27,9 @@ public sealed class EntityOnTouch : MonoBehaviour
 		get { return knockback; }
 	}
 
-	public int KnockbackAmount
+	public float KnockbackForce
 	{
-		get { return amount; }
+		get { return force; }
 	}
 
 	public KnockbackType KnockbackType

@@ -22,7 +22,7 @@ public static class Utils
 		return ToRoomPos(pos.x, pos.y);
 	}
 
-	public static Vec2i ToRoomPos(Vector3 pos)
+	public static Vec2i ToRoomPos(Vector2 pos)
 	{
 		return ToRoomPos(RoundToInt(pos.x), RoundToInt(pos.y));
 	}
@@ -42,7 +42,7 @@ public static class Utils
 		return new Vec2i(RoundToInt(x), RoundToInt(y));
 	}
 
-	public static Vec2i TilePos(Vector3 p)
+	public static Vec2i TilePos(Vector2 p)
 	{
 		return TilePos(p.x, p.y);
 	}
@@ -61,6 +61,17 @@ public static class Utils
 			return dir.x > 0.0f ? Direction.Right : Direction.Left;
 
 		return dir.y > 0.0f ? Direction.Front : Direction.Back;
+	}
+
+	public static int GetNumericDirFull(Vec2i dir)
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			if (Vec2i.Directions[i] == dir)
+				return i;
+		}
+
+		return -1;
 	}
 
 	public static int FloorToNearestMultiple(int value, int multipleOf)

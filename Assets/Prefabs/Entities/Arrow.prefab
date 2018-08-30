@@ -19,14 +19,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4238897536768822}
-  - component: {fileID: 54487220782909218}
   - component: {fileID: 65387986389978586}
+  - component: {fileID: 54487220782909218}
   - component: {fileID: 212160829798084342}
   - component: {fileID: 114946318760873616}
   - component: {fileID: 114489361325152152}
   - component: {fileID: 114939541984927876}
   - component: {fileID: 114053138362824020}
-  - component: {fileID: 114951093730313286}
+  - component: {fileID: 114810942366729862}
   m_Layer: 11
   m_Name: Arrow
   m_TagString: Disposable
@@ -72,7 +72,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.3125, y: 1.1875, z: 0.2}
+  m_Size: {x: 0.07, y: 1.1875, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114053138362824020
 MonoBehaviour:
@@ -87,7 +87,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 2
   knockback: 1
-  amount: 0
+  force: 35
   type: 0
 --- !u!114 &114489361325152152
 MonoBehaviour:
@@ -100,7 +100,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de8028493a88e7941a2d34548e5ca941, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDistance: 50
+  piercing: 0
+  hasMaxDistance: 0
+  maxDistance: 0
+--- !u!114 &114810942366729862
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1484414157596288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 497bc6523e78b4e4080d17bd0ff8a145, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114939541984927876
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -132,18 +145,6 @@ MonoBehaviour:
   speed: 50
   velocity: {x: 0, y: 0}
   facing: 0
---- !u!114 &114951093730313286
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1484414157596288}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54ebd19a94c452e45892a1ad5e752270, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  piercing: 0
 --- !u!212 &212160829798084342
 SpriteRenderer:
   m_ObjectHideFlags: 1

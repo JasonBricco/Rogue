@@ -19,15 +19,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4003748069328988}
-  - component: {fileID: 212671085247182934}
   - component: {fileID: 65397660727313916}
   - component: {fileID: 54428834514443844}
+  - component: {fileID: 212671085247182934}
   - component: {fileID: 114470428554646558}
   - component: {fileID: 114552282662159908}
   - component: {fileID: 114391663001137270}
   - component: {fileID: 114716107186992758}
-  - component: {fileID: 114053897641636766}
-  m_Layer: 0
+  - component: {fileID: 114455818470351710}
+  m_Layer: 11
   m_Name: Fireball
   m_TagString: Disposable
   m_Icon: {fileID: 0}
@@ -72,20 +72,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.5625, y: 0.77, z: 0.2}
+  m_Size: {x: 0.3, y: 0.77, z: 0.2}
   m_Center: {x: 0, y: 0.16, z: 0}
---- !u!114 &114053897641636766
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1982610807772680}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54ebd19a94c452e45892a1ad5e752270, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  piercing: 1
 --- !u!114 &114391663001137270
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -100,6 +88,17 @@ MonoBehaviour:
   sprites:
   - {fileID: 21300000, guid: d739ff1e76b5dbf47a3e108452514667, type: 3}
   directional: 0
+--- !u!114 &114455818470351710
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1982610807772680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 497bc6523e78b4e4080d17bd0ff8a145, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114470428554646558
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -112,7 +111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 5
-  defaultSpeed: 25
+  defaultSpeed: 15
   friction: 6
   speed: 50
   velocity: {x: 0, y: 0}
@@ -128,7 +127,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de8028493a88e7941a2d34548e5ca941, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDistance: 0
+  piercing: 1
+  hasMaxDistance: 1
+  maxDistance: 6
 --- !u!114 &114716107186992758
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -142,7 +143,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 5
   knockback: 0
-  amount: 0
+  force: 0
   type: 0
 --- !u!212 &212671085247182934
 SpriteRenderer:

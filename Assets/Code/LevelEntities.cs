@@ -25,6 +25,8 @@ public sealed class LevelEntities
 
 	private Queue<Entity>[] projectiles;
 
+	private CollisionMatrix collisionMatrix = new CollisionMatrix();
+
 	private Entity playerEntity;
 	private EntityPlayer player;
 
@@ -55,16 +57,23 @@ public sealed class LevelEntities
 
 		playerEntity = GameObject.FindWithTag("Player").GetComponent<Entity>();
 		player = playerEntity.GetComponent<EntityPlayer>();
+
+		BuildCollisionMatrix();
+	}
+
+	private void SpawnEntity(Entity entity, Vec2i roomP, Vector2 pos)
+	{
+		Room room = level.GetRoom(roomP.x, roomP.y);
+		room.AddEntity(entity);
+		entity.Init(this, room);
+		entity.MoveTo(pos);
 	}
 
 	private void SpawnEntity(Entity entity, Vec2i roomP, Vec2i cell)
 	{
 		float cellX = cell.x + 0.5f, cellY = cell.y + 0.5f;
 		Vector2 pos = new Vector2(roomP.x * Room.SizeX + cellX, roomP.y * Room.SizeY + cellY);
-		Room room = level.GetRoom(roomP.x, roomP.y);
-		room.AddEntity(entity);
-		entity.Init(this, room);
-		entity.MoveTo(pos);
+		SpawnEntity(entity, roomP, pos);
 	}
 
 	public void SpawnEntity(EntityType type, Vec2i room, Vec2i cell)
@@ -88,49 +97,63 @@ public sealed class LevelEntities
 		collisionRules.Remove(entity);
 	}
 
-	private Vec2i GetKnockbackDir(Entity pusher, Entity moving, KnockbackType type)
+	private Vector2 GetKnockbackDir(Entity pusher, Entity moving, KnockbackType type)
 	{
 		switch (type)
 		{
 			case KnockbackType.ConstantDirection:
-				return Vec2i.Directions[pusher.facing];
+				return Vec2i.Directions[pusher.facing].ToVector2();
 
 			case KnockbackType.VariableDirection:
 			{
 				if (moving == pusher)
-					return Vec2i.Directions[pusher.facing];
-				else return -Vec2i.Directions[moving.facing];
+					return Vec2i.Directions[pusher.facing].ToVector2();
+				else return -Vec2i.Directions[moving.facing].ToVector2();
 			}
 		}
 
-		return Vec2i.Zero;
+		return Vector2.zero;
 	}
 
-	public void OnTriggerEntity(Entity a, Entity b)
+	private void ApplyOnTouchEffects(EntityOnTouch effects, Entity entity, Entity target)
 	{
+		if (target.HasFlag(EntityFlags.Invincible)) return;
+
+		if (effects != null)
+		{
+			EntityHealth health = target.GetComponent<EntityHealth>();
+			health?.ApplyDamage(effects.Damage);
+
+			if (effects.Knockback)
+				target.ApplyKnockback(GetKnockbackDir(entity, target, effects.KnockbackType), effects.KnockbackForce);
+		}
+	}
+
+	private void OnTriggerEntity(Entity a, Entity b)
+	{
+		if (CollisionRuleExists(a, b)) return;
+
 		EntityOnTouch onTouchedA = a.GetComponent<EntityOnTouch>();
 		EntityOnTouch onTouchedB = b.GetComponent<EntityOnTouch>();
 
-		if (onTouchedA != null)
-		{
-			EntityHealth healthB = b.GetComponent<EntityHealth>();
-			healthB?.ApplyDamage(onTouchedA.Damage);
-
-			if (onTouchedA.Knockback)
-				b.ApplyKnockback(onTouchedA.KnockbackAmount, GetKnockbackDir(a, b, onTouchedA.KnockbackType));
-		}
-
-		if (onTouchedB != null)
-		{
-			EntityHealth healthA = a.GetComponent<EntityHealth>();
-			healthA?.ApplyDamage(onTouchedB.Damage);
-
-			if (onTouchedB.Knockback)
-				a.ApplyKnockback(onTouchedB.KnockbackAmount, GetKnockbackDir(b, a, onTouchedB.KnockbackType));
-		}
+		ApplyOnTouchEffects(onTouchedA, a, b);
+		ApplyOnTouchEffects(onTouchedB, b, a);
 	}
 
-	public void OnTriggerTile(Entity entity, Tile tile)
+	public void OnTriggerProjectile(Entity proj, Entity b)
+	{
+		EntityProjectile projInfo = proj.GetComponent<EntityProjectile>();
+
+		if (projInfo == null || CollisionRuleExists(proj, b)) return;
+
+		EntityOnTouch onTouchProj = proj.GetComponent<EntityOnTouch>();
+		ApplyOnTouchEffects(onTouchProj, proj, b);
+
+		if (projInfo.Piercing) AddCollisionRule(proj, b);
+		else proj.SetFlag(EntityFlags.Dead);
+	}
+
+	private void OnTriggerTile(Entity entity, Tile tile)
 	{
 		switch (tile.id)
 		{
@@ -152,7 +175,40 @@ public sealed class LevelEntities
 		}
 	}
 
-	public Entity FireProjectile(Vec2i start, int facing, EntityType type)
+	private void KillOnCollide(Entity a, Tile tile)
+	{
+		a.SetFlag(EntityFlags.Dead);
+	}
+
+	public void HandleCollision(Entity a, int layerA, Entity b, int layerB)
+	{
+		collisionMatrix.GetEntityResponse(layerA, layerB)?.Invoke(a, b);
+	}
+
+	public void HandleCollision(Entity a, int layerA, Tile tile, int tileLayer)
+	{
+		collisionMatrix.GetTileResponse(layerA, tileLayer)?.Invoke(a, tile);
+	}
+
+	private void BuildCollisionMatrix()
+	{
+		int lPlayer = LayerMask.NameToLayer("Player");
+		int lEnemy = LayerMask.NameToLayer("Enemy");
+		int lProjectile = LayerMask.NameToLayer("Projectile");
+		int lTerrain = LayerMask.NameToLayer("Terrain");
+		int lTerrainTrigger = LayerMask.NameToLayer("Terrain Trigger");
+
+		collisionMatrix.Add(lPlayer, lTerrainTrigger, null, OnTriggerTile);
+		collisionMatrix.Add(lEnemy, lTerrainTrigger, null, OnTriggerTile);
+
+		collisionMatrix.Add(lProjectile, lTerrain, null, KillOnCollide);
+		collisionMatrix.Add(lProjectile, lPlayer, OnTriggerProjectile, null);
+		collisionMatrix.Add(lProjectile, lEnemy, OnTriggerProjectile, null);
+
+		collisionMatrix.Add(lPlayer, lEnemy, OnTriggerEntity, null);
+	}
+
+	public Entity FireProjectile(Vector2 start, int facing, EntityType type)
 	{
 		Queue<Entity> queue = projectiles[(int)type % projectiles.Length];
 
@@ -166,10 +222,11 @@ public sealed class LevelEntities
 		else proj = Object.Instantiate(entityPrefabs[(int)type]).GetComponent<Entity>();
 
 		proj.facing = facing;
-		proj.transform.rotation = Quaternion.Euler(Direction.Rotation(facing));
+		proj.transform.rotation = Quaternion.Euler(Vector3.forward * Direction.Rotations[facing]);
 
-		Vec2i roomP = ToRoomPos(start.x, start.y);
-		SpawnEntity(proj, roomP, ToLocalPos(start));
+		start.y += 0.3f;
+		Vec2i roomP = ToRoomPos(start);
+		SpawnEntity(proj, roomP, start);
 
 		return proj;
 	}

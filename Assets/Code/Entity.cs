@@ -4,7 +4,7 @@
 
 using UnityEngine;
 using System;
-
+using static UnityEngine.Mathf;
 using static Utils;
 
 public enum EntityType
@@ -18,7 +18,8 @@ public enum EntityFlags
 	None = 0,
 	Dead = 1,
 	Rooted = 2,
-	EmitsLight = 4
+	EmitsLight = 4,
+	Invincible = 8
 }
 
 public enum CollideType
@@ -154,6 +155,12 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	/// </summary>
 	public Vector2 Move(Vector2 accel)
 	{
+		float moveLength = accel.sqrMagnitude;
+
+		// Correct diagonal movement speed so that it isn't too fast.
+		if (moveLength > 1.0f)
+			accel *= (1.0f / Sqrt(moveLength));
+
 		accel *= speed;
 		accel += (velocity * friction);
 
@@ -194,30 +201,39 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	/// <summary>
 	/// Performs a simple translation by amount.
 	/// </summary>
-	public void SimpleMove(Vector2 amount)
+	public Vector2 SimpleMove(Vector2 dir)
 	{
-		t.Translate(amount, Space.World);
+		float moveLength = dir.sqrMagnitude;
+
+		// Correct diagonal movement speed so that it isn't too fast.
+		if (moveLength > 1.0f)
+			dir *= (1.0f / Sqrt(moveLength));
+
+		Vector2 move = dir * speed * Time.deltaTime;
+		t.Translate(move, Space.World);
+
+		return move;
 	}
 
 	/// <summary>
 	/// Performs a simple translation by amount. When the distRemaining value becomes 0, the callback
 	/// 'onDistReached' will be invoked.
 	/// </summary>
-	public void SimpleMove(Vector2 amount, ref float distRemaining, Action onDistReached)
+	public void SimpleMove(Vector2 dir, ref float distRemaining, Action onDistReached)
 	{
-		SimpleMove(amount);
-		distRemaining -= amount.magnitude;
+		Vector2 move = SimpleMove(dir);
+		distRemaining -= move.magnitude;
 
 		if (distRemaining <= 0.0f)
 			onDistReached.Invoke();
 	}
 
-	public void ApplyKnockback(int cells, Vec2i dir)
+	public void ApplyKnockback(Vector2 dir, float force)
 	{
 		if (HasFlag(EntityFlags.Rooted))
 			return;
 
-		speed = 200.0f;
+		velocity = dir * force;
 	}
 
 	public int CompareTo(Entity other)

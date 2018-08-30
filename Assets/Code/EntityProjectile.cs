@@ -8,7 +8,14 @@ using static Utils;
 
 public class EntityProjectile : MonoBehaviour
 {
+	[SerializeField] private bool piercing;
+	[SerializeField] private bool hasMaxDistance;
 	[SerializeField] private float maxDistance;
+
+	public bool Piercing
+	{
+		get { return piercing; }
+	}
 
 	private Entity entity;
 	private float distRemaining;
@@ -35,7 +42,10 @@ public class EntityProjectile : MonoBehaviour
 	private void UpdateComponent()
 	{
 		Vector2 dir = Vec2i.Directions[entity.facing].ToVector2();
-		entity.SimpleMove(dir * entity.speed * Time.deltaTime, ref distRemaining, () => entity.SetFlag(EntityFlags.Dead));
+
+		if (hasMaxDistance)
+			entity.SimpleMove(dir, ref distRemaining, () => entity.SetFlag(EntityFlags.Dead));
+		else entity.SimpleMove(dir);
 	}
 
 	private void Kill()

@@ -17,7 +17,6 @@ public sealed class TileCollider : MonoBehaviour
 		tileCollider.col = obj.AddComponent<BoxCollider>();
 
 		Rigidbody rb = obj.AddComponent<Rigidbody>();
-		obj.layer = 8;
 		rb.isKinematic = true;
 
 		return tileCollider;
@@ -44,5 +43,6 @@ public sealed class TileCollider : MonoBehaviour
 		col.size = new Vector3(size.x, size.y, 1.0f);
 		col.isTrigger = trigger;
 		col.transform.position = roomWorldPos + new Vector2(cellX, cellY) + new Vector2(col.size.x * 0.5f, col.size.y * 0.5f);
+		gameObject.layer = trigger ? 14 : 8;
 	}
 }

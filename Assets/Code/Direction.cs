@@ -15,24 +15,9 @@ public static class Direction
 	public const int BackLeft = 6;
 	public const int BackRight = 7;
 
-	public static Vector3 Rotation(int dir)
+	public static readonly float[] Rotations =
 	{
-		switch (dir)
-		{
-			case Front:
-				return new Vector3(0.0f, 0.0f, 0.0f);
-
-			case Back:
-				return new Vector3(0.0f, 0.0f, 180.0f);
-
-			case Left:
-				return new Vector3(0.0f, 0.0f, 90.0f);
-
-			case Right:
-				return new Vector3(0.0f, 0.0f, 270.0f);
-
-			default:
-				return Vector3.zero;
-		}
-	}
+		0.0f, 180.0f, 90.0f, 270.0f,
+		45.0f, 315.0f, 135.0f, 225.0f
+	};
 };

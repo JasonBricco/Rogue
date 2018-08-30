@@ -3,7 +3,6 @@
 //
 
 using UnityEngine;
-using static UnityEngine.Mathf;
 using static Utils;
 
 [RequireComponent(typeof(EntityTimer))]
@@ -42,7 +41,7 @@ public sealed class EntityPlayer : MonoBehaviour
 			if (fireDir != Vec2i.Zero)
 			{
 				entity.facing = GetNumericDir(fireDir);
-				Entity proj = entity.Entities.FireProjectile(entity.TilePos + fireDir, entity.facing, projectile);
+				Entity proj = entity.Entities.FireProjectile(entity.Pos + fireDir.ToVector2(), GetNumericDirFull(fireDir), projectile);
 				entity.Entities.AddCollisionRule(proj, entity);
 				timer.SetValue(0.25f);
 			}
@@ -62,14 +61,7 @@ public sealed class EntityPlayer : MonoBehaviour
 				entity.facing = GetNumericDir(accel);
 		}
 
-		Vector2 move = accel.ToVector2();
-
-		float moveLength = move.sqrMagnitude;
-
-		if (moveLength > 1.0f)
-			move *= (1.0f / Sqrt(moveLength));
-
-		entity.Move(move);
+		entity.Move(accel.ToVector2());
 	}
 
 	private void Kill()
