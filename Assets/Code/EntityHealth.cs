@@ -18,13 +18,18 @@ public sealed class EntityHealth : MonoBehaviour
 	private void Start()
 	{
 		entity = GetComponent<Entity>();
-		SetHealth(maxHealth);
+		FullHeal();
 	}
 
 	public void SetHealth(int health)
 	{
 		Health = health;
 		entity.InvokeEvent(EntityEvent.HealthChanged);
+	}
+
+	public void FullHeal()
+	{
+		SetHealth(maxHealth);
 	}
 
 	public void ApplyDamage(int damage)

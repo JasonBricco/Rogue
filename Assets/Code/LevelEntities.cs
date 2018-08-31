@@ -243,6 +243,7 @@ public sealed class LevelEntities
 	public void SpawnPlayer()
 	{
 		SpawnEntity(playerEntity, level.SpawnRoom, level.SpawnCell);
+		player.OnSpawn();
 	}
 
 	public void Update(TileCollision collision)
@@ -287,6 +288,10 @@ public sealed class LevelEntities
 
 		if (playerEntity.HasFlag(EntityFlags.Dead))
 		{
+			// Update the player's respawn time here instead of in UpdateComponent() since
+			// UpdateComponent() requires that the player is inside the room to be called.
+			player.RespawnTime -= Time.deltaTime;
+
 			if (player.RespawnTime <= 0.0f)
 			{
 				SpawnPlayer();

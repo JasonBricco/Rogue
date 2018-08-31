@@ -25,4 +25,14 @@ public sealed class EntityImage : MonoBehaviour
 	{
 		if (directional) rend.sprite = sprites[entity.facing];
 	}
+
+	public void Enable()
+	{
+		rend.enabled = true;
+	}
+
+	public void Disable()
+	{
+		rend.enabled = false;
+	}
 }

@@ -13,7 +13,7 @@ public sealed class EntityPlayer : MonoBehaviour
 	private EntityTimer timer;
 
 	private EntityType projectile = EntityType.Arrow;
-	public float RespawnTime { get; private set; }
+	public float RespawnTime { get; set; }
 
 	private void Awake()
 	{
@@ -26,6 +26,13 @@ public sealed class EntityPlayer : MonoBehaviour
 		entity.ListenForEvent(EntityEvent.HealthChanged, HealthChanged);
 	}
 
+	public void OnSpawn()
+	{
+		entity.velocity = Vector2.zero;
+		entityHealth.FullHeal();
+		GetComponent<EntityImage>().Enable();
+	}
+
 	private void HealthChanged()
 	{
 		EventManager.Instance.TriggerEvent(GameEvent.PlayerHealthModifed, entityHealth.Health);
@@ -33,8 +40,6 @@ public sealed class EntityPlayer : MonoBehaviour
 
 	private void UpdateComponent()
 	{
-		RespawnTime -= Time.deltaTime;
-
 		if (Input.GetKeyDown(KeyCode.Alpha1))
 			projectile = EntityType.Arrow;
 
@@ -76,6 +81,7 @@ public sealed class EntityPlayer : MonoBehaviour
 
 	private void Kill()
 	{
+		GetComponent<EntityImage>().Disable();
 		RespawnTime = 2.0f;
 	}
 }
