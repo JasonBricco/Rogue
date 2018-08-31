@@ -13,7 +13,7 @@ public struct Vec2i : IEquatable<Vec2i>
 
 	public static readonly Vec2i[] Directions =
 	{
-		new Vec2i(0, 1), new Vec2i(0, -1), new Vec2i(-1, 0), new Vec2i(1, 0),
+		new Vec2i(0, -1), new Vec2i(0, 1), new Vec2i(-1, 0), new Vec2i(1, 0),
 		new Vec2i(-1, 1), new Vec2i(1, 1), new Vec2i(-1, -1), new Vec2i(1, -1)
 	};
 
