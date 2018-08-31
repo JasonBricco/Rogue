@@ -106,6 +106,26 @@ public sealed class Level
 	}
 
 	/// <summary>
+	/// Returns the tile at the given location. Location is specified in world 
+	/// tile space.
+	/// </summary>
+	public Tile GetTile(int x, int y)
+	{
+		Vec2i rP = ToRoomPos(x, y), lP = ToLocalPos(x, y);
+		Room room = rooms[rP.y * RoomCount + rP.x];
+		return room.GetTile(lP.x, lP.y);
+	}
+
+	/// <summary>
+	/// Returns the tile at the given location from the room's main layer. 
+	/// Location is specified in world tile space.
+	/// </summary>
+	public Tile GetTile(Vec2i p)
+	{
+		return GetTile(p.x, p.y);
+	}
+
+	/// <summary>
 	/// Sets the given tile at the given location. Location is specified in world 
 	/// tile space.
 	/// </summary>

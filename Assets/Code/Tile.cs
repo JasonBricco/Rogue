@@ -29,4 +29,14 @@ public struct Tile
 	{
 		return new Tile(id);
 	}
+
+	public static bool operator ==(Tile a, TileType b)
+	{
+		return a.id == b;
+	}
+
+	public static bool operator !=(Tile a, TileType b)
+	{
+		return a.id != b;
+	}
 }

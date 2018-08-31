@@ -23,6 +23,9 @@ public sealed class LevelEntities
 	// requires this information, such as to avoid repeated collisions with the same entity.
 	private CollisionRules collisionRules = new CollisionRules();
 
+	// Stores all active over-time effects within this level.
+	private OTEffects effects = new OTEffects();
+
 	private Queue<Entity>[] projectiles;
 
 	private CollisionMatrix collisionMatrix = new CollisionMatrix();
@@ -171,6 +174,17 @@ public sealed class LevelEntities
 			{
 				if (entity.Type == EntityType.Player)
 					manager.ChangeLevel(LevelType.Dungeon);
+
+				break;
+			}
+
+			case TileType.Spikes:
+			{
+				if (!entity.HasFlag(EntityFlags.Invincible) && !effects.Exists(entity, OTEffectType.Spikes))
+				{
+					OTEffect effect = new OTEffect(OTEffectType.Spikes, 0.0f);
+					effects.Add(entity, effect);
+				}
 
 				break;
 			}
