@@ -9,16 +9,26 @@ using static Utils;
 public sealed class EntityPlayer : MonoBehaviour
 {
 	private Entity entity;
-	private EntityType projectile = EntityType.Arrow;
+	private EntityHealth entityHealth;
 	private EntityTimer timer;
+
+	private EntityType projectile = EntityType.Arrow;
 	public float RespawnTime { get; private set; }
 
-	private void Start()
+	private void Awake()
 	{
 		entity = GetComponent<Entity>();
 		timer = GetComponent<EntityTimer>();
+		entityHealth = GetComponent<EntityHealth>();
+
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
 		entity.ListenForEvent(EntityEvent.Kill, Kill);
+		entity.ListenForEvent(EntityEvent.HealthChanged, HealthChanged);
+	}
+
+	private void HealthChanged()
+	{
+		EventManager.Instance.TriggerEvent(GameEvent.PlayerHealthModifed, entityHealth.Health);
 	}
 
 	private void UpdateComponent()

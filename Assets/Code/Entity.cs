@@ -29,7 +29,7 @@ public enum CollideType
 
 public enum EntityEvent
 {
-	Update, RoomChanged, Kill, Count
+	Update, RoomChanged, Kill, HealthChanged, Count
 }
 
 public sealed class Entity : MonoBehaviour, IComparable<Entity>
@@ -91,7 +91,7 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		events[(int)type] += func;
 	}
 
-	private void InvokeEvent(EntityEvent type)
+	public void InvokeEvent(EntityEvent type)
 	{
 		events[(int)type]?.Invoke();
 	}
