@@ -37,7 +37,7 @@ public sealed class LevelManager : MonoBehaviour
 		collision = new TileCollision(transform);
 
 		Array.Sort(entityPrefabs);
-		level = new Level(generators[0], collision);
+		level = new Level(generators[1], collision);
 	}
 
 	private void Update()

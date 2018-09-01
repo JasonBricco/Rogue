@@ -60,11 +60,6 @@ public sealed class OTEffects
 		return true;
 	}
 
-	private void DecrementTimer(ref float timer)
-	{
-		timer -= Time.deltaTime;
-	}
-
 	public void Apply(Level level)
 	{
 		foreach (var pair in effects)
@@ -75,10 +70,15 @@ public sealed class OTEffects
 			for (int i = effects.Count - 1; i >= 0; i--)
 			{
 				OTEffect effect = effects[i];
-				DecrementTimer(ref effect.timer);
+				effect.timer -= Time.deltaTime;
 
-				if (!ApplyEffect(entity, level, effect.type, ref effect.timer))
-					effects.RemoveAt(i);
+				if (effect.timer <= 0.0f)
+				{
+					if (!ApplyEffect(entity, level, effect.type, ref effect.timer))
+						effects.RemoveAt(i);
+					else effects[i] = effect;
+				}
+				else effects[i] = effect;
 			}
 		}
 	}

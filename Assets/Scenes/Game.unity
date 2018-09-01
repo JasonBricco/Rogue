@@ -729,7 +729,7 @@ MonoBehaviour:
     trigger: 0
     colliderSize: {x: 1, y: 2}
     align: {x: 0, y: 0}
-    sprite: {fileID: 21300000, guid: ea998d4f8412322479074116eb762677, type: 3}
+    sprite: {fileID: 21300000, guid: c39d90f6e0728e84c88b1cb161d0b2bc, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
@@ -745,7 +745,7 @@ MonoBehaviour:
     trigger: 0
     colliderSize: {x: 1, y: 2}
     align: {x: 0, y: 0}
-    sprite: {fileID: 21300000, guid: c39d90f6e0728e84c88b1cb161d0b2bc, type: 3}
+    sprite: {fileID: 21300000, guid: ea998d4f8412322479074116eb762677, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
