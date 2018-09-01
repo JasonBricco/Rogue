@@ -100,6 +100,11 @@ public sealed class LevelEntities
 		collisionRules.Remove(entity);
 	}
 
+	public void RemoveOTEffects(Entity entity)
+	{
+		effects.Remove(entity);
+	}
+
 	private Vector2 GetKnockbackDir(Entity pusher, Entity other, KnockbackType type)
 	{
 		switch (type)
@@ -284,6 +289,9 @@ public sealed class LevelEntities
 				room?.GetActiveEntities(activeEntities);
 			}
 		}
+
+		// Apply all over-time effects.
+		effects.Apply(level);
 
 		for (int i = 0; i < activeEntities.Count; i++)
 		{

@@ -2,7 +2,9 @@
 // Copyright (c) 2018 Jason Bricco
 //
 
-public struct Tile
+using System;
+
+public struct Tile : IEquatable<Tile>
 {
 	public TileType id;
 
@@ -38,5 +40,20 @@ public struct Tile
 	public static bool operator !=(Tile a, TileType b)
 	{
 		return a.id != b;
+	}
+
+	public bool Equals(Tile other)
+	{
+		return id == other.id;
+	}
+
+	public override bool Equals(object obj)
+	{
+		return Equals((Tile)obj);
+	}
+
+	public override int GetHashCode()
+	{
+		return id.GetHashCode();
 	}
 }

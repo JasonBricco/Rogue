@@ -151,6 +151,8 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	{
 		Room.RemoveEntity(this);
 		Entities.RemoveCollisionRules(this);
+		Entities.RemoveOTEffects(this);
+
 		InvokeEvent(EntityEvent.Kill);
 	}
 
