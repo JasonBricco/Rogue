@@ -15,6 +15,7 @@ public sealed class EntityPacingAI : MonoBehaviour
 	{
 		entity = GetComponent<Entity>();
 		timer = GetComponent<EntityTimer>();
+		timer.SetValue(3.0f);
 
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
 		entity.ListenForEvent(EntityEvent.Kill, Kill);

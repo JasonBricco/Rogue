@@ -75,7 +75,7 @@ public sealed class LevelEntities
 
 	private void SpawnEntity(Entity entity, Vec2i roomP, Vec2i cell)
 	{
-		float cellX = cell.x + 0.5f, cellY = cell.y + 0.5f;
+		float cellX = cell.x, cellY = cell.y;
 		Vector2 pos = new Vector2(roomP.x * Room.SizeX + cellX, roomP.y * Room.SizeY + cellY);
 		SpawnEntity(entity, roomP, pos);
 	}
@@ -262,6 +262,7 @@ public sealed class LevelEntities
 	public CollideType UpdateTarget(Entity entity, Vec2i dir, out CollideResult target)
 	{
 		CollideType type = CollideType.None;
+		target = default(CollideResult);
 
 		if (dir != Vec2i.Zero)
 		{
@@ -278,7 +279,6 @@ public sealed class LevelEntities
 		}
 
 		entity.movingDir = Vec2i.Zero;
-		target = default(CollideResult);
 		return type;
 	}
 

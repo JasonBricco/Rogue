@@ -283,13 +283,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 549773587}
-  - component: {fileID: 549773588}
   - component: {fileID: 549773585}
   - component: {fileID: 549773586}
   - component: {fileID: 549773584}
   - component: {fileID: 549773583}
-  - component: {fileID: 549773582}
-  - component: {fileID: 549773581}
   m_Layer: 13
   m_Name: Player
   m_TagString: Player
@@ -297,38 +294,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &549773581
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 114602607777334100, guid: a97529bcf77483344aad1fec71516f4d,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 549773580}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a69d2cb1c77ed024d957abae3a54e844, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 10
-  invincibleOnDamage: 1
---- !u!114 &549773582
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 114208812345901046, guid: a97529bcf77483344aad1fec71516f4d,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 549773580}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e45fa2ce1a741f74c8692ce8d3b22d2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 21300000, guid: 5c91d26589afa0f4085401c2c9af7fb0, type: 3}
-  - {fileID: 21300000, guid: 94fb13761ed2b8e40b3d40575bd9bd15, type: 3}
-  - {fileID: 21300000, guid: 1f63ad0a664c99a4997decb8b1c88fb0, type: 3}
-  - {fileID: 21300000, guid: d365ecddd59aa69449a712af61f3476f, type: 3}
-  directional: 1
 --- !u!114 &549773583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -413,11 +378,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
-  defaultSpeed: 75
-  friction: -12
+  layer: 1
+  defaultSpeed: 6
+  maxHealth: 10
+  invincibleOnDamage: 1
+  sprites:
+  - {fileID: 21300000, guid: 5c91d26589afa0f4085401c2c9af7fb0, type: 3}
+  - {fileID: 21300000, guid: 94fb13761ed2b8e40b3d40575bd9bd15, type: 3}
+  - {fileID: 21300000, guid: 1f63ad0a664c99a4997decb8b1c88fb0, type: 3}
+  - {fileID: 21300000, guid: d365ecddd59aa69449a712af61f3476f, type: 3}
+  directional: 1
   speed: 0
-  velocity: {x: 0, y: 0}
   facing: 0
+  start: {x: 0, y: 0}
+  end: {x: 0, y: 0}
 --- !u!4 &549773587
 Transform:
   m_ObjectHideFlags: 0
@@ -428,98 +402,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1325687458}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!143 &549773588
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 549773580}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Height: 0
-  m_Radius: 0.3
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &1325687457
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1325687458}
-  - component: {fileID: 1325687460}
-  - component: {fileID: 1325687459}
-  - component: {fileID: 1325687461}
-  m_Layer: 9
-  m_Name: Trigger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1325687458
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1325687457}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 549773587}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1325687459
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1325687457}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.06, y: 0.06, z: 0.2}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &1325687460
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1325687457}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!114 &1325687461
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1325687457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 497bc6523e78b4e4080d17bd0ff8a145, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  allowOnTriggerStay: 0
 --- !u!1 &1400217542
 GameObject:
   m_ObjectHideFlags: 0
@@ -709,15 +595,13 @@ MonoBehaviour:
   - name: Air
     type: 0
     invisible: 1
-    hasCollider: 0
-    trigger: 0
-    colliderSize: {x: 0, y: 0}
     align: {x: 0, y: 0}
     sprite: {fileID: 0}
     material: {fileID: 0}
     color:
       serializedVersion: 2
       rgba: 0
+    layer: 0
     spriteIndex: 0
     index: 0
     width: 0
@@ -725,15 +609,13 @@ MonoBehaviour:
   - name: Dungeon Wall 0
     type: 1
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 1, y: 2}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: c39d90f6e0728e84c88b1cb161d0b2bc, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -741,15 +623,13 @@ MonoBehaviour:
   - name: Dungeon Wall 1
     type: 2
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 1, y: 2}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: ea998d4f8412322479074116eb762677, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -757,15 +637,13 @@ MonoBehaviour:
   - name: Dungeon Wall 2
     type: 3
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 2, y: 1}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: 9ec9b8be3ab2fa340a350362e64408b4, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -773,15 +651,13 @@ MonoBehaviour:
   - name: Dungeon Wall 3
     type: 4
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 2, y: 1}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: 534ac2a28b9e62b40a0608eb90335682, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -789,15 +665,13 @@ MonoBehaviour:
   - name: Dungeon Wall 4
     type: 5
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 2, y: 2}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: 48a1cd187dd42a14db3cfb7c7914886d, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -805,15 +679,13 @@ MonoBehaviour:
   - name: Dungeon Wall 5
     type: 6
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 2, y: 2}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: 1776d5197da21014a9a0278b80abdae9, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -821,15 +693,13 @@ MonoBehaviour:
   - name: Dungeon Wall 6
     type: 7
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 2, y: 2}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: 31d38471cf2fea1449576c23505988ae, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -837,15 +707,13 @@ MonoBehaviour:
   - name: Dungeon Wall 7
     type: 8
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 2, y: 2}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: 9a077f316acc2164aa713116e34bc167, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -853,15 +721,13 @@ MonoBehaviour:
   - name: Dungeon Floor
     type: 11
     invisible: 0
-    hasCollider: 0
-    trigger: 0
-    colliderSize: {x: 0, y: 0}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: 58afdeab1cc38f04e8316e5888e9bdaa, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 0
     spriteIndex: 0
     index: 0
     width: 0
@@ -869,15 +735,13 @@ MonoBehaviour:
   - name: Barrier
     type: 9
     invisible: 1
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 1, y: 1}
     align: {x: 0, y: 0}
     sprite: {fileID: 0}
     material: {fileID: 0}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -885,15 +749,13 @@ MonoBehaviour:
   - name: Portal
     type: 10
     invisible: 0
-    hasCollider: 1
-    trigger: 1
-    colliderSize: {x: 1, y: 1}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: 008069a4edcd5b2419556768df79f9af, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 7
     spriteIndex: 0
     index: 0
     width: 0
@@ -901,15 +763,13 @@ MonoBehaviour:
   - name: Torch
     type: 13
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 1, y: 1}
     align: {x: 0.4, y: 0}
     sprite: {fileID: 21300000, guid: 1365de82bbc7ec546ac7a1f618e4b43f, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -917,15 +777,13 @@ MonoBehaviour:
   - name: Spikes
     type: 12
     invisible: 0
-    hasCollider: 1
-    trigger: 1
-    colliderSize: {x: 1, y: 1}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: db12d97dd2934c74bb9cf3d0094d7eae, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 7
     spriteIndex: 0
     index: 0
     width: 0
@@ -933,15 +791,13 @@ MonoBehaviour:
   - name: Plains Wall 0
     type: 15
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 1, y: 3}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: f5b2eda1085bcce4a8858af573c4a71b, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -949,15 +805,13 @@ MonoBehaviour:
   - name: Plains Wall 1
     type: 16
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 1, y: 3}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: 8997dc2ebfec7554882472e847f5738f, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -965,15 +819,13 @@ MonoBehaviour:
   - name: Plains Wall 2
     type: 17
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 3, y: 1}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: ea27c14cb93a5744f88f6e2b27e34fe0, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -981,15 +833,13 @@ MonoBehaviour:
   - name: Plains Wall 3
     type: 18
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 3, y: 1}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: 5df242b675b280e4ea839383e9138fdc, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -997,15 +847,13 @@ MonoBehaviour:
   - name: Plains Wall 4
     type: 19
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 3, y: 3}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: 5ab57fe3bdc80fc4eb5b44b9f779cb9a, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -1013,15 +861,13 @@ MonoBehaviour:
   - name: Plains Wall 5
     type: 20
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 3, y: 3}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: 426e2461c4db8a2448734ba8ba2e88a7, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -1029,15 +875,13 @@ MonoBehaviour:
   - name: Plains Wall 6
     type: 21
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 3, y: 3}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: b483f735c75024f4b87db99b2206e8df, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -1045,15 +889,13 @@ MonoBehaviour:
   - name: Plains Wall 7
     type: 22
     invisible: 0
-    hasCollider: 1
-    trigger: 0
-    colliderSize: {x: 3, y: 3}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: 1e6814ce668d6434c939b3ed2111109c, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 6
     spriteIndex: 0
     index: 0
     width: 0
@@ -1061,15 +903,13 @@ MonoBehaviour:
   - name: Plains Grass
     type: 14
     invisible: 0
-    hasCollider: 0
-    trigger: 0
-    colliderSize: {x: 0, y: 0}
     align: {x: 0, y: 0}
     sprite: {fileID: 21300000, guid: 179492b31a0f95840a1b430647d15a30, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 0
     spriteIndex: 0
     index: 0
     width: 0
@@ -1077,15 +917,13 @@ MonoBehaviour:
   - name: Plains Door
     type: 23
     invisible: 0
-    hasCollider: 1
-    trigger: 1
-    colliderSize: {x: 3, y: 3}
     align: {x: 1, y: 0}
     sprite: {fileID: 21300000, guid: b0e714075ab81864dba42f29f7373e70, type: 3}
     material: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
     color:
       serializedVersion: 2
       rgba: 16777215
+    layer: 7
     spriteIndex: 0
     index: 0
     width: 0
@@ -1109,8 +947,6 @@ MonoBehaviour:
   - {fileID: 114839411273458088, guid: 9c900cff00408f1499b5a0802351a191, type: 2}
   - {fileID: 114304071881856946, guid: 188d20553fc23144e92750f4a7379671, type: 2}
   - {fileID: 549773586}
-  rend: {fileID: 1991068602}
-  testSprite: {fileID: 21300000, guid: 8997dc2ebfec7554882472e847f5738f, type: 3}
 --- !u!4 &1991068601
 Transform:
   m_ObjectHideFlags: 0

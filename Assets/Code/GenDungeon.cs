@@ -37,13 +37,19 @@ public sealed class GenDungeon : LevelGenerator
 
 			for (int x = 2; x <= Room.LimX - 2; x++)
 			{
+				room.SetTile(x, Room.LimY, MainLayer, TileType.Barrier);
 				room.SetTile(x, Room.LimY - 1, MainLayer, new Tile(TileType.DungeonWall, Direction.Front));
+
+				room.SetTile(x, 1, MainLayer, TileType.Barrier);
 				room.SetTile(x, 0, MainLayer, new Tile(TileType.DungeonWall, Direction.Back));
 			}
 
 			for (int y = 2; y <= Room.LimY - 2; y++)
 			{
+				room.SetTile(1, y, MainLayer, TileType.Barrier);
 				room.SetTile(0, y, MainLayer, new Tile(TileType.DungeonWall, Direction.Left));
+
+				room.SetTile(Room.LimX, y, MainLayer, TileType.Barrier);
 				room.SetTile(Room.LimX - 1, y, MainLayer, new Tile(TileType.DungeonWall, Direction.Right));
 			}
 

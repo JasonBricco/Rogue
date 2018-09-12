@@ -19,15 +19,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4646251001968452}
-  - component: {fileID: 65909780997017356}
-  - component: {fileID: 54711845823651994}
   - component: {fileID: 212752531238129550}
   - component: {fileID: 114839411273458088}
   - component: {fileID: 114181454040715404}
-  - component: {fileID: 114021088216761954}
   - component: {fileID: 114807591313825452}
-  - component: {fileID: 114832343707336312}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: PiercingArrow
   m_TagString: Disposable
   m_Icon: {fileID: 0}
@@ -47,47 +43,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &54711845823651994
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1026924749684136}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!65 &65909780997017356
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1026924749684136}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.07, y: 1.1875, z: 0.2}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114021088216761954
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1026924749684136}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e45fa2ce1a741f74c8692ce8d3b22d2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 21300000, guid: 8ca6777b24ba99643bdfbf6fd22b5290, type: 3}
-  directional: 0
 --- !u!114 &114181454040715404
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -100,7 +55,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   piercing: 1
-  hasMaxDistance: 0
+  hasLifetime: 0
   maxDistance: 0
 --- !u!114 &114807591313825452
 MonoBehaviour:
@@ -115,19 +70,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 2
   knockback: 0
-  force: 0
-  type: 0
---- !u!114 &114832343707336312
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1026924749684136}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 497bc6523e78b4e4080d17bd0ff8a145, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  knockbackDistance: 0
+  variableKnockback: 0
+  dieOnTouch: 0
+  addCollisionRule: 1
 --- !u!114 &114839411273458088
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -140,11 +86,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 4
+  layer: 5
   defaultSpeed: 25
-  friction: 50
+  maxHealth: 0
+  invincibleOnDamage: 0
+  sprites:
+  - {fileID: 21300000, guid: 8ca6777b24ba99643bdfbf6fd22b5290, type: 3}
+  directional: 0
   speed: 50
-  velocity: {x: 0, y: 0}
   facing: 0
+  start: {x: 0, y: 0}
+  end: {x: 0, y: 0}
 --- !u!212 &212752531238129550
 SpriteRenderer:
   m_ObjectHideFlags: 1

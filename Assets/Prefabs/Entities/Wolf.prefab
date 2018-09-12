@@ -23,10 +23,8 @@ GameObject:
   - component: {fileID: 212336897860604028}
   - component: {fileID: 114670606437294688}
   - component: {fileID: 114618345674068116}
-  - component: {fileID: 114949814385691798}
-  - component: {fileID: 114591215474053960}
   - component: {fileID: 114584851483852468}
-  m_Layer: 13
+  m_Layer: 0
   m_Name: Wolf
   m_TagString: Disposable
   m_Icon: {fileID: 0}
@@ -58,11 +56,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 6
-  defaultSpeed: 120
-  friction: -12
+  layer: 2
+  defaultSpeed: 6
+  maxHealth: 10
+  invincibleOnDamage: 0
+  sprites:
+  - {fileID: 21300000, guid: e37442f0a8548124b9d6dc8b9d9ef583, type: 3}
+  - {fileID: 21300000, guid: 27569edf4c994a341a4055e570726b15, type: 3}
+  - {fileID: 21300000, guid: cefd329c00282b448995f266b7f9a6e3, type: 3}
+  - {fileID: 21300000, guid: b99a95442b14fd84da38477dd64568f4, type: 3}
+  directional: 1
   speed: 50
-  velocity: {x: 0, y: 0}
   facing: 0
+  start: {x: 0, y: 0}
+  end: {x: 0, y: 0}
 --- !u!114 &114584851483852468
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -76,20 +83,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 2
   knockback: 1
-  amount: 0
-  type: 1
---- !u!114 &114591215474053960
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1019456979860424}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a69d2cb1c77ed024d957abae3a54e844, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 10
+  knockbackDistance: 0
+  variableKnockback: 0
+  dieOnTouch: 0
+  addCollisionRule: 0
 --- !u!114 &114618345674068116
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -112,23 +109,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b414768d5801fb4eb71d767735a07c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114949814385691798
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1019456979860424}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e45fa2ce1a741f74c8692ce8d3b22d2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 21300000, guid: 27569edf4c994a341a4055e570726b15, type: 3}
-  - {fileID: 21300000, guid: e37442f0a8548124b9d6dc8b9d9ef583, type: 3}
-  - {fileID: 21300000, guid: cefd329c00282b448995f266b7f9a6e3, type: 3}
-  - {fileID: 21300000, guid: b99a95442b14fd84da38477dd64568f4, type: 3}
-  directional: 1
 --- !u!212 &212336897860604028
 SpriteRenderer:
   m_ObjectHideFlags: 1

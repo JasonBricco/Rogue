@@ -62,7 +62,7 @@ public sealed class EntityPlayer : MonoBehaviour
 	private void SetMove()
 	{
 		Vec2i dir = new Vec2i(0, 0);
-		Vec2i move = new Vec2i((int)Input.GetAxisRaw("X"), (int)Input.GetAxisRaw("Y"));
+		Vec2i move = new Vec2i((int)Input.GetAxisRaw("MoveX"), (int)Input.GetAxisRaw("MoveY"));
 
 		if (move.x != 0 && move.y != 0)
 		{
@@ -111,7 +111,10 @@ public sealed class EntityPlayer : MonoBehaviour
 			}
 		}
 
-		entity.speed = Input.GetKey(KeyCode.LeftShift) ? 22.0f : 6.0f;
+		if (Input.GetKey(KeyCode.LeftShift))
+			entity.speed = 22.0f;
+		else entity.ResetSpeed();
+
 		entity.Move();
 	}
 

@@ -30,9 +30,10 @@ public sealed class GameCamera : MonoBehaviour
 	{
 		if (!following)
 		{
-			Room room = player.Room;
-			Vec2i wPos = room.Pos * new Vec2i(Room.SizeX, Room.SizeY);
-			t.position = new Vector3(wPos.x + Room.HalfSizeX, wPos.y + Room.HalfSizeY, t.position.z);
+			Vec2i tPos = player.TilePos;
+			int screenX = FloorToNearestMultiple(tPos.x, Room.SizeX);
+			int screenY = FloorToNearestMultiple(tPos.y, Room.SizeY);
+			t.position = new Vector3(screenX + Room.SizeX / 2, screenY + Room.SizeY / 2, t.position.z) - new Vector3(0.5f, 0.5f);
 		}
 	}
 

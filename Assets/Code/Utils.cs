@@ -89,7 +89,7 @@ public static class Utils
 	public static float InverseLerp2(Vector2 a, Vector2 b, Vector2 p)
 	{
 		float x = InverseLerp(a.x, b.x, p.x);
-		float y = InverseLerp(a.y, a.y, p.y);
+		float y = InverseLerp(a.y, b.y, p.y);
 		return x + y;
 	}
 }
