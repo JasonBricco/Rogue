@@ -105,8 +105,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 1
   knockback: 1
-  knockbackDistance: 0
-  variableKnockback: 0
+  knockbackDistance: 2
+  variableKnockback: 1
   dieOnTouch: 0
   addCollisionRule: 0
 --- !u!212 &212986794067182534

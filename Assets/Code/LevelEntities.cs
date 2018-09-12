@@ -291,6 +291,7 @@ public sealed class LevelEntities
 		if (queue.Count > 0)
 		{
 			proj = queue.Dequeue();
+			proj.movingDir = Vec2i.Zero;
 			proj.gameObject.SetActive(true);
 		}
 		else proj = Object.Instantiate(entityPrefabs[(int)type]).GetComponent<Entity>();
@@ -370,6 +371,6 @@ public sealed class LevelEntities
 		GameObject[] objects = GameObject.FindGameObjectsWithTag("Disposable");
 
 		for (int i = 0; i < objects.Length; i++)
-			GameObject.Destroy(objects[i]);
+			Object.Destroy(objects[i]);
 	}
 }
