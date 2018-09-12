@@ -78,7 +78,7 @@ public sealed class GenDungeon : LevelGenerator
 			{
 				int pX = Random.Range(Room.HalfSizeX - 4, Room.HalfSizeX + 5);
 				int pY = Random.Range(Room.HalfSizeY - 3, Room.HalfSizeY + 4);
-				//entities.SpawnEntity(EntityType.Mole, roomP, new Vec2i(pX, pY));
+				entities.SpawnEntity(EntityType.Mole, roomP, new Vec2i(pX, pY));
 			}
 
 			Vec2i next;

@@ -4,18 +4,14 @@
 
 using UnityEngine;
 
-public enum KnockbackType
-{
-	ConstantDirection,
-	VariableDirection
-}
-
 public sealed class EntityOnTouch : MonoBehaviour
 {
 	[SerializeField] private int damage;
 	[SerializeField] private bool knockback;
-	[SerializeField] private float force;
-	[SerializeField] private KnockbackType type;
+	[SerializeField] private int knockbackDistance;
+	[SerializeField] private bool variableKnockback;
+	[SerializeField] private bool dieOnTouch;
+	[SerializeField] private bool addCollisionRule;
 
 	public int Damage
 	{
@@ -27,13 +23,23 @@ public sealed class EntityOnTouch : MonoBehaviour
 		get { return knockback; }
 	}
 
-	public float KnockbackForce
+	public int KnockbackCells
 	{
-		get { return force; }
+		get { return knockbackDistance; }
 	}
 
-	public KnockbackType KnockbackType
+	public bool VariableKnockback
 	{
-		get { return type; }
+		get { return variableKnockback; }
+	}
+
+	public bool DieOnTouch
+	{
+		get { return dieOnTouch; }
+	}
+
+	public bool AddCollisionRule
+	{
+		get { return addCollisionRule; }
 	}
 }

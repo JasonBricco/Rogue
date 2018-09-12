@@ -9,9 +9,9 @@ using static Utils;
 public sealed class EntityPlayer : MonoBehaviour
 {
 	private Entity entity;
-	private EntityHealth entityHealth;
+	private Vec2i prevInput;
 	private EntityTimer timer;
-
+	private bool yPriority;
 	private EntityType projectile = EntityType.Arrow;
 	public float RespawnTime { get; set; }
 
@@ -19,23 +19,65 @@ public sealed class EntityPlayer : MonoBehaviour
 	{
 		entity = GetComponent<Entity>();
 		timer = GetComponent<EntityTimer>();
-		entityHealth = GetComponent<EntityHealth>();
 
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
 		entity.ListenForEvent(EntityEvent.Kill, Kill);
 		entity.ListenForEvent(EntityEvent.HealthChanged, HealthChanged);
+		entity.ListenForEvent(EntityEvent.SetMove, SetMove);
 	}
 
 	public void OnSpawn()
 	{
-		entity.velocity = Vector2.zero;
-		entityHealth.FullHeal();
-		GetComponent<EntityImage>().Enable();
+		entity.FullHeal();
+		entity.MakeVisible();
 	}
 
 	private void HealthChanged()
 	{
-		EventManager.Instance.TriggerEvent(GameEvent.PlayerHealthModifed, entityHealth.Health);
+		EventManager.Instance.TriggerEvent(GameEvent.PlayerHealthModifed, entity.Health);
+	}
+
+	private Vec2i SetDirectionY(Entity entity, int input, bool priority)
+	{
+		if (priority) yPriority = true;
+		else yPriority = false;
+
+		if (input == -1) entity.facing = Direction.Back;
+		else entity.facing = Direction.Front;
+
+		return new Vec2i(0, input);
+	}
+
+	private Vec2i SetDirectionX(Entity entity, int input, bool removePriority)
+	{
+		if (removePriority)
+			yPriority = false;
+
+		if (input == -1) entity.facing = Direction.Left;
+		else entity.facing = Direction.Right;
+
+		return new Vec2i(input, 0);
+	}
+
+	private void SetMove()
+	{
+		Vec2i dir = new Vec2i(0, 0);
+		Vec2i move = new Vec2i((int)Input.GetAxisRaw("X"), (int)Input.GetAxisRaw("Y"));
+
+		if (move.x != 0 && move.y != 0)
+		{
+			if (yPriority || (move.y != prevInput.y))
+				dir = SetDirectionY(entity, move.y, true);
+			else dir = SetDirectionX(entity, move.x, false);
+		}
+		else if (move.x != 0) dir = SetDirectionX(entity, move.x, true);
+		else if (move.y != 0) dir = SetDirectionY(entity, move.y, false);
+		else yPriority = false;
+
+		prevInput = move;
+
+		CollideResult result;
+		entity.Entities.UpdateTarget(entity, dir, out result);
 	}
 
 	private void UpdateComponent()
@@ -49,39 +91,33 @@ public sealed class EntityPlayer : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Alpha3))
 			projectile = EntityType.Fireball;
 
-		if (timer.Value <= 0.0f)
+		if (entity.movingDir == Vec2i.Zero)
 		{
-			Vec2i fireDir = new Vec2i((int)Input.GetAxisRaw("FireX"), (int)Input.GetAxisRaw("FireY"));
+			SetMove();
 
-			if (fireDir != Vec2i.Zero)
+			if (timer.Value <= 0.0f && entity.movingDir == Vec2i.Zero)
 			{
-				entity.facing = GetNumericDir(fireDir);
-				Entity proj = entity.Entities.FireProjectile(entity.Pos + fireDir.ToVector2(), GetNumericDirFull(fireDir), projectile);
-				entity.Entities.AddCollisionRule(proj, entity);
-				timer.SetValue(0.25f);
+				Vec2i fireDir = new Vec2i((int)Input.GetAxisRaw("FireX"), 0);
+
+				if (fireDir.x == 0)
+					fireDir.y = (int)Input.GetAxisRaw("FireY");
+
+				if (fireDir != Vec2i.Zero)
+				{
+					entity.facing = GetNumericDir(fireDir);
+					entity.Entities.FireProjectile((entity.TilePos + fireDir).ToVector2(), entity.facing, projectile);
+					timer.SetValue(0.25f);
+				}
 			}
 		}
 
-		Vec2i accel = new Vec2i((int)Input.GetAxisRaw("MoveX"), (int)Input.GetAxisRaw("MoveY"));
-
-		if (accel != Vec2i.Zero)
-		{
-			if (Input.GetKey(KeyCode.LeftShift))
-				entity.speed = 200.0f;
-			else entity.ResetSpeed();
-
-			Vec2i facing = Vec2i.Directions[entity.facing];
-
-			if ((facing.x != 0 && facing.x != accel.x) || (facing.y != 0 && facing.y != accel.y))
-				entity.facing = GetNumericDir(accel);
-		}
-
-		entity.Move(accel.ToVector2());
+		entity.speed = Input.GetKey(KeyCode.LeftShift) ? 22.0f : 6.0f;
+		entity.Move();
 	}
 
 	private void Kill()
 	{
-		GetComponent<EntityImage>().Disable();
+		entity.MakeInvisible();
 		RespawnTime = 2.0f;
 	}
 }

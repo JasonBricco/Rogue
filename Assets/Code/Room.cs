@@ -5,6 +5,8 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using System.Collections.Generic;
+using static UnityEngine.Mathf;
+using static Utils;
 
 public sealed class Room
 {
@@ -19,16 +21,10 @@ public sealed class Room
 	private int layers, mainLayer;
 	private Tile[] tiles;
 
-	// Stores box colliders being used by this chunk. These colliders come from the collision manager.
-	// We store them here so that we can return them when the chunk doesn't need them anymore.
-	private Queue<TileCollider> colliders = new Queue<TileCollider>(16);
-
 	private Dictionary<int, SpriteMesh> meshes = new Dictionary<int, SpriteMesh>();
 
 	// True if this chunk currently has meshes built.
 	public bool built;
-
-	private bool hasColliders;
 
 	private List<Entity> entities = new List<Entity>();
 
@@ -48,7 +44,7 @@ public sealed class Room
 	/// </summary>
 	public Tile GetTile(int x, int y, int layer)
 	{
-		Assert.IsTrue(InRoomBounds(x, y));
+		Assert.IsTrue(InBounds(x, y));
 		return tiles[x + SizeX * (y + SizeY * layer)];
 	}
 
@@ -67,7 +63,7 @@ public sealed class Room
 	/// </summary>
 	public void SetTile(int x, int y, int layer, Tile tile)
 	{
-		Assert.IsTrue(InRoomBounds(x, y));
+		Assert.IsTrue(InBounds(x, y));
 		tiles[x + SizeX * (y + SizeY * layer)] = tile;
 	}
 
@@ -81,6 +77,26 @@ public sealed class Room
 			for (int x = 0; x < SizeX; x++)
 				SetTile(x, y, layer, tile);
 		}
+	}
+
+	public void GetCollisionData(Entity entity, Vec2i cell, ref CollideResult result)
+	{
+		result.tile = GetTile(cell.x, cell.y, mainLayer);
+
+		for (int i = 0; i < entities.Count; i++)
+		{
+			Entity target = entities[i];
+
+			if (entity == target) continue;
+
+			if (ToLocalPos(target.TilePos) == cell || ToLocalPos(TilePos(target.end)) == cell)
+				result.entity = target;
+		}
+
+		Vec2i diff = Pos - ToRoomPos(Camera.main.transform.position);
+
+		if (Abs(diff.x) > 1 || Abs(diff.y) > 1)
+			result.unloaded = true;
 	}
 
 	/// <summary>
@@ -158,45 +174,19 @@ public sealed class Room
 	}
 
 	/// <summary>
-	/// Adds colliders for all tiles that require them in this room.
-	/// </summary>
-	public void GenerateColliders(TileCollision collision)
-	{
-		if (!hasColliders)
-		{
-			collision.Generate(this, colliders);
-			hasColliders = true;
-		}
-	}
-
-	/// <summary>
-	/// Removes all colliders for this room.
-	/// </summary>
-	public void RemoveColliders(TileCollision collision)
-	{
-		if (hasColliders)
-		{
-			collision.ReturnColliders(colliders);
-			hasColliders = false;
-		}
-	}
-
-	/// <summary>
 	/// Destroys all meshes comprising this room.
 	/// </summary>
-	public void Destroy(TileCollision collision)
+	public void Destroy()
 	{
 		foreach (SpriteMesh mesh in meshes.Values)
 			mesh.Destroy();
-
-		RemoveColliders(collision);
 	}
 
 	/// <summary>
 	/// Returns true if the given coordinates are within the boundaries of this room.
 	/// Coordinates are specified in local room space between 0 and room size - 1.
 	/// </summary>
-	public static bool InRoomBounds(int x, int y)
+	public static bool InBounds(int x, int y)
 	{
 		return x >= 0 && x < SizeX && y >= 0 && y < SizeY;
 	}

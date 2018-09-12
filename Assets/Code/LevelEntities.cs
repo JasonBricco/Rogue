@@ -4,6 +4,7 @@
 
 using UnityEngine;
 using System.Collections.Generic;
+using static UnityEngine.Mathf;
 using static Utils;
 
 public sealed class LevelEntities
@@ -105,65 +106,37 @@ public sealed class LevelEntities
 		effects.Remove(entity);
 	}
 
-	private Vector2 GetKnockbackDir(Entity pusher, Entity other, KnockbackType type)
+	private Vec2i GetKnockbackDir(Entity pusher, Entity moving, bool variableKnockback)
 	{
-		switch (type)
+		if (variableKnockback)
 		{
-			case KnockbackType.ConstantDirection:
-				return Vec2i.Directions[pusher.facing].ToVector2();
-
-			case KnockbackType.VariableDirection:
-			{
-				Entity moving = pusher.velocity.sqrMagnitude > other.velocity.sqrMagnitude ? pusher : other;
-
-				if (moving == pusher)
-					return pusher.FacingDir;
-				else return -moving.FacingDir;
-			}
+			if (moving == pusher)
+				return Vec2i.Directions[pusher.facing];
+			else return -Vec2i.Directions[moving.facing];
 		}
-
-		return Vector2.zero;
+		else return Vec2i.Directions[pusher.facing];
 	}
 
-	private void ApplyOnTouchEffects(EntityOnTouch effects, Entity entity, Entity target)
+	private void ApplyOnTouchEffects(EntityOnTouch onTouch, Entity affector, Entity moving, Entity target)
 	{
 		if (target.HasFlag(EntityFlags.Invincible)) return;
 
-		if (effects != null)
+		if (onTouch != null)
 		{
-			EntityHealth health = target.GetComponent<EntityHealth>();
-			health?.ApplyDamage(effects.Damage);
+			target.ApplyDamage(onTouch.Damage);
 
-			if (effects.Knockback)
-				target.ApplyKnockback(GetKnockbackDir(entity, target, effects.KnockbackType), effects.KnockbackForce);
+			if (onTouch.Knockback)
+				target.ApplyKnockback(onTouch.KnockbackCells, GetKnockbackDir(affector, moving, onTouch.VariableKnockback));
+
+			if (onTouch.DieOnTouch)
+				affector.SetFlag(EntityFlags.Dead);
+
+			if (onTouch.AddCollisionRule)
+				AddCollisionRule(affector, target);
 		}
 	}
 
-	private void OnTriggerEntity(Entity a, Entity b)
-	{
-		if (CollisionRuleExists(a, b)) return;
-
-		EntityOnTouch onTouchedA = a.GetComponent<EntityOnTouch>();
-		EntityOnTouch onTouchedB = b.GetComponent<EntityOnTouch>();
-
-		ApplyOnTouchEffects(onTouchedA, a, b);
-		ApplyOnTouchEffects(onTouchedB, b, a);
-	}
-
-	public void OnTriggerProjectile(Entity proj, Entity b)
-	{
-		EntityProjectile projInfo = proj.GetComponent<EntityProjectile>();
-
-		if (projInfo == null || CollisionRuleExists(proj, b)) return;
-
-		EntityOnTouch onTouchProj = proj.GetComponent<EntityOnTouch>();
-		ApplyOnTouchEffects(onTouchProj, proj, b);
-
-		if (projInfo.Piercing) AddCollisionRule(proj, b);
-		else proj.SetFlag(EntityFlags.Dead);
-	}
-
-	private void OnTriggerTile(Entity entity, Tile tile)
+	private void OnTriggerObstacle(Entity entity, Tile tile)
 	{
 		switch (tile.id)
 		{
@@ -171,17 +144,13 @@ public sealed class LevelEntities
 			{
 				if (entity.Type == EntityType.Player)
 					manager.ChangeLevel(LevelType.Plains);
-
-				break;
-			}
+			} break;
 
 			case TileType.PlainsDoor:
 			{
 				if (entity.Type == EntityType.Player)
 					manager.ChangeLevel(LevelType.Dungeon);
-
-				break;
-			}
+			} break;
 
 			case TileType.Spikes:
 			{
@@ -190,43 +159,127 @@ public sealed class LevelEntities
 					OTEffect effect = new OTEffect(OTEffectType.Spikes, 0.0f);
 					effects.Add(entity, effect);
 				}
-
-				break;
-			}
+			} break;
 		}
 	}
 
-	private void KillOnCollide(Entity a, Tile tile)
+	private void KillOnObstacle(Entity entity, Tile tile)
 	{
-		a.SetFlag(EntityFlags.Dead);
+		entity.SetFlag(EntityFlags.Dead);
 	}
 
-	public void HandleCollision(Entity a, int layerA, Entity b, int layerB)
+	private void OnTriggerEntity(Entity a, Entity b)
 	{
-		collisionMatrix.GetEntityResponse(layerA, layerB)?.Invoke(a, b);
-	}
+		EntityOnTouch onTouchA = a.GetComponent<EntityOnTouch>();
+		EntityOnTouch onTouchB = b.GetComponent<EntityOnTouch>();
 
-	public void HandleCollision(Entity a, int layerA, Tile tile, int tileLayer)
-	{
-		collisionMatrix.GetTileResponse(layerA, tileLayer)?.Invoke(a, tile);
+		ApplyOnTouchEffects(onTouchA, a, a, b);
+		ApplyOnTouchEffects(onTouchB, b, a, a);
 	}
 
 	private void BuildCollisionMatrix()
 	{
-		int lPlayer = LayerMask.NameToLayer("Player");
-		int lEnemy = LayerMask.NameToLayer("Enemy");
-		int lProjectile = LayerMask.NameToLayer("Projectile");
-		int lTerrain = LayerMask.NameToLayer("Terrain");
-		int lTerrainTrigger = LayerMask.NameToLayer("Terrain Trigger");
+		collisionMatrix.Add(Layer.TriggerObstacle, Layer.Player, CollideType.Trigger, null, OnTriggerObstacle);
+		collisionMatrix.Add(Layer.TriggerObstacle, Layer.Enemy, CollideType.Trigger, null, OnTriggerObstacle);
+		collisionMatrix.Add(Layer.Obstacle, Layer.Player, CollideType.Collide, null, null);
+		collisionMatrix.Add(Layer.Obstacle, Layer.Familiar, CollideType.Collide, null, null);
+		collisionMatrix.Add(Layer.Obstacle, Layer.Enemy, CollideType.Collide, null, null);
+		collisionMatrix.Add(Layer.Obstacle, Layer.Projectile, CollideType.Collide, null, KillOnObstacle);
+		collisionMatrix.Add(Layer.Obstacle, Layer.PiercingProjectile, CollideType.Collide, null, KillOnObstacle);
+		collisionMatrix.Add(Layer.Projectile, Layer.Player, CollideType.Trigger, OnTriggerEntity, null);
+		collisionMatrix.Add(Layer.Projectile, Layer.Enemy, CollideType.Trigger, OnTriggerEntity, null);
+		collisionMatrix.Add(Layer.PiercingProjectile, Layer.Player, CollideType.Trigger, OnTriggerEntity, null);
+		collisionMatrix.Add(Layer.PiercingProjectile, Layer.Enemy, CollideType.Trigger, OnTriggerEntity, null);
+		collisionMatrix.Add(Layer.Player, Layer.Enemy, CollideType.Trigger, OnTriggerEntity, null);
+		collisionMatrix.Add(Layer.Enemy, Layer.Enemy, CollideType.Collide, null, null);
+	}
 
-		collisionMatrix.Add(lPlayer, lTerrainTrigger, null, OnTriggerTile);
-		collisionMatrix.Add(lEnemy, lTerrainTrigger, null, OnTriggerTile);
+	private CollideType CanCollide(Entity entity, CollideResult target)
+	{
+		if (CollisionRuleExists(entity, target.entity))
+			return CollideType.None;
 
-		collisionMatrix.Add(lProjectile, lTerrain, null, KillOnCollide);
-		collisionMatrix.Add(lProjectile, lPlayer, OnTriggerProjectile, null);
-		collisionMatrix.Add(lProjectile, lEnemy, OnTriggerProjectile, null);
+		if (target.invalid) return CollideType.Collide;
 
-		collisionMatrix.Add(lPlayer, lEnemy, OnTriggerEntity, null);
+		if (target.unloaded == true)
+			return CollideType.Collide;
+
+		CollideType tileType = collisionMatrix.Get(entity.Layer, target.tile.Data.layer).type;
+		CollideType entityType = CollideType.None;
+
+		if (target.entity != null)
+			entityType = collisionMatrix.Get(entity.Layer, target.entity.Layer).type;
+
+		return (CollideType)Max((int)tileType, (int)entityType);
+	}
+
+	public bool WillCollide(Entity entity, Vec2i cell)
+	{
+		CollideResult result = new CollideResult();
+		Room room = level.GetRoom(ToRoomPos(cell));
+
+		if (room == null) result.invalid = true;
+		else
+		{
+			room.GetCollisionData(entity, ToLocalPos(cell), ref result);
+			return CanCollide(entity, result) == CollideType.Collide;
+		}
+
+		return true;
+	}
+
+	private CollideResult GetCollisionData(Entity entity, Vec2i dir = default(Vec2i))
+	{
+		Vec2i tileP = entity.TilePos + dir;
+		Room room = level.GetRoom(ToRoomPos(tileP));
+
+		CollideResult result = new CollideResult();
+		room.GetCollisionData(entity, ToLocalPos(tileP), ref result);
+
+		return result;
+	}
+
+	public void HandleCollision(Entity entity, CollideResult target)
+	{
+		if (target.entity != null)
+		{
+			CollisionHandler entityHandler = collisionMatrix.Get(entity.Layer, target.entity.Layer);
+			entityHandler.ecr?.Invoke(entity, target.entity);
+		}
+
+		CollisionHandler tileHandler = collisionMatrix.Get(entity.Layer, target.tile.Data.layer);
+		tileHandler.tcr?.Invoke(entity, target.tile);
+	}
+
+	public void TestCollision(Entity entity)
+	{
+		CollideResult result = GetCollisionData(entity);
+
+		if (CanCollide(entity, result) != CollideType.None)
+			HandleCollision(entity, result);
+	}
+
+	public CollideType UpdateTarget(Entity entity, Vec2i dir, out CollideResult target)
+	{
+		CollideType type = CollideType.None;
+
+		if (dir != Vec2i.Zero)
+		{
+			target = GetCollisionData(entity, dir);
+			type = CanCollide(entity, target);
+
+			if (type != CollideType.Collide)
+			{
+				Vec2i start = entity.TilePos;
+				Vec2i end = start + dir;
+				entity.NewMoveTarget(start, end, dir);
+				return type;
+			}
+		}
+
+		entity.movingDir = Vec2i.Zero;
+		target = default(CollideResult);
+		return type;
 	}
 
 	public Entity FireProjectile(Vector2 start, int facing, EntityType type)
@@ -265,20 +318,10 @@ public sealed class LevelEntities
 		player.OnSpawn();
 	}
 
-	public void Update(TileCollision collision)
+	public void Update()
 	{
 		Transform camera = Camera.main.transform;
 		Vec2i camRoomP = ToRoomPos(camera.position);
-
-		// Generate colliders.
-		for (int y = camRoomP.y - 2; y <= camRoomP.y + 2; y++)
-		{
-			for (int x = camRoomP.x - 2; x <= camRoomP.x + 2; x++)
-			{
-				Room room = level.GetRoom(x, y);
-				room?.GenerateColliders(collision);
-			}
-		}
 
 		// Update entities.
 		for (int y = camRoomP.y - 1; y <= camRoomP.y + 1; y++)

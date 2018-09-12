@@ -51,7 +51,7 @@ public sealed class OTEffects
 				if (level.GetTile(entity.TilePos) != TileType.Spikes)
 					return false;
 
-				entity.GetComponent<EntityHealth>()?.ApplyDamage(1);
+				entity.ApplyDamage(1);
 				timer += 0.5f;
 				break;
 			}

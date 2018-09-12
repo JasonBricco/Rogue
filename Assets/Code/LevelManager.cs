@@ -10,14 +10,22 @@ public enum LevelType
 	Plains, Dungeon, Count
 }
 
+public enum Layer
+{
+	None,
+	Player,
+	Enemy,
+	Familiar,
+	Projectile,
+	PiercingProjectile,
+	Obstacle,
+	TriggerObstacle,
+	Count
+};
+
 public sealed class LevelManager : MonoBehaviour
 {
 	[SerializeField] private Entity[] entityPrefabs;
-
-	[SerializeField] private SpriteRenderer rend;
-	[SerializeField] private Sprite testSprite;
-
-	private TileCollision collision;
 
 	private LevelGenerator[] generators =
 	{
@@ -34,10 +42,8 @@ public sealed class LevelManager : MonoBehaviour
 
 	private void Start()
 	{
-		collision = new TileCollision(transform);
-
 		Array.Sort(entityPrefabs);
-		level = new Level(generators[1], collision);
+		level = new Level(generators[1]);
 	}
 
 	private void Update()
@@ -52,7 +58,7 @@ public sealed class LevelManager : MonoBehaviour
 	public void ChangeLevel(LevelType type)
 	{
 		level.Destroy();
-		level = new Level(generators[(int)type], collision);
+		level = new Level(generators[(int)type]);
 		GC.Collect();
 	}
 }
