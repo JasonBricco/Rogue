@@ -24,6 +24,8 @@ public sealed class EntityPlayer : MonoBehaviour
 		entity.ListenForEvent(EntityEvent.Kill, Kill);
 		entity.ListenForEvent(EntityEvent.HealthChanged, HealthChanged);
 		entity.ListenForEvent(EntityEvent.SetMove, SetMove);
+
+		entity.SetFlag(EntityFlags.InvincibleFrames);
 	}
 
 	public void OnSpawn()
@@ -112,7 +114,7 @@ public sealed class EntityPlayer : MonoBehaviour
 		}
 
 		if (Input.GetKey(KeyCode.LeftShift))
-			entity.speed = 22.0f;
+			entity.speed = 15.0f;
 		else entity.ResetSpeed();
 
 		entity.Move();

@@ -71,7 +71,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de8028493a88e7941a2d34548e5ca941, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  piercing: 0
   hasLifetime: 0
   maxDistance: 0
 --- !u!114 &114946318760873616
@@ -89,10 +88,10 @@ MonoBehaviour:
   layer: 4
   defaultSpeed: 25
   maxHealth: 0
-  invincibleOnDamage: 0
   sprites:
   - {fileID: 21300000, guid: 2c6054525c68bfc4dbfb1156c6fddfdd, type: 3}
   directional: 0
+  invincible: 1
   speed: 50
   facing: 0
   start: {x: 0, y: 0}

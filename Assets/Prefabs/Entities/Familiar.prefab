@@ -69,13 +69,13 @@ MonoBehaviour:
   layer: 3
   defaultSpeed: 75
   maxHealth: 10
-  invincibleOnDamage: 0
   sprites:
   - {fileID: 21300000, guid: 946793f620aa40d4fa7b16a85d1cc75d, type: 3}
   - {fileID: 21300000, guid: 28359324e0cb4974fbc7f71e176a633e, type: 3}
   - {fileID: 21300000, guid: 4e63cc7f21a113d4c9f8f952f1a35396, type: 3}
   - {fileID: 21300000, guid: fe15b44f2b206db4bbe4b09831af47c3, type: 3}
   directional: 1
+  invincible: 1
   speed: 50
   facing: 0
   start: {x: 0, y: 0}

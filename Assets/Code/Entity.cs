@@ -20,8 +20,8 @@ public enum EntityFlags
 	Dead = 1,
 	Rooted = 2,
 	EmitsLight = 4,
-	Invincible = 8,
-	KnockedBack = 16
+	KnockedBack = 8,
+	InvincibleFrames = 16
 }
 
 public enum CollideType
@@ -40,9 +40,10 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	[SerializeField] private Layer layer;
 	[SerializeField] private float defaultSpeed;
 	[SerializeField] private int maxHealth;
-	[SerializeField] private bool invincibleOnDamage;
 	[SerializeField] private Sprite[] sprites;
 	[SerializeField] private bool directional;
+
+	public bool invincible;
 
 	public EntityType Type
 	{
@@ -86,10 +87,12 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		get { return TilePos(t.position); }
 	}
 
-	public void Init(LevelEntities entities, Room room)
+	public void Init(LevelEntities entities, Room room, Vector2 pos)
 	{
 		t = GetComponent<Transform>();
+		rend = GetComponent<SpriteRenderer>();
 
+		rend.sprite = sprites[0];
 		Entities = entities;
 
 		speed = defaultSpeed;
@@ -97,8 +100,12 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 
 		FullHeal();
 
-		rend = GetComponent<SpriteRenderer>();
-		rend.sprite = sprites[0];
+		MoveTo(pos);
+
+		start = Pos;
+		end = Pos;
+
+		movingDir = Vec2i.Zero;
 	}
 
 	public void ListenForEvent(EntityEvent type, Action func)
@@ -281,9 +288,9 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 			SetFlag(EntityFlags.Dead);
 		else
 		{
-			if (invincibleOnDamage)
+			if (HasFlag(EntityFlags.InvincibleFrames))
 			{
-				SetFlag(EntityFlags.Invincible);
+				invincible = true;
 				StartCoroutine(ResetInvincibility());
 			}
 		}
@@ -294,7 +301,7 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	private IEnumerator ResetInvincibility()
 	{
 		yield return wait;
-		UnsetFlag(EntityFlags.Invincible);
+		invincible = false;
 	}
 
 	public void ApplyKnockback(int cells, Vec2i dir)

@@ -69,8 +69,7 @@ public sealed class LevelEntities
 	{
 		Room room = level.GetRoom(roomP.x, roomP.y);
 		room.AddEntity(entity);
-		entity.Init(this, room);
-		entity.MoveTo(pos);
+		entity.Init(this, room, pos);
 	}
 
 	private void SpawnEntity(Entity entity, Vec2i roomP, Vec2i cell)
@@ -119,7 +118,7 @@ public sealed class LevelEntities
 
 	private void ApplyOnTouchEffects(EntityOnTouch onTouch, Entity affector, Entity moving, Entity target)
 	{
-		if (target.HasFlag(EntityFlags.Invincible)) return;
+		if (target.invincible) return;
 
 		if (onTouch != null)
 		{
@@ -154,7 +153,7 @@ public sealed class LevelEntities
 
 			case TileType.Spikes:
 			{
-				if (!entity.HasFlag(EntityFlags.Invincible) && !effects.Exists(entity, OTEffectType.Spikes))
+				if (!entity.invincible && !effects.Exists(entity, OTEffectType.Spikes))
 				{
 					OTEffect effect = new OTEffect(OTEffectType.Spikes, 0.0f);
 					effects.Add(entity, effect);
@@ -291,7 +290,6 @@ public sealed class LevelEntities
 		if (queue.Count > 0)
 		{
 			proj = queue.Dequeue();
-			proj.movingDir = Vec2i.Zero;
 			proj.gameObject.SetActive(true);
 		}
 		else proj = Object.Instantiate(entityPrefabs[(int)type]).GetComponent<Entity>();

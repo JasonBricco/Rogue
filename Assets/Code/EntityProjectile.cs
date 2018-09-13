@@ -7,16 +7,10 @@ using UnityEngine.Assertions;
 
 public class EntityProjectile : MonoBehaviour
 {
-	[SerializeField] private bool piercing;
 	[SerializeField] private bool hasLifetime;
 	[SerializeField] private int maxDistance;
 
 	private int tilesLeft;
-
-	public bool Piercing
-	{
-		get { return piercing; }
-	}
 
 	private Entity entity;
 

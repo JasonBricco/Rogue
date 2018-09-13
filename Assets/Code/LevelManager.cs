@@ -43,7 +43,7 @@ public sealed class LevelManager : MonoBehaviour
 	private void Start()
 	{
 		Array.Sort(entityPrefabs);
-		level = new Level(generators[1]);
+		level = new Level(generators[0]);
 	}
 
 	private void Update()

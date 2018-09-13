@@ -58,10 +58,10 @@ MonoBehaviour:
   layer: 5
   defaultSpeed: 15
   maxHealth: 0
-  invincibleOnDamage: 0
   sprites:
   - {fileID: 21300000, guid: d739ff1e76b5dbf47a3e108452514667, type: 3}
   directional: 0
+  invincible: 1
   speed: 50
   facing: 0
   start: {x: 0, y: 0}
@@ -77,7 +77,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de8028493a88e7941a2d34548e5ca941, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  piercing: 1
   hasLifetime: 1
   maxDistance: 6
 --- !u!114 &114716107186992758
