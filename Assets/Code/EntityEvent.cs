@@ -5,9 +5,8 @@
 public enum EntityEvent
 {
 	Update,
+	RoomChanged,
 	Kill,
 	HealthChanged,
-	ReachedNewCell,
-	SetMove,
 	Count
 }

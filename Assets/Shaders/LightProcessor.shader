@@ -6,7 +6,7 @@
 		_Lightmap("Lightmap", 2D) = "white" {}
 	}
 
-	SubShader
+		SubShader
 	{
 		Pass
 		{

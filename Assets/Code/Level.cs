@@ -19,20 +19,18 @@ public sealed class Level
 
 	private Vec2i spawnRoom, spawnCell;
 
+	private TileCollision collision;
+
 	private bool isDark;
 
-	/// <summary>
-	/// The coordinates of the room the player will spawn in.
-	/// </summary>
+	// The coordinates of the room the player will spawn in.
 	public Vec2i SpawnRoom
 	{
 		get { return spawnRoom; }
 	}
 
-	/// <summary>
-	/// The local coordinates of the cell within the spawn room the player
-	/// will spawn at.
-	/// </summary>
+	// The local coordinates of the cell within the spawn room the player
+	// will spawn at.
 	public Vec2i SpawnCell
 	{
 		get { return spawnCell; }
@@ -40,7 +38,7 @@ public sealed class Level
 
 	private GameCamera cam;
 
-	public Level(LevelGenerator generator)
+	public Level(LevelGenerator generator, TileCollision collision)
 	{
 		entities = new LevelEntities(this);
 		generator.Generate(this, entities, out spawnRoom, out spawnCell);
@@ -48,11 +46,11 @@ public sealed class Level
 
 		cam = Camera.main.GetComponent<GameCamera>();
 		cam.MoveToPlayer();
+
+		this.collision = collision;
 	}
 
-	/// <summary>
-	/// Clamps the given room position to the level, between 0 and room count.
-	/// </summary>
+	// Clamps the given room position to the level, between 0 and room count.
 	public Vec2i ClampRoomToLevel(Vec2i roomPos)
 	{
 		roomPos.x = Clamp(roomPos.x, 0, RoomCount - 1);
@@ -60,10 +58,8 @@ public sealed class Level
 		return roomPos;
 	}
 
-	/// <summary>
-	/// Returns the room at the given location in room coordinates. Returns null
-	/// if the room is out of bounds or hasn't been created.
-	/// </summary>
+	// Returns the room at the given location in room coordinates. Returns null
+	// if the room is out of bounds or hasn't been created.
 	public Room GetRoom(int x, int y)
 	{
 		if (y >= 0 && y < RoomCount && x >= 0 && x < RoomCount)
@@ -72,28 +68,22 @@ public sealed class Level
 		return null;
 	}
 
-	/// <summary>
-	/// Returns the room at the given location in room coordinates. Returns null
-	/// if the room is out of bounds or hasn't been created.
-	/// </summary>
+	// Returns the room at the given location in room coordinates. Returns null
+	// if the room is out of bounds or hasn't been created.
 	public Room GetRoom(Vec2i p)
 	{
 		return GetRoom(p.x, p.y);
 	}
 
-	/// <summary>
-	/// Returns a random room out of all loaded rooms.
-	/// </summary>
+	// Returns a random room out of all loaded rooms.
 	public Room GetRandomRoom()
 	{
 		return loadedRooms[Random.Range(0, loadedRooms.Count)];
 	}
 
-	/// <summary>
-	/// Creates a new room at the given location with the given number of layers
-	/// and main layer. Fails if the room already exists. The room will be 
-	/// considered a loaded room after this call.
-	/// </summary>
+	// Creates a new room at the given location with the given number of layers
+	// and main layer. Fails if the room already exists. The room will be 
+	// considered a loaded room after this call.
 	public Room CreateRoom(int x, int y, int layers, int mainLayer)
 	{
 		Assert.IsTrue(GetRoom(x, y) == null);
@@ -103,10 +93,8 @@ public sealed class Level
 		return room;
 	}
 
-	/// <summary>
-	/// Returns the tile at the given location. Location is specified in world 
-	/// tile space.
-	/// </summary>
+	// Returns the tile at the given location. Location is specified in world 
+	// tile space.
 	public Tile GetTile(int x, int y)
 	{
 		Vec2i rP = ToRoomPos(x, y), lP = ToLocalPos(x, y);
@@ -114,19 +102,15 @@ public sealed class Level
 		return room.GetTile(lP.x, lP.y);
 	}
 
-	/// <summary>
-	/// Returns the tile at the given location from the room's main layer. 
-	/// Location is specified in world tile space.
-	/// </summary>
+	// Returns the tile at the given location from the room's main layer. 
+	// Location is specified in world tile space.
 	public Tile GetTile(Vec2i p)
 	{
 		return GetTile(p.x, p.y);
 	}
 
-	/// <summary>
-	/// Sets the given tile at the given location. Location is specified in world 
-	/// tile space.
-	/// </summary>
+	// Sets the given tile at the given location. Location is specified in world 
+	// tile space.
 	public void SetTile(int x, int y, int z, Tile tile)
 	{
 		Vec2i rP = ToRoomPos(x, y), lP = ToLocalPos(x, y);
@@ -136,16 +120,14 @@ public sealed class Level
 
 	public void Update()
 	{
-		entities.Update();
+		entities.Update(collision);
 		cam.SetPosition();
 
 		if (Input.GetKeyDown(KeyCode.Tab))
 			SetLightMode(!isDark);
 	}
 
-	/// <summary>
-	/// Draws all rooms that are visible to the game camera.
-	/// </summary>
+	// Draws all rooms that are visible to the game camera.
 	public void Draw()
 	{
 		RectInt bounds = cam.GetIntersectingRooms(this);
@@ -184,14 +166,12 @@ public sealed class Level
 		isDark = dark;
 	}
 
-	/// <summary>
-	/// Destroys the level.
-	/// </summary>
+	// Destroys the level.
 	public void Destroy()
 	{
 		entities.Destroy();
 
 		for (int i = 0; i < loadedRooms.Count; i++)
-			loadedRooms[i].Destroy();
+			loadedRooms[i].Destroy(collision);
 	}
 }

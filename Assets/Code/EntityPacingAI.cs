@@ -9,43 +9,38 @@ public sealed class EntityPacingAI : MonoBehaviour
 {
 	private Entity entity;
 	private EntityTimer timer;
+	private Vector2 dir;
 	private float distRemaining;
 
 	private void Start()
 	{
 		entity = GetComponent<Entity>();
 		timer = GetComponent<EntityTimer>();
-		timer.SetValue(3.0f);
-
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
 		entity.ListenForEvent(EntityEvent.Kill, Kill);
-		entity.ListenForEvent(EntityEvent.SetMove, SetMove);
-	}
 
-	int d = 0;
-
-	private void SetMove()
-	{
-		Vec2i dir = Vec2i.Zero;
-
-		if (timer.Value <= 0.0f)
-		{
-			d = d == 0 ? 1 : 0;// Random.Range(0, 4);
-			entity.facing = d;
-			dir = Vec2i.Directions[d];
-			timer.SetValue(1.0f);
-		}
-
-		CollideResult target;
-		entity.Entities.SetMove(entity, dir, 1, out target);
+		timer.SetValue(2.0f);
 	}
 
 	private void UpdateComponent()
 	{
-		if (!entity.IsMoving())
-			SetMove();
+		if (timer.Value <= 0.0f)
+		{
+			int d = Random.Range(0, 4);
+			entity.facing = d;
 
-		entity.Move();
+			dir = Vec2i.Directions[d].ToVector2();
+			distRemaining = Random.Range(1.0f, 1.2f);
+
+			timer.SetValue(Random.Range(4.0f, 8.0f));
+		}
+
+		entity.Move(dir, ref distRemaining, OnDistanceReached);
+	}
+
+	private void OnDistanceReached()
+	{
+		dir = Vector2.zero;
 	}
 
 	private void Kill()

@@ -10,7 +10,7 @@ public sealed class GenPlains : LevelGenerator
 
 	public override void Generate(Level level, LevelEntities entities, out Vec2i spawnRoom, out Vec2i spawnCell)
 	{
-		Vec2i rooms = new Vec2i(8, 12);
+		Vec2i rooms = new Vec2i(5, 7);
 
 		for (int roomY = 0; roomY < rooms.y; roomY++)
 		{
@@ -19,19 +19,17 @@ public sealed class GenPlains : LevelGenerator
 		}
 
 		Vec2i start = new Vec2i(Room.SizeX, Room.SizeY);
-		Vec2i end = start + new Vec2i(rooms.x - 2, rooms.y - 2) * new Vec2i(Room.SizeX, Room.SizeY);
+		Vec2i end = start + new Vec2i(rooms.x - 2, rooms.y - 2) * start;
 
 		for (int x = start.x + 3; x < end.x - 3; x++)
 		{
 			level.SetTile(x, start.y, MainLayer, new Tile(TileType.PlainsWall, Direction.Back));
-			level.SetTile(x, start.y + 2, MainLayer, TileType.Barrier);
 			level.SetTile(x, end.y - 3, MainLayer, new Tile(TileType.PlainsWall, Direction.Front));
 		}
 
 		for (int y = start.y + 3; y < end.y - 3; y++)
 		{
 			level.SetTile(start.x, y, MainLayer, new Tile(TileType.PlainsWall, Direction.Left));
-			level.SetTile(start.x + 2, y, MainLayer, TileType.Barrier);
 			level.SetTile(end.x - 3, y, MainLayer, new Tile(TileType.PlainsWall, Direction.Right));
 		}
 
@@ -42,8 +40,6 @@ public sealed class GenPlains : LevelGenerator
 
 		int rX = Random.Range(2, rooms.x - 2), rY = Random.Range(2, rooms.y - 2);
 		Room room = level.GetRoom(rX, rY);
-
-		room.Fill(MainLayer, TileType.Barrier);
 
 		for (int x = 3; x <= Room.LimX - 3; x++)
 		{
@@ -63,13 +59,12 @@ public sealed class GenPlains : LevelGenerator
 		room.SetTile(Room.LimX - 2, 0, MainLayer, new Tile(TileType.PlainsWall, Direction.BackRight));
 
 		int midX = Room.LimX / 2;
-
-		for (int i = midX - 1; i <= midX + 1; i++)
-			room.SetTile(i, 0, MainLayer, TileType.Barrier);
-
 		room.SetTile(midX, 0, MainLayer, TileType.PlainsDoor);
+		room.SetTile(midX - 1, 0, MainLayer, TileType.Barrier);
+		room.SetTile(midX + 1, 0, MainLayer, TileType.Barrier);
+		room.SetTile(midX, 1, MainLayer, TileType.Barrier);
 
-		spawnRoom = new Vec2i(rX, rY - 1);
+		spawnRoom = new Vec2i(1, 1);
 		spawnCell = new Vec2i(4, 4);
 
 		Camera.main.GetComponent<GameCamera>().SetFollow(true);

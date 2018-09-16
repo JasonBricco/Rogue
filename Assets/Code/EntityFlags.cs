@@ -9,7 +9,6 @@ public enum EntityFlags
 {
 	None = 0,
 	Dead = 1,
-	Rooted = 2,
-	EmitsLight = 4,
-	InvincibleFrames = 8
+	Invincible = 2,
+	InvincibleFrames = 4
 }

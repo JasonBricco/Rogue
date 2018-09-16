@@ -3,62 +3,55 @@
 //
 
 using UnityEngine;
-using UnityEngine.Assertions;
+using static UnityEngine.Mathf;
+using static Utils;
 
 public class EntityProjectile : MonoBehaviour
 {
-	[SerializeField] private bool hasLifetime;
-	[SerializeField] private int maxDistance;
+	[SerializeField] private bool piercing;
+	[SerializeField] private bool hasMaxDistance;
+	[SerializeField] private float maxDistance;
 
-	private int tilesLeft;
+	public bool Piercing
+	{
+		get { return piercing; }
+	}
 
 	private Entity entity;
+	private float distRemaining;
 
 	private void Awake()
 	{
 		entity = GetComponent<Entity>();
+		distRemaining = maxDistance;
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
 		entity.ListenForEvent(EntityEvent.Kill, Kill);
-		entity.ListenForEvent(EntityEvent.SetMove, SetMove);
-		entity.ListenForEvent(EntityEvent.ReachedNewCell, OnNewCell);
-
-		tilesLeft = maxDistance;
+		entity.ListenForEvent(EntityEvent.RoomChanged, OnRoomChanged);
 	}
 
-	private void OnNewCell()
+	// Ensures the projectile doesn't get stuck in unloaded rooms.
+	private void OnRoomChanged()
 	{
-		if (hasLifetime)
-		{
-			tilesLeft--;
-			Assert.IsTrue(tilesLeft >= 0);
+		Vec2i roomP = ToRoomPos(entity.TilePos);
+		Vec2i camRoomP = ToRoomPos(Camera.main.transform.position);
 
-			if (tilesLeft == 0)
-				entity.SetFlag(EntityFlags.Dead);
-		}
-	}
-
-	private void SetMove()
-	{
-		CollideResult target;
-		entity.Entities.SetMove(entity, Vec2i.Directions[entity.facing], 1, out target);
-		entity.Entities.HandleCollision(entity, target);
-
-		if (target.unloaded == true)
-			entity.SetFlag(EntityFlags.Dead);
+		if (Abs(camRoomP.x - roomP.x) > 1 || Abs(camRoomP.y - roomP.y) > 1)
+			entity.KillEntity();
 	}
 
 	private void UpdateComponent()
 	{
-		if (!entity.IsMoving())
-			SetMove();
+		Vector2 dir = Vec2i.Directions[entity.facing].ToVector2();
 
-		entity.Move();
+		if (hasMaxDistance)
+			entity.SimpleMove(dir, ref distRemaining, () => entity.SetFlag(EntityFlags.Dead));
+		else entity.SimpleMove(dir);
 	}
 
 	private void Kill()
 	{
 		entity.UnsetFlag(EntityFlags.Dead);
-		tilesLeft = maxDistance;
+		distRemaining = maxDistance;
 		entity.Entities.ReturnProjectile(entity);
 	}
 }

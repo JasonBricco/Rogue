@@ -6,7 +6,6 @@ TagManager:
   tags:
   - LevelManager
   - Disposable
-  - Background
   layers:
   - Default
   - TransparentFX
@@ -16,14 +15,14 @@ TagManager:
   - UI
   - 
   - 
-  - Light
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Terrain
+  - Player
+  - Enemy
+  - Projectile
+  - Familiar
+  - Controller
+  - Terrain Trigger
+  - Lights
   - 
   - 
   - 

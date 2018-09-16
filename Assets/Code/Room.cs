@@ -5,8 +5,6 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using System.Collections.Generic;
-using static UnityEngine.Mathf;
-using static Utils;
 
 public sealed class Room
 {
@@ -21,10 +19,16 @@ public sealed class Room
 	private int layers, mainLayer;
 	private Tile[] tiles;
 
+	// Stores box colliders being used by this chunk. These colliders come from the collision manager.
+	// We store them here so that we can return them when the chunk doesn't need them anymore.
+	private Queue<TileCollider> colliders = new Queue<TileCollider>(16);
+
 	private Dictionary<int, SpriteMesh> meshes = new Dictionary<int, SpriteMesh>();
 
 	// True if this chunk currently has meshes built.
 	public bool built;
+
+	private bool hasColliders;
 
 	private List<Entity> entities = new List<Entity>();
 
@@ -38,38 +42,30 @@ public sealed class Room
 		WorldPos = new Vector2(pX * SizeX, pY * SizeY);
 	}
 
-	/// <summary>
-	/// Returns a tile at the given location from this room. Fails if the location is out of bounds of the room.
-	/// Coordinates are specified in local room space between 0 and room size - 1. 
-	/// </summary>
+	// Returns a tile at the given location from this room. Fails if the location is out of bounds of the room.
+	// Coordinates are specified in local room space between 0 and room size - 1. 
 	public Tile GetTile(int x, int y, int layer)
 	{
 		Assert.IsTrue(InBounds(x, y));
 		return tiles[x + SizeX * (y + SizeY * layer)];
 	}
 
-	/// <summary>
-	/// Returns a tile from the main layer at the given location from this room. Fails if the location is out of 
-	/// bounds of the room. Coordinates are specified in local room space between 0 and room size - 1. 
-	/// </summary>
+	// Returns a tile from the main layer at the given location from this room. Fails if the location is out of 
+	// bounds of the room. Coordinates are specified in local room space between 0 and room size - 1. 
 	public Tile GetTile(int x, int y)
 	{
 		return GetTile(x, y, mainLayer);
 	}
 
-	/// <summary>
-	/// Sets the given tile at the given location in this room. Fails if the location is out of bounds
-	/// of the room. Coordinates are specified in local room space between 0 and room size - 1.
-	/// </summary>
+	// Sets the given tile at the given location in this room. Fails if the location is out of bounds
+	// of the room. Coordinates are specified in local room space between 0 and room size - 1.
 	public void SetTile(int x, int y, int layer, Tile tile)
 	{
 		Assert.IsTrue(InBounds(x, y));
 		tiles[x + SizeX * (y + SizeY * layer)] = tile;
 	}
 
-	/// <summary>
-	/// Replaces every tile in the given layer with the given tile.
-	/// </summary>
+	// Replaces every tile in the given layer with the given tile.
 	public void Fill(int layer, Tile tile)
 	{
 		for (int y = 0; y < SizeY; y++)
@@ -79,30 +75,8 @@ public sealed class Room
 		}
 	}
 
-	public void GetCollisionData(Entity entity, Vec2i cell, ref CollideResult result)
-	{
-		result.tile = GetTile(cell.x, cell.y, mainLayer);
-
-		for (int i = 0; i < entities.Count; i++)
-		{
-			Entity target = entities[i];
-
-			if (entity == target) continue;
-
-			if (ToLocalPos(target.TilePos) == cell || ToLocalPos(target.EndCell) == cell)
-				result.entity = target;
-		}
-
-		Vec2i diff = Pos - ToRoomPos(Camera.main.transform.position);
-
-		if (Abs(diff.x) > 1 || Abs(diff.y) > 1)
-			result.unloaded = true;
-	}
-
-	/// <summary>
-	/// Builds meshes for the room. Each visible tile will contribute to a mesh. 
-	/// One mesh will be built for each mesh index used by tiles in the room.
-	/// </summary>
+	// Builds meshes for the room. Each visible tile will contribute to a mesh. 
+	// One mesh will be built for each mesh index used by tiles in the room.
 	public void BuildMeshes()
 	{
 		for (int layer = 0; layer < layers; layer++)
@@ -135,9 +109,7 @@ public sealed class Room
 		built = true;
 	}
 
-	/// <summary>
-	/// Draw all meshes comprising this room.
-	/// </summary>
+	// Draw all meshes comprising this room.
 	public void Draw()
 	{
 		foreach (KeyValuePair<int, SpriteMesh> pair in meshes)
@@ -147,45 +119,57 @@ public sealed class Room
 		}
 	}
 
-	/// <summary>
-	/// Adds the given entity to this room.
-	/// </summary>
+	// Adds the given entity to this room.
 	public void AddEntity(Entity entity)
 	{
 		Assert.IsTrue(!entities.Contains(entity));
 		entities.Add(entity);
 	}
 
-	/// <summary>
-	/// Removes the entity from this room.
-	/// </summary>
+	// Removes the entity from this room.
 	public void RemoveEntity(Entity entity)
 	{
 		bool result = entities.Remove(entity);
 		Assert.IsTrue(result);
 	}
 
-	/// <summary>
-	/// Adds all entities in this room to the given active entities list.
-	/// </summary>
+	// Adds all entities in this room to the given active entities list.
 	public void GetActiveEntities(List<Entity> activeEntities)
 	{
 		activeEntities.AddRange(entities);
 	}
 
-	/// <summary>
-	/// Destroys all meshes comprising this room.
-	/// </summary>
-	public void Destroy()
+	// Adds colliders for all tiles that require them in this room.
+	public void GenerateColliders(TileCollision collision)
+	{
+		if (!hasColliders)
+		{
+			collision.Generate(this, colliders);
+			hasColliders = true;
+		}
+	}
+
+	// Removes all colliders for this room.
+	public void RemoveColliders(TileCollision collision)
+	{
+		if (hasColliders)
+		{
+			collision.ReturnColliders(colliders);
+			hasColliders = false;
+		}
+	}
+
+	// Destroys all meshes comprising this room.
+	public void Destroy(TileCollision collision)
 	{
 		foreach (SpriteMesh mesh in meshes.Values)
 			mesh.Destroy();
+
+		RemoveColliders(collision);
 	}
 
-	/// <summary>
-	/// Returns true if the given coordinates are within the boundaries of this room.
-	/// Coordinates are specified in local room space between 0 and room size - 1.
-	/// </summary>
+	// Returns true if the given coordinates are within the boundaries of this room.
+	// Coordinates are specified in local room space between 0 and room size - 1.
 	public static bool InBounds(int x, int y)
 	{
 		return x >= 0 && x < SizeX && y >= 0 && y < SizeY;
