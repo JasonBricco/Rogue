@@ -42,6 +42,11 @@ public static class Utils
 		return ToLocalPos(p.x, p.y);
 	}
 
+	public static Vec2i ToTilePos(Vec2i roomPos, int lX, int lY)
+	{
+		return new Vec2i(roomPos.x * Room.SizeX + lX, roomPos.y * Room.SizeY + lY);
+	}
+
 	public static Vec2i TilePos(float x, float y)
 	{
 		return new Vec2i(RoundToInt(x), RoundToInt(y));

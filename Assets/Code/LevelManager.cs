@@ -14,9 +14,6 @@ public sealed class LevelManager : MonoBehaviour
 {
 	[SerializeField] private Entity[] entityPrefabs;
 
-	[SerializeField] private SpriteRenderer rend;
-	[SerializeField] private Sprite testSprite;
-
 	private TileCollision collision;
 
 	private LevelGenerator[] generators =
@@ -46,9 +43,7 @@ public sealed class LevelManager : MonoBehaviour
 		level.Draw();
 	}
 
-	/// <summary>
-	/// Changes the level to the given level type. The previous level is destroyed.
-	/// </summary>
+	// Changes the level to the given level type. The previous level is destroyed.
 	public void ChangeLevel(LevelType type)
 	{
 		level.Destroy();

@@ -32,6 +32,7 @@ public sealed class EntityPlayer : MonoBehaviour
 		entity.velocity = Vector2.zero;
 		entityHealth.FullHeal();
 		GetComponent<EntityImage>().Enable();
+		GetComponent<EntityLight>().Enable();
 	}
 
 	private void HealthChanged()
@@ -83,6 +84,7 @@ public sealed class EntityPlayer : MonoBehaviour
 	private void Kill()
 	{
 		GetComponent<EntityImage>().Disable();
+		GetComponent<EntityLight>().Disable();
 		RespawnTime = 2.0f;
 	}
 }

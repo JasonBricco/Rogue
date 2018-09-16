@@ -19,9 +19,20 @@ public sealed class EntityLight : MonoBehaviour
 
 	private void UpdateComponent()
 	{
+		light.position = entity.Pos;
+	}
+
+	public void Enable()
+	{
 		if (light == null)
 			light = Instantiate(lightPrefab).GetComponent<Transform>();
 
 		light.position = entity.Pos;
+		light.gameObject.SetActive(true);
+	}
+
+	public void Disable()
+	{
+		light.gameObject.SetActive(false);
 	}
 }

@@ -5,6 +5,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using System.Collections.Generic;
+using static Utils;
 
 public sealed class Room
 {
@@ -63,6 +64,9 @@ public sealed class Room
 	{
 		Assert.IsTrue(InBounds(x, y));
 		tiles[x + SizeX * (y + SizeY * layer)] = tile;
+
+		TileData data = tile.Data;
+		data.component?.OnSet(ToTilePos(Pos, x, y));
 	}
 
 	// Replaces every tile in the given layer with the given tile.

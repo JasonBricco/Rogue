@@ -5,12 +5,6 @@
 using UnityEngine;
 using System;
 
-public enum GameEvent
-{
-	PlayerHealthModifed,
-	Count
-}
-
 public delegate void EventHandler<T>(T arg);
 
 public sealed class EventManager : MonoBehaviour
