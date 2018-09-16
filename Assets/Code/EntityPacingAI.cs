@@ -22,20 +22,22 @@ public sealed class EntityPacingAI : MonoBehaviour
 		entity.ListenForEvent(EntityEvent.SetMove, SetMove);
 	}
 
+	int d = 0;
+
 	private void SetMove()
 	{
 		Vec2i dir = Vec2i.Zero;
 
 		if (timer.Value <= 0.0f)
 		{
-			int d = Random.Range(0, 4);
+			d = d == 0 ? 1 : 0;// Random.Range(0, 4);
 			entity.facing = d;
 			dir = Vec2i.Directions[d];
-			timer.SetValue(3.0f);
+			timer.SetValue(1.0f);
 		}
 
 		CollideResult target;
-		entity.Entities.UpdateTarget(entity, dir, out target);
+		entity.Entities.SetMove(entity, dir, 1, out target);
 	}
 
 	private void UpdateComponent()

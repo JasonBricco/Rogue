@@ -258,7 +258,16 @@ public sealed class LevelEntities
 			HandleCollision(entity, result);
 	}
 
-	public CollideType UpdateTarget(Entity entity, Vec2i dir, out CollideResult target)
+	public void SetForcedMove(Entity entity, Vec2i dir, int cells, float speed)
+	{
+		CollideResult target = GetCollisionData(entity, dir);
+		CollideType type = CanCollide(entity, target);
+
+		if (type != CollideType.Collide)
+			entity.SetForcedMove(entity.Pos, speed, cells, dir);
+	}
+
+	public CollideType SetMove(Entity entity, Vec2i dir, int cells, out CollideResult target)
 	{
 		CollideType type = CollideType.None;
 		target = default(CollideResult);
@@ -270,14 +279,11 @@ public sealed class LevelEntities
 
 			if (type != CollideType.Collide)
 			{
-				Vec2i start = entity.TilePos;
-				Vec2i end = start + dir;
-				entity.NewMoveTarget(start, end, dir);
+				entity.SetMove(entity.TilePos, cells, dir);
 				return type;
 			}
 		}
 
-		entity.movingDir = Vec2i.Zero;
 		return type;
 	}
 

@@ -12,6 +12,11 @@ public static class Utils
 		return v * v;
 	}
 
+	public static int Square(int v)
+	{
+		return v * v;
+	}
+
 	public static Vec2i ToRoomPos(int x, int y)
 	{
 		return new Vec2i(x >> Room.ShiftX, FloorToInt((float)y / Room.SizeY));

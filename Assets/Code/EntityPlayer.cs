@@ -79,7 +79,7 @@ public sealed class EntityPlayer : MonoBehaviour
 		prevInput = move;
 
 		CollideResult result;
-		entity.Entities.UpdateTarget(entity, dir, out result);
+		entity.Entities.SetMove(entity, dir, 1, out result);
 	}
 
 	private void UpdateComponent()
@@ -93,11 +93,11 @@ public sealed class EntityPlayer : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Alpha3))
 			projectile = EntityType.Fireball;
 
-		if (entity.movingDir == Vec2i.Zero)
+		if (!entity.IsMoving())
 		{
 			SetMove();
 
-			if (timer.Value <= 0.0f && entity.movingDir == Vec2i.Zero)
+			if (timer.Value <= 0.0f && !entity.IsMoving())
 			{
 				Vec2i fireDir = new Vec2i((int)Input.GetAxisRaw("FireX"), 0);
 

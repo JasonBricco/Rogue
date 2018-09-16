@@ -151,5 +151,7 @@ public sealed class GenDungeon : LevelGenerator
 
 		spawnRoom = new Vec2i(25, 25);
 		spawnCell = new Vec2i(4, 4);
+
+		level.SetLightMode(false);
 	}
 }

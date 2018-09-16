@@ -5,34 +5,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
-using static UnityEngine.Mathf;
 using static Utils;
-
-public enum EntityType
-{
-	Player, Mole, Familiar, Arrow, PiercingArrow, Fireball, Wolf
-}
-
-[Flags]
-public enum EntityFlags
-{
-	None = 0,
-	Dead = 1,
-	Rooted = 2,
-	EmitsLight = 4,
-	KnockedBack = 8,
-	InvincibleFrames = 16
-}
-
-public enum CollideType
-{
-	None, Trigger, Collide
-}
-
-public enum EntityEvent
-{
-	Update, Kill, HealthChanged, ReachedNewCell, SetMove, Count
-}
 
 public sealed class Entity : MonoBehaviour, IComparable<Entity>
 {
@@ -58,8 +31,9 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	// Component-modified fields.
 	[HideInInspector] public float speed;
 	[HideInInspector] public int facing;
-	[HideInInspector] public Vector2 start, end;
-	[HideInInspector] public Vec2i movingDir;
+
+	private Move normalMove;
+	private Move forcedMove;
 
 	public int Health { get; private set; }
 
@@ -87,6 +61,11 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		get { return TilePos(t.position); }
 	}
 
+	public Vec2i EndCell
+	{
+		get { return forcedMove.Active ? forcedMove.EndCell : normalMove.Active ? normalMove.EndCell : TilePos; }
+	}
+
 	public void Init(LevelEntities entities, Room room, Vector2 pos)
 	{
 		t = GetComponent<Transform>();
@@ -101,11 +80,6 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		FullHeal();
 
 		MoveTo(pos);
-
-		start = Pos;
-		end = Pos;
-
-		movingDir = Vec2i.Zero;
 	}
 
 	public void ListenForEvent(EntityEvent type, Action func)
@@ -135,12 +109,9 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 
 	public bool IsMoving()
 	{
-		return movingDir != Vec2i.Zero;
+		return normalMove.Active || forcedMove.Active;
 	}
 
-	/// <summary>
-	/// Sets the entity's speed to its default speed.
-	/// </summary>
 	public void ResetSpeed()
 	{
 		speed = defaultSpeed;
@@ -151,19 +122,22 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		t.position = pos;
 	}
 
-	public void NewMoveTarget(Vec2i start, Vec2i end, Vec2i dir)
+	public void SetMove(Vector2 start, int cells, Vec2i dir)
 	{
-		if (start != end)
-		{
-			this.start = new Vector2(start.x, start.y);
-			this.end = new Vector2(end.x, end.y);
-			movingDir = dir;
-		}
+		normalMove = new Move(start, speed, cells, dir);
 	}
 
-	/// <summary>
-	/// Updates all updatable entity components and ensures the entity is in the correct room.
-	/// </summary>
+	public void SetMove(Vec2i start, int cells, Vec2i dir)
+	{
+		SetMove(new Vector2(start.x, start.y), cells, dir);
+	}
+
+	public void SetForcedMove(Vector2 start, float speed, int cells, Vec2i dir)
+	{
+		forcedMove = new Move(start, speed, cells, dir);
+	}
+
+	// Updates all updatable entity components and ensures the entity is in the correct room.
 	public void UpdateEntity(Level level)
 	{
 		if (directional) rend.sprite = sprites[facing];
@@ -181,10 +155,8 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		}
 	}
 
-	/// <summary>
-	/// Destroys the entity. The kill behavior is defined by the entity's components.
-	/// Removes the entity from its room and clears its collision rules.
-	/// </summary>
+	// Destroys the entity. The kill behavior is defined by the entity's components.
+	// Removes the entity from its room and clears its collision rules.
 	public void KillEntity()
 	{
 		Room.RemoveEntity(this);
@@ -194,79 +166,67 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		InvokeEvent(EntityEvent.Kill);
 	}
 
-	private void ReachedNewCell()
+	private void UpdateMoves()
 	{
-		if (HasFlag(EntityFlags.KnockedBack))
-			UnsetFlag(EntityFlags.KnockedBack);
-
-		InvokeEvent(EntityEvent.ReachedNewCell);
-
-		Vec2i prevDir = movingDir;
-		Vector2 prevEnd = end;
-
-		InvokeEvent(EntityEvent.SetMove);
-
-		Vec2i next = movingDir;
-		Vector2 target = Pos;
-
-		if (prevDir.x != next.x)
-			target.x = prevEnd.x;
-
-		if (prevDir.y != next.y)
-			target.y = prevEnd.y;
-
-		MoveTo(target);
-		Entities.TestCollision(this);
-	}
-
-	/// <summary>
-	/// Moves the entity using the given accel. Accel represents the move direcction and should 
-	/// have values in the range -1 to 1.
-	/// </summary>
-	public void Move()
-	{
-		if (IsMoving())
+		if (forcedMove.Active)
 		{
-			float vel = HasFlag(EntityFlags.KnockedBack) ? 12.0f : speed;
+			forcedMove.ReachedNewCell();
 
-			Vector2 move = new Vector2(movingDir.x, movingDir.y) * vel * Time.deltaTime;
+			if (forcedMove.cellsLeft > 0)
+			{
+				if (Entities.WillCollide(this, forcedMove.EndCell))
+					forcedMove.ToTileCenter(Pos, TilePos);
+			}
+			else
+			{
+				if (normalMove.Active)
+					normalMove.SetStart(Pos);
+			}
+		}
 
-			MoveTo(Pos + move);
-			float t = InverseLerp2(start, end, Pos);
+		if (normalMove.Active)
+		{
+			normalMove.ReachedNewCell();
 
-			if (t >= 1.0f)
-				ReachedNewCell();
+			if (Entities.WillCollide(this, normalMove.EndCell))
+				normalMove.cellsLeft = 0;
+			else return;
 		}
 	}
 
-	/// <summary>
-	/// Performs a simple translation by amount.
-	/// </summary>
-	public Vector2 SimpleMove(Vector2 dir)
+	private void ReachedNewCell()
 	{
-		float moveLength = dir.sqrMagnitude;
-
-		// Correct diagonal movement speed so that it isn't too fast.
-		if (moveLength > 1.0f)
-			dir *= (1.0f / Sqrt(moveLength));
-
-		Vector2 move = dir * speed * Time.deltaTime;
-		t.Translate(move, Space.World);
-
-		return move;
+		InvokeEvent(EntityEvent.ReachedNewCell);
+		Entities.TestCollision(this);
+		UpdateMoves();
+		InvokeEvent(EntityEvent.SetMove);
 	}
 
-	/// <summary>
-	/// Performs a simple translation by amount. When the distRemaining value becomes 0, the callback
-	/// 'onDistReached' will be invoked.
-	/// </summary>
-	public void SimpleMove(Vector2 dir, ref float distRemaining, Action onDistReached)
+	private bool ProcessMove(ref Move move)
 	{
-		Vector2 move = SimpleMove(dir);
-		distRemaining -= move.magnitude;
+		if (move.Active)
+		{
+			Vector2 v = new Vector2(move.dir.x, move.dir.y) * move.speed * Time.deltaTime;
 
-		if (distRemaining <= 0.0f)
-			onDistReached.Invoke();
+			MoveTo(Pos + v);
+			float t = InverseLerp2(move.start, move.end, Pos);
+
+			if (t >= 1.0f)
+				ReachedNewCell();
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public void Move()
+	{
+		if (!ProcessMove(ref forcedMove))
+		{
+			if (!ProcessMove(ref normalMove))
+				MoveTo(normalMove.end);
+		}
 	}
 
 	public void SetHealth(int health)
@@ -307,25 +267,7 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	public void ApplyKnockback(int cells, Vec2i dir)
 	{
 		if (HasFlag(EntityFlags.Rooted)) return;
-
-		float t = InverseLerp2(start, end, Pos);
-
-		Vec2i kbStart = t < 0.5f ? TilePos(start) : TilePos(end);
-
-		Vec2i newEnd = Vec2i.MaxValue;
-
-		for (int i = 1; i <= cells; i++)
-		{
-			Vec2i next = kbStart + (dir * i);
-
-			if (!Entities.WillCollide(this, next))
-				newEnd = next;
-			else break;
-		}
-
-		Vec2i target = newEnd != Vec2i.MaxValue ? newEnd : kbStart;
-		NewMoveTarget(kbStart, target, dir);
-		SetFlag(EntityFlags.KnockedBack);
+		Entities.SetForcedMove(this, dir, cells, 12.0f);
 	}
 
 	public void MakeVisible()

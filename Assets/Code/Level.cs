@@ -19,6 +19,8 @@ public sealed class Level
 
 	private Vec2i spawnRoom, spawnCell;
 
+	private bool isDark;
+
 	/// <summary>
 	/// The coordinates of the room the player will spawn in.
 	/// </summary>
@@ -136,6 +138,9 @@ public sealed class Level
 	{
 		entities.Update();
 		cam.SetPosition();
+
+		if (Input.GetKeyDown(KeyCode.Tab))
+			SetLightMode(!isDark);
 	}
 
 	/// <summary>
@@ -160,6 +165,23 @@ public sealed class Level
 				}
 			}
 		}
+	}
+
+	public void SetLightMode(bool dark)
+	{
+		if (dark)
+		{
+			Color col = new Color(0.02f, 0.02f, 0.02f, 1.0f);
+			RenderSettings.ambientLight = col;
+			Camera.main.backgroundColor = Color.black;
+		}
+		else
+		{
+			RenderSettings.ambientLight = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+			Camera.main.backgroundColor = new Color(0.58f, 0.8f, 1.0f, 1.0f);
+		}
+
+		isDark = dark;
 	}
 
 	/// <summary>

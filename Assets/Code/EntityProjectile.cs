@@ -40,7 +40,7 @@ public class EntityProjectile : MonoBehaviour
 	private void SetMove()
 	{
 		CollideResult target;
-		entity.Entities.UpdateTarget(entity, Vec2i.Directions[entity.facing], out target);
+		entity.Entities.SetMove(entity, Vec2i.Directions[entity.facing], 1, out target);
 		entity.Entities.HandleCollision(entity, target);
 
 		if (target.unloaded == true)

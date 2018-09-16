@@ -89,7 +89,7 @@ public sealed class Room
 
 			if (entity == target) continue;
 
-			if (ToLocalPos(target.TilePos) == cell || ToLocalPos(TilePos(target.end)) == cell)
+			if (ToLocalPos(target.TilePos) == cell || ToLocalPos(target.EndCell) == cell)
 				result.entity = target;
 		}
 

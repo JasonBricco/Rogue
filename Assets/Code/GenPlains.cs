@@ -73,5 +73,6 @@ public sealed class GenPlains : LevelGenerator
 		spawnCell = new Vec2i(4, 4);
 
 		Camera.main.GetComponent<GameCamera>().SetFollow(true);
+		level.SetLightMode(false);
 	}
 }

@@ -41,16 +41,13 @@ public class EntityFamiliar : MonoBehaviour
 		else wait = true;
 
 		CollideResult result;
-		if (entity.Entities.UpdateTarget(entity, dir, out result) != CollideType.Collide)
+		if (entity.Entities.SetMove(entity, dir, 1, out result) != CollideType.Collide)
 		{
 			if (wait)
 			{
 				wait = false;
 				timer.SetValue(0.3f);
 			}
-
-			if (timer.Value > 0.0f)
-				entity.movingDir = Vec2i.Zero;
 		}
 	}
 
