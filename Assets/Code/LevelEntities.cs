@@ -29,6 +29,7 @@ public sealed class LevelEntities
 	private Queue<Entity>[] projectiles;
 
 	private CollisionMatrix collisionMatrix = new CollisionMatrix();
+	private CollisionMatrix exitMatrix = new CollisionMatrix();
 
 	private Entity playerEntity;
 	private EntityPlayer player;
@@ -61,7 +62,7 @@ public sealed class LevelEntities
 		playerEntity = GameObject.FindWithTag("Player").GetComponent<Entity>();
 		player = playerEntity.GetComponent<EntityPlayer>();
 
-		BuildCollisionMatrix();
+		BuildCollisionMatrices();
 	}
 
 	private void SpawnEntity(Entity entity, Vec2i roomP, Vector2 pos)
@@ -102,7 +103,7 @@ public sealed class LevelEntities
 
 	public void RemoveOTEffects(Entity entity)
 	{
-		effects.Remove(entity);
+		effects.RemoveAll(entity);
 	}
 
 	private Vector2 GetKnockbackDir(Entity pusher, Entity other, KnockbackType type)
@@ -176,10 +177,21 @@ public sealed class LevelEntities
 			{
 				if (!entity.HasFlag(EntityFlags.Invincible) && !effects.Exists(entity, OTEffectType.Spikes))
 				{
+					if (entity.Type == EntityType.Player) Debug.Log("Adding spike effect to entity.");
 					OTEffect effect = new OTEffect(OTEffectType.Spikes, 0.0f);
 					effects.Add(entity, effect);
 				}
 			} break;
+		}
+	}
+
+	private void TriggerTileExit(Entity entity, Tile tile)
+	{
+		switch (tile.id)
+		{
+			case TileType.Spikes:
+				effects.Remove(entity, OTEffectType.Spikes);
+				break;
 		}
 	}
 
@@ -198,7 +210,17 @@ public sealed class LevelEntities
 		collisionMatrix.GetTileResponse(layerA, tileLayer)?.Invoke(a, tile);
 	}
 
-	private void BuildCollisionMatrix()
+	public void HandleCollisionExit(Entity a, int layerA, Entity b, int layerB)
+	{
+		exitMatrix.GetEntityResponse(layerA, layerB)?.Invoke(a, b);
+	}
+
+	public void HandleCollisionExit(Entity a, int layerA, Tile tile, int tileLayer)
+	{
+		exitMatrix.GetTileResponse(layerA, tileLayer)?.Invoke(a, tile);
+	}
+
+	private void BuildCollisionMatrices()
 	{
 		int lPlayer = LayerMask.NameToLayer("Player");
 		int lEnemy = LayerMask.NameToLayer("Enemy");
@@ -214,6 +236,9 @@ public sealed class LevelEntities
 		collisionMatrix.Add(lProjectile, lEnemy, OnTriggerEntity, null);
 
 		collisionMatrix.Add(lPlayer, lEnemy, OnTriggerEntity, null);
+
+		exitMatrix.Add(lPlayer, lTerrainTrigger, null, TriggerTileExit);
+		exitMatrix.Add(lEnemy, lTerrainTrigger, null, TriggerTileExit);
 	}
 
 	public Entity FireProjectile(Vector2 start, int facing, EntityType type)

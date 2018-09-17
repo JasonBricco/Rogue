@@ -22,9 +22,20 @@ public sealed class OTEffects
 		}
 	}
 
-	public void Remove(Entity key)
+	public void RemoveAll(Entity key)
 	{
+		if (key.Type == EntityType.Player) Debug.Log("Removing spikes from player.");
 		effects.Remove(key);
+	}
+
+	public void Remove(Entity key, OTEffectType effect)
+	{
+		List<OTEffect> list;
+		if (effects.TryGetValue(key, out list))
+		{
+			if (key.Type == EntityType.Player) Debug.Log("Removing spikes from player.");
+			list.Remove(effect);
+		}
 	}
 
 	public bool Exists(Entity key, OTEffectType type)
@@ -48,13 +59,9 @@ public sealed class OTEffects
 		{
 			case OTEffectType.Spikes:
 			{
-				if (level.GetTile(entity.TilePos) != TileType.Spikes)
-					return false;
-
 				entity.GetComponent<EntityHealth>()?.ApplyDamage(1);
 				timer += 0.5f;
-				break;
-			}
+			} break;
 		}
 
 		return true;

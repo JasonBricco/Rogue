@@ -4,6 +4,7 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using System;
 
 public sealed class EntityCollisionHandler : MonoBehaviour
 {
@@ -16,18 +17,28 @@ public sealed class EntityCollisionHandler : MonoBehaviour
 		entity = GetComponentInParent<Entity>();
 	}
 
-	private void OnTriggerEnter(Collider other)
+	private void HandleCollision(Collider other, Action<Entity, int, Entity, int> entityHandler, Action<Entity, int, Tile, int> tileHandler)
 	{
 		Entity target = other.GetComponentInParent<Entity>();
 
 		if (target != null)
-			entity.Entities.HandleCollision(entity, gameObject.layer, target, other.gameObject.layer);
+			entityHandler(entity, gameObject.layer, target, other.gameObject.layer);
 		else
 		{
 			TileCollider tileCollider = other.GetComponent<TileCollider>();
 			Assert.IsNotNull(tileCollider);
-			entity.Entities.HandleCollision(entity, gameObject.layer, tileCollider.tile, other.gameObject.layer);
+			tileHandler(entity, gameObject.layer, tileCollider.tile, other.gameObject.layer);
 		}
+	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		HandleCollision(other, entity.Entities.HandleCollision, entity.Entities.HandleCollision);
+	}
+
+	private void OnTriggerExit(Collider other)
+	{
+		HandleCollision(other, entity.Entities.HandleCollisionExit, entity.Entities.HandleCollisionExit);
 	}
 
 	private void OnTriggerStay(Collider other)

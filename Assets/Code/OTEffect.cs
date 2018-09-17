@@ -15,7 +15,7 @@ public struct OTEffect : IEquatable<OTEffect>
 	public OTEffectType type;
 	public float timer;
 
-	public OTEffect(OTEffectType type, float timer)
+	public OTEffect(OTEffectType type, float timer = 0.0f)
 	{
 		this.type = type;
 		this.timer = timer;
@@ -24,5 +24,10 @@ public struct OTEffect : IEquatable<OTEffect>
 	public bool Equals(OTEffect other)
 	{
 		return type == other.type;
+	}
+
+	public static implicit operator OTEffect(OTEffectType type)
+	{
+		return new OTEffect(type);
 	}
 }

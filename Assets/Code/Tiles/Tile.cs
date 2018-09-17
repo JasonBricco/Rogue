@@ -18,10 +18,8 @@ public struct Tile : IEquatable<Tile>
 		this.id = id + offset;
 	}
 
-	/// <summary>
-	/// Returns the tile data for this tile. This contains all information about
-	/// this particular tile.
-	/// </summary>
+	// Returns the tile data for this tile. This contains all information about
+	// this particular tile.
 	public TileData Data
 	{
 		get { return TileManager.Instance.GetData(id); }
