@@ -35,6 +35,16 @@ public struct Tile : IEquatable<Tile>
 		return a.id == b;
 	}
 
+	public static bool operator ==(Tile a, Tile b)
+	{
+		return a.id == b.id;
+	}
+
+	public static bool operator !=(Tile a, Tile b)
+	{
+		return a.id != b.id;
+	}
+
 	public static bool operator !=(Tile a, TileType b)
 	{
 		return a.id != b;

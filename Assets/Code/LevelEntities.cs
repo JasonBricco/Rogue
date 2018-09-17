@@ -3,6 +3,7 @@
 //
 
 using UnityEngine;
+using UnityEngine.Assertions;
 using System.Collections.Generic;
 using static Utils;
 
@@ -30,6 +31,10 @@ public sealed class LevelEntities
 
 	private CollisionMatrix collisionMatrix = new CollisionMatrix();
 	private CollisionMatrix exitMatrix = new CollisionMatrix();
+
+	// Simulates OnTriggerStay() by adding to this list when OnTriggerEnter() is called
+	// and removing from it when OnTriggerExit() is called.
+	private List<TrackedCollision> collisions = new List<TrackedCollision>();
 
 	private Entity playerEntity;
 	private EntityPlayer player;
@@ -193,6 +198,45 @@ public sealed class LevelEntities
 				effects.Remove(entity, OTEffectType.Spikes);
 				break;
 		}
+	}
+
+	private void TrackCollisionInternal(Entity a, Entity b, Tile tile)
+	{
+		TrackedCollision col = new TrackedCollision(a, b, tile);
+		int index = collisions.IndexOf(col);
+
+		if (index != -1) collisions[index].Increment();
+		else collisions.Add(col);
+	}
+
+	public void TrackCollision(Entity a, Entity b)
+	{
+		TrackCollisionInternal(a, b, default(Tile));
+	}
+
+	public void TrackCollision(Entity a, Tile tile)
+	{
+		TrackCollisionInternal(a, null, tile);
+	}
+
+	private void RemoveCollisionInternal(Entity a, Entity b, Tile tile)
+	{
+		TrackedCollision col = new TrackedCollision(a, b, tile);
+		int index = collisions.IndexOf(col);
+		Assert.IsTrue(index != -1);
+
+		if (collisions[index].Decrement())
+			collisions.RemoveAt(index);
+	}
+
+	public void RemoveCollision(Entity a, Entity b)
+	{
+		RemoveCollisionInternal(a, b, default(Tile));
+	}
+
+	public void RemoveCollision(Entity a, Tile tile)
+	{
+		RemoveCollisionInternal(a, null, tile);
 	}
 
 	private void KillOnCollide(Entity a, Tile tile)

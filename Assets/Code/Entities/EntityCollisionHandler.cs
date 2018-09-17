@@ -8,8 +8,6 @@ using System;
 
 public sealed class EntityCollisionHandler : MonoBehaviour
 {
-	[SerializeField] private bool allowOnTriggerStay;
-
 	private Entity entity;
 
 	private void Start()
@@ -39,11 +37,5 @@ public sealed class EntityCollisionHandler : MonoBehaviour
 	private void OnTriggerExit(Collider other)
 	{
 		HandleCollision(other, entity.Entities.HandleCollisionExit, entity.Entities.HandleCollisionExit);
-	}
-
-	private void OnTriggerStay(Collider other)
-	{
-		if (allowOnTriggerStay)
-			OnTriggerEnter(other);
 	}
 }
