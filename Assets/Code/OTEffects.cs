@@ -24,7 +24,6 @@ public sealed class OTEffects
 
 	public void RemoveAll(Entity key)
 	{
-		if (key.Type == EntityType.Player) Debug.Log("Removing spikes from player.");
 		effects.Remove(key);
 	}
 
@@ -32,10 +31,7 @@ public sealed class OTEffects
 	{
 		List<OTEffect> list;
 		if (effects.TryGetValue(key, out list))
-		{
-			if (key.Type == EntityType.Player) Debug.Log("Removing spikes from player.");
 			list.Remove(effect);
-		}
 	}
 
 	public bool Exists(Entity key, OTEffectType type)

@@ -32,7 +32,10 @@ public sealed class EntityPlayer : MonoBehaviour
 		entity.velocity = Vector2.zero;
 		entityHealth.FullHeal();
 		GetComponent<EntityImage>().Enable();
-		GetComponent<EntityLight>().Enable();
+
+		EntityLight light = GetComponent<EntityLight>();
+		light.MakePersist();
+		light.Enable();
 	}
 
 	private void HealthChanged()

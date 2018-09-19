@@ -3,30 +3,42 @@
 //
 
 using System;
+using UnityEngine.Assertions;
 
 public struct TrackedCollision : IEquatable<TrackedCollision>
 {
-	public Entity a;
-	public Entity b;
+	public Entity a, b;
 	public Tile tile;
-	private int count;
+	public int layerA, layerB, tileLayer;
+	public int count;
 
-	public TrackedCollision(Entity a, Entity b, Tile tile)
+	public TrackedCollision(Entity a, int layerA, Entity b, int layerB, Tile tile, int tileLayer, int count = 0)
 	{
 		this.a = a;
 		this.b = b;
 		this.tile = tile;
-		count = 0;
+		this.layerA = layerA;
+		this.layerB = layerB;
+		this.tileLayer = tileLayer;
+		this.count = count;
 	}
 
-	public void Increment()
+	public TrackedCollision Increment()
 	{
-		count++;
+		return new TrackedCollision(a, layerA, b, layerB, tile, tileLayer, count + 1);
 	}
 
-	public bool Decrement()
+	public TrackedCollision Decrement(out bool destroy)
 	{
-		return --count == 0;
+		Assert.IsTrue(count > 0);
+		int newCount = count - 1;
+		destroy = newCount == 0;
+		return new TrackedCollision(a, layerA, b, layerB, tile, tileLayer, newCount);
+	}
+
+	public bool Involves(Entity entity)
+	{
+		return a == entity || b == entity;
 	}
 
 	public bool Equals(TrackedCollision other)

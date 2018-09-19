@@ -11,7 +11,8 @@ public sealed class TileData : IComparable<TileData>
 	public string name;
 	public TileType type;
 	public bool invisible, hasCollider, trigger;
-	public Vector2 colliderSize, align;
+	public Vector2 colliderSize, colliderOffset;
+	public Vector2 align;
 	public Sprite sprite;
 	public Material material;
 	public Color32 color;

@@ -34,7 +34,8 @@ public sealed class LevelEntities
 
 	// Simulates OnTriggerStay() by adding to this list when OnTriggerEnter() is called
 	// and removing from it when OnTriggerExit() is called.
-	private List<TrackedCollision> collisions = new List<TrackedCollision>();
+	private List<TrackedCollision> entityCollisions = new List<TrackedCollision>();
+	private List<TrackedCollision> tileCollisions = new List<TrackedCollision>();
 
 	private Entity playerEntity;
 	private EntityPlayer player;
@@ -182,7 +183,6 @@ public sealed class LevelEntities
 			{
 				if (!entity.HasFlag(EntityFlags.Invincible) && !effects.Exists(entity, OTEffectType.Spikes))
 				{
-					if (entity.Type == EntityType.Player) Debug.Log("Adding spike effect to entity.");
 					OTEffect effect = new OTEffect(OTEffectType.Spikes, 0.0f);
 					effects.Add(entity, effect);
 				}
@@ -200,43 +200,60 @@ public sealed class LevelEntities
 		}
 	}
 
-	private void TrackCollisionInternal(Entity a, Entity b, Tile tile)
+	private void TrackCollisionInternal(List<TrackedCollision> list, Entity a, int layerA, Entity b, int layerB, Tile tile, int tileLayer)
 	{
-		TrackedCollision col = new TrackedCollision(a, b, tile);
-		int index = collisions.IndexOf(col);
+		TrackedCollision col = new TrackedCollision(a, layerA, b, layerB, tile, tileLayer);
+		int index = list.IndexOf(col);
 
-		if (index != -1) collisions[index].Increment();
-		else collisions.Add(col);
+		if (index == -1)
+		{
+			list.Add(col);
+			index = list.Count - 1;
+		}
+
+		list[index] = list[index].Increment();
 	}
 
-	public void TrackCollision(Entity a, Entity b)
+	public void TrackCollision(Entity a, int layerA, Entity b, int layerB)
 	{
-		TrackCollisionInternal(a, b, default(Tile));
+		TrackCollisionInternal(entityCollisions, a, layerA, b, layerB,  default(Tile), 0);
 	}
 
-	public void TrackCollision(Entity a, Tile tile)
+	public void TrackCollision(Entity a, int layerA, Tile tile, int tileLayer)
 	{
-		TrackCollisionInternal(a, null, tile);
+		TrackCollisionInternal(tileCollisions, a, layerA, null, 0, tile, tileLayer);
 	}
 
-	private void RemoveCollisionInternal(Entity a, Entity b, Tile tile)
+	private bool RemoveCollisionInternal(List<TrackedCollision> list, Entity a, int layerA, Entity b, int layerB, Tile tile, int tileLayer)
 	{
-		TrackedCollision col = new TrackedCollision(a, b, tile);
-		int index = collisions.IndexOf(col);
-		Assert.IsTrue(index != -1);
+		TrackedCollision col = new TrackedCollision(a, layerA, b, layerB, tile, tileLayer);
+		int index = list.IndexOf(col);
 
-		if (collisions[index].Decrement())
-			collisions.RemoveAt(index);
+		if (index != -1)
+		{
+			bool destroy;
+			list[index] = list[index].Decrement(out destroy);
+
+			if (destroy)
+			{
+				list.RemoveAt(index);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
-	public void RemoveCollision(Entity a, Entity b)
+	public void RemoveCollision(Entity a, int layerA, Entity b, int layerB)
 	{
-		RemoveCollisionInternal(a, b, default(Tile));
+		if (RemoveCollisionInternal(entityCollisions, a, layerA, b, layerB, default(Tile), 0))
+			HandleCollisionExit(a, layerA, b, layerB);
 	}
 
-	public void RemoveCollision(Entity a, Tile tile)
+	public void RemoveCollision(Entity a, int layerA, Tile tile, int tileLayer)
 	{
-		RemoveCollisionInternal(a, null, tile);
+		if (RemoveCollisionInternal(tileCollisions, a, layerA, null, 0, tile, tileLayer))
+			HandleCollisionExit(a, layerA, tile, tileLayer);
 	}
 
 	private void KillOnCollide(Entity a, Tile tile)
@@ -262,6 +279,36 @@ public sealed class LevelEntities
 	public void HandleCollisionExit(Entity a, int layerA, Tile tile, int tileLayer)
 	{
 		exitMatrix.GetTileResponse(layerA, tileLayer)?.Invoke(a, tile);
+	}
+
+	private void RunCollisions()
+	{
+		for (int i = 0; i < entityCollisions.Count; i++)
+		{
+			TrackedCollision col = entityCollisions[i];
+			HandleCollision(col.a, col.layerA, col.b, col.layerB);
+		}
+
+		for (int i = 0; i < tileCollisions.Count; i++)
+		{
+			TrackedCollision col = tileCollisions[i];
+			HandleCollision(col.a, col.layerA, col.tile, col.tileLayer);
+		}
+	}
+
+	private void ClearTrackedCollisions(List<TrackedCollision> list, Entity entity)
+	{
+		for (int i = list.Count - 1; i >= 0; i--)
+		{
+			if (list[i].Involves(entity))
+				list.RemoveAt(i);
+		}
+	}
+
+	public void ClearTrackedCollisions(Entity entity)
+	{
+		ClearTrackedCollisions(entityCollisions, entity);
+		ClearTrackedCollisions(tileCollisions, entity);
 	}
 
 	private void BuildCollisionMatrices()
@@ -345,6 +392,8 @@ public sealed class LevelEntities
 				room?.GetActiveEntities(activeEntities);
 			}
 		}
+
+		RunCollisions();
 
 		// Apply all over-time effects.
 		effects.Apply(level);

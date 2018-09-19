@@ -7,7 +7,7 @@ using UnityEngine;
 public sealed class EntityLight : MonoBehaviour
 {
 	[SerializeField] private GameObject lightPrefab;
-	private new Transform light;
+	private Transform tLight;
 
 	private Entity entity;
 
@@ -15,24 +15,27 @@ public sealed class EntityLight : MonoBehaviour
 	{
 		entity = GetComponent<Entity>();
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
+		tLight = Instantiate(lightPrefab).GetComponent<Transform>();
+	}
+
+	public void MakePersist()
+	{
+		tLight.gameObject.tag = "Untagged";
 	}
 
 	private void UpdateComponent()
 	{
-		light.position = entity.Pos;
+		tLight.position = entity.Pos;
 	}
 
 	public void Enable()
 	{
-		if (light == null)
-			light = Instantiate(lightPrefab).GetComponent<Transform>();
-
-		light.position = entity.Pos;
-		light.gameObject.SetActive(true);
+		tLight.position = entity.Pos;
+		tLight.gameObject.SetActive(true);
 	}
 
 	public void Disable()
 	{
-		light.gameObject.SetActive(false);
+		tLight.gameObject.SetActive(false);
 	}
 }

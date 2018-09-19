@@ -37,10 +37,8 @@ public sealed class TileCollision
 		return col;
 	}
 
-	/// <summary>
-	/// All colliders in the given queue of colliders will be returned to the main collider pool.
-	/// In addition, they'll be reset in size and disabled.
-	/// </summary>
+	// All colliders in the given queue of colliders will be returned to the main collider pool.
+	// In addition, they'll be reset in size and disabled.
 	public void ReturnColliders(Queue<TileCollider> colliders)
 	{
 		while (colliders.Count > 0)
@@ -51,9 +49,7 @@ public sealed class TileCollision
 		}
 	}
 
-	/// <summary>
-	/// Generates colliders for the given room. Only main layer tiles are considered.
-	/// </summary>
+	// Generates colliders for the given room. Only main layer tiles are considered.
 	public void Generate(Room room, Queue<TileCollider> colliders)
 	{
 		for (int y = 0; y < Room.SizeY; y++)
@@ -67,7 +63,7 @@ public sealed class TileCollision
 				{
 					TileCollider col = GetCollider(tile, colliders);
 					Vector2 size = data.colliderSize;
-					col.SetInfo(size, data.trigger, room.WorldPos, x, y);
+					col.SetInfo(size, data.trigger, room.WorldPos, x, y, data.colliderOffset);
 				}
 			}
 		}

@@ -38,11 +38,16 @@ public sealed class TileCollider : MonoBehaviour
 		col.enabled = false;
 	}
 
-	public void SetInfo(Vector2 size, bool trigger, Vector2 roomWorldPos, int cellX, int cellY)
+	public void SetInfo(Vector2 size, bool trigger, Vector2 roomWorldPos, int cellX, int cellY, Vector2 offset)
 	{
 		col.size = new Vector3(size.x, size.y, 1.0f);
 		col.isTrigger = trigger;
-		col.transform.position = roomWorldPos + new Vector2(cellX, cellY) + new Vector2(col.size.x * 0.5f, col.size.y * 0.5f);
+
+		if (col.size.x < 1.0f || col.size.y < 1.0f)
+			offset += new Vector2(0.5f, 0.5f);
+		else offset += new Vector2(col.size.x * 0.5f, col.size.y * 0.5f);
+
+		col.transform.position = roomWorldPos + new Vector2(cellX, cellY) + offset;
 		gameObject.layer = trigger ? 14 : 8;
 	}
 }
