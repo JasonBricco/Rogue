@@ -4,19 +4,15 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using static UnityEngine.Mathf;
 using static Utils;
 
 public sealed class Engine : MonoBehaviour
 {
-	public const int AspectX = 16, AspectY = 9;
-
-	private Vec2i lastScreenSize;
-
 	private void Awake()
 	{
 		Assert.raiseExceptions = true;
 		Screen.SetResolution(1024, 576, false);
-		lastScreenSize = new Vec2i(Screen.width, Screen.height);
 	}
 
 	private void Update()
@@ -27,21 +23,21 @@ public sealed class Engine : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.F))
 			Screen.fullScreen = !Screen.fullScreen;
 
-		Vec2i screenSize = new Vec2i(Screen.width, Screen.height);
-
-		if (screenSize != lastScreenSize)
+		if (Input.GetKey(KeyCode.Equals))
 		{
-			int dstW = FloorToNearestMultiple(screenSize.x, AspectX);
-			int dstH = (dstW / AspectX) * AspectY;
-
-			if (dstH > screenSize.y)
-			{
-				dstH = FloorToNearestMultiple(screenSize.y, AspectY);
-				dstW = (dstH / AspectY) * AspectX;
-			}
-
-			Screen.SetResolution(dstW, dstH, false);
-			lastScreenSize = screenSize;
+			int newWidth = Min(Screen.width + 16, Screen.currentResolution.width);
+			int newHeight = Min(Screen.height + 9, Screen.currentResolution.height);
+			Screen.SetResolution(newWidth, newHeight, false);
 		}
+
+		if (Input.GetKey(KeyCode.Minus))
+		{
+			int newWidth = Max(Screen.width - 16, 320);
+			int newHeight = Max(Screen.height - 9, 180);
+			Screen.SetResolution(newWidth, newHeight, false);
+		}
+
+		if (Input.GetKey(KeyCode.Backspace))
+			Screen.SetResolution(1024, 576, false);
 	}
 }
