@@ -16,7 +16,7 @@ public class TileDataList : ScriptableObject
 
 		data = new TileData[names.Length];
 
-		for (int i = 0; i < names.Length; i++)
+		for (int i = 0; i < Count; i++)
 		{
 			data[i] = new TileData();
 			data[i].name = names[i];
@@ -26,7 +26,17 @@ public class TileDataList : ScriptableObject
 
 	public int Count
 	{
-		get { return data.Length; }
+		get { return data.Length - 1; }
+	}
+	
+	public TileData Get(TileType type)
+	{
+		return data[(int)type];
+	}
+
+	public void Sort()
+	{
+		Array.Sort(data);
 	}
 
 	public TileData this[int i]

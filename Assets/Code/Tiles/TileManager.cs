@@ -8,7 +8,7 @@ using System;
 
 public sealed class TileManager : MonoBehaviour
 {
-	[SerializeField] private TileData[] tileData;
+	[SerializeField] private TileDataList dataList;
 
 	public static TileManager Instance { get; private set; }
 
@@ -20,25 +20,18 @@ public sealed class TileManager : MonoBehaviour
 
 	public TileData GetData(TileType type)
 	{
-		return tileData[(int)type];
+		return dataList.Get(type);
 	}
 
 	// Takes information provided in the inspector and stored in the tile group array and assigns the
 	// appropriate tile data into the TileData arrays. This allows the code to access tile information.
 	private void InitTiles()
 	{
-		if (tileData.Length != (int)TileType.Count)
-		{
-			Debug.LogError("There are " + (int)TileType.Count + " tile types, but only " + tileData.Length + " tiles defined.");
-			Debug.Break();
-			return;
-		}
-
 		var arrayData = new Dictionary<SpriteArrayInfo, List<TileData>>();
 
-		for (int i = 0; i < tileData.Length; i++)
+		for (int i = 0; i < dataList.Count; i++)
 		{
-			TileData data = tileData[i];
+			TileData data = dataList[i];
 
 			if (data.invisible)
 				continue;
@@ -83,6 +76,6 @@ public sealed class TileManager : MonoBehaviour
 			index++;
 		}
 
-		Array.Sort(tileData);
+		dataList.Sort();
 	}
 }
