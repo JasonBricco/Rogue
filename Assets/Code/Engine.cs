@@ -5,7 +5,6 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using static UnityEngine.Mathf;
-using static Utils;
 
 public sealed class Engine : MonoBehaviour
 {
@@ -20,9 +19,6 @@ public sealed class Engine : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Escape))
 			Application.Quit();
 
-		if (Input.GetKeyDown(KeyCode.F))
-			Screen.fullScreen = !Screen.fullScreen;
-
 		if (Input.GetKey(KeyCode.Equals))
 		{
 			int newWidth = Min(Screen.width + 16, Screen.currentResolution.width);
@@ -32,8 +28,8 @@ public sealed class Engine : MonoBehaviour
 
 		if (Input.GetKey(KeyCode.Minus))
 		{
-			int newWidth = Max(Screen.width - 16, 320);
-			int newHeight = Max(Screen.height - 9, 180);
+			int newWidth = Max(Screen.width - 16, 480);
+			int newHeight = Max(Screen.height - 9, 270);
 			Screen.SetResolution(newWidth, newHeight, false);
 		}
 

@@ -18,9 +18,9 @@ public sealed class TileData : IComparable<TileData>
 	public Color32 color;
 	public TileComponent component;
 
-	[HideInInspector] public float spriteIndex;
-	[HideInInspector] public int index;
-	[HideInInspector] public int width, height;
+	public float spriteIndex;
+	public int index;
+	public int width, height;
 
 	public int CompareTo(TileData other)
 	{
