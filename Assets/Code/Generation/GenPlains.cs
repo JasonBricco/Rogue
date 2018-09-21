@@ -15,7 +15,18 @@ public sealed class GenPlains : LevelGenerator
 		for (int roomY = 0; roomY < rooms.y; roomY++)
 		{
 			for (int roomX = 0; roomX < rooms.x; roomX++)
+			{
 				level.CreateRoom(roomX, roomY, 2, MainLayer).Fill(FloorLayer, TileType.PlainsGrass);
+
+				int enemyCount = Random.Range(2, 4);
+
+				for (int e = 0; e < enemyCount; e++)
+				{
+					int pX = Random.Range(Room.HalfSizeX - 4, Room.HalfSizeX + 5);
+					int pY = Random.Range(Room.HalfSizeY - 3, Room.HalfSizeY + 4);
+					entities.SpawnEntity(EntityType.Mole, new Vec2i(roomX, roomY), new Vec2i(pX, pY));
+				}
+			}
 		}
 
 		Vec2i start = new Vec2i(Room.SizeX, Room.SizeY);
