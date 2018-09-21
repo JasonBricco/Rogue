@@ -4,6 +4,7 @@
 
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class TileDataList : ScriptableObject
 {
@@ -32,6 +33,35 @@ public class TileDataList : ScriptableObject
 	public TileData Get(TileType type)
 	{
 		return data[(int)type];
+	}
+
+	public void Refresh()
+	{
+		Dictionary<string, TileData> map = new Dictionary<string, TileData>(data.Length);
+
+		for (int i = 0; i < data.Length; i++)
+			map.Add(data[i].name, data[i]);
+
+		string[] names = Enum.GetNames(typeof(TileType));
+		TileType[] values = (TileType[])Enum.GetValues(typeof(TileType));
+
+		List<TileData> newData = new List<TileData>(names.Length);
+
+		for (int i = 0; i < names.Length; i++)
+		{
+			TileData td;
+			if (map.TryGetValue(names[i], out td))
+				newData.Add(td);
+			else
+			{
+				td = new TileData();
+				td.name = names[i];
+				td.type = values[i];
+				newData.Add(td);
+			}
+		}
+
+		data = newData.ToArray();
 	}
 
 	public void Sort()

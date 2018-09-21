@@ -4,21 +4,25 @@
 
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.Assertions;
 
 public class TileEditor : EditorWindow
 {
 	private TileDataList data;
 	private Vector2 scroll;
+	private Material defaultMat;
+
+	private bool[] collapsed = new bool[0];
 
 	[MenuItem("Window/Tile Editor")]
 	public static void ShowWindow()
 	{
-		GetWindow<TileEditor>();
+		GetWindow<TileEditor>("Tile Editor");
 	}
 
 	private void LoadData()
 	{
-		data = AssetDatabase.LoadAssetAtPath<TileDataList>("Assets/Data/TileDataList.asset");
+		data = AssetDatabase.LoadAssetAtPath<TileDataList>("Assets/Data/TileData.asset");
 
 		if (data == null)
 		{
@@ -31,24 +35,41 @@ public class TileEditor : EditorWindow
 
 	private void SaveAsset()
 	{
-		AssetDatabase.CreateAsset(data, "Assets/Data/TileData.asset");
-		AssetDatabase.SaveAssets();
-		AssetDatabase.Refresh();
+		if (!AssetDatabase.Contains(data))
+		{
+			AssetDatabase.CreateAsset(data, "Assets/Data/TileData.asset");
+			AssetDatabase.SaveAssets();
+			AssetDatabase.Refresh();
+		}
 	}
 
 	private void OnGUI()
 	{
+		if (!defaultMat)
+		{
+			defaultMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/SpriteArray.mat");
+			Assert.IsNotNull(defaultMat);
+		}
+
 		if (data == null)
+		{
 			LoadData();
+			Assert.IsNotNull(data);
+		}
+
+		if (collapsed.Length != data.Count)
+		{
+			collapsed = new bool[data.Count];
+
+			for (int i = 0; i < collapsed.Length; i++)
+				collapsed[i] = true;
+		}
 
 		if (GUI.Button(new Rect(position.width - 140.0f, 15.0f, 100.0f, 30.0f), "Save"))
 			SaveAsset();
 
-		if (GUI.Button(new Rect(position.width - 140.0f, 50.0f, 100.0f, 30.0f), "Reset"))
-		{
-			data = null;
-			return;
-		}
+		if (GUI.Button(new Rect(position.width - 140.0f, 50.0f, 100.0f, 30.0f), "Refresh"))
+			data.Refresh();
 
 		float y = 15.0f;
 
@@ -58,11 +79,34 @@ public class TileEditor : EditorWindow
 		{
 			TileData td = data[i];
 
-			GUI.contentColor = Color.green;
+			if (collapsed[i])
+			{
+				GUI.contentColor = Color.gray;
+				EditorGUI.LabelField(new Rect(15.0f, y, 100.0f, 20.0f), td.name, EditorStyles.boldLabel);
+				GUI.contentColor = Color.white;
 
-			EditorGUI.LabelField(new Rect(15.0f, y, 100.0f, 20.0f), td.name, EditorStyles.boldLabel);
+				GUI.color = GUI.color.SetAlpha(0.0f);
 
-			GUI.contentColor = Color.white;
+				if (GUI.Button(new Rect(15.0f, y, 100.0f, 20.0f), GUIContent.none))
+					collapsed[i] = false;
+
+				GUI.color = GUI.color.SetAlpha(1.0f);
+				y += 20.0f;
+				continue;
+			}
+			else
+			{
+				GUI.contentColor = Color.green;
+				EditorGUI.LabelField(new Rect(15.0f, y, 100.0f, 20.0f), td.name, EditorStyles.boldLabel);
+				GUI.contentColor = Color.white;
+
+				GUI.color = GUI.color.SetAlpha(0.0f);
+
+				if (GUI.Button(new Rect(15.0f, y, 100.0f, 20.0f), GUIContent.none))
+					collapsed[i] = true;
+
+				GUI.color = GUI.color.SetAlpha(1.0f);
+			}
 
 			y += 25.0f;
 			td.type = (TileType)EditorGUI.EnumPopup(new Rect(15.0f, y, 120.0f, 20.0f), td.type);
@@ -91,11 +135,21 @@ public class TileEditor : EditorWindow
 				td.align = EditorGUI.Vector2Field(new Rect(15.0f, y, 120.0f, 20.0f), "Align", td.align);
 
 				y += 45.0f;
+
+				EditorGUI.BeginChangeCheck();
 				td.sprite = (Sprite)EditorGUI.ObjectField(new Rect(15.0f, y, 150.0f, 15.0f), td.sprite, typeof(Sprite), false);
+
+				if (EditorGUI.EndChangeCheck() && td.hasCollider)
+				{
+					td.colliderSize.x = td.sprite.rect.width / td.sprite.pixelsPerUnit;
+					td.colliderSize.y = td.sprite.rect.height / td.sprite.pixelsPerUnit;
+					td.baseMaterial = defaultMat;
+				}
+
 				td.color = EditorGUI.ColorField(new Rect(180.0f, y, 150.0f, 15.0f), td.color);
 				y += 20.0f;
 
-				td.material = (Material)EditorGUI.ObjectField(new Rect(15.0f, y, 150.0f, 15.0f), td.material, typeof(Material), false);
+				td.baseMaterial = (Material)EditorGUI.ObjectField(new Rect(15.0f, y, 150.0f, 15.0f), td.baseMaterial, typeof(Material), false);
 			}
 
 			y += 25.0f;

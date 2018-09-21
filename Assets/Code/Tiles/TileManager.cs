@@ -38,7 +38,7 @@ public sealed class TileManager : MonoBehaviour
 
 			// Duplicate the material so tile groups that utilize the same material don't share it 
 			// and overwrite the assigned texture information.
-			data.material = new Material(data.material);
+			data.material = new Material(data.baseMaterial);
 
 			Sprite sprite = data.sprite;
 
