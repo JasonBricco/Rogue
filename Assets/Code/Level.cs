@@ -13,6 +13,12 @@ public sealed class Level
 	public const int RoomCount = 128;
 
 	private Room[] rooms = new Room[RoomCount * RoomCount];
+
+	public Room[] GetRooms
+	{
+		get { return rooms; }
+	}
+
 	private List<Room> loadedRooms = new List<Room>();
 
 	private LevelEntities entities;

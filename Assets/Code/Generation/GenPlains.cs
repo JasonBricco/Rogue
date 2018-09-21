@@ -12,19 +12,24 @@ public sealed class GenPlains : LevelGenerator
 	{
 		Vec2i rooms = new Vec2i(5, 7);
 
+		int dungeonX = Random.Range(2, rooms.x - 2), dungeonY = Random.Range(2, rooms.y - 2);
+
 		for (int roomY = 0; roomY < rooms.y; roomY++)
 		{
 			for (int roomX = 0; roomX < rooms.x; roomX++)
 			{
 				level.CreateRoom(roomX, roomY, 2, MainLayer).Fill(FloorLayer, TileType.PlainsGrass);
 
-				int enemyCount = Random.Range(2, 4);
-
-				for (int e = 0; e < enemyCount; e++)
+				if (roomY != dungeonY && roomX != dungeonX)
 				{
-					int pX = Random.Range(Room.HalfSizeX - 4, Room.HalfSizeX + 5);
-					int pY = Random.Range(Room.HalfSizeY - 3, Room.HalfSizeY + 4);
-					entities.SpawnEntity(EntityType.Mole, new Vec2i(roomX, roomY), new Vec2i(pX, pY));
+					int enemyCount = Random.Range(2, 4);
+
+					for (int e = 0; e < enemyCount; e++)
+					{
+						int pX = Random.Range(Room.HalfSizeX - 4, Room.HalfSizeX + 5);
+						int pY = Random.Range(Room.HalfSizeY - 3, Room.HalfSizeY + 4);
+						entities.SpawnEntity(EntityType.Wolf, new Vec2i(roomX, roomY), new Vec2i(pX, pY));
+					}
 				}
 			}
 		}
@@ -49,8 +54,7 @@ public sealed class GenPlains : LevelGenerator
 		level.SetTile(start.x, start.y, MainLayer, new Tile(TileType.PlainsWall, Direction.BackLeft));
 		level.SetTile(end.x - 3, start.y, MainLayer, new Tile(TileType.PlainsWall, Direction.BackRight));
 
-		int rX = Random.Range(2, rooms.x - 2), rY = Random.Range(2, rooms.y - 2);
-		Room room = level.GetRoom(rX, rY);
+		Room room = level.GetRoom(dungeonX, dungeonY);
 
 		for (int x = 3; x <= Room.LimX - 3; x++)
 		{
