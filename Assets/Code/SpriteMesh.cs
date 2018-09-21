@@ -27,8 +27,8 @@ public sealed class SpriteMesh
 
 	public void AddRect(float x, float y, float z, int width, int height, float tex, Vector2 align, Color32 color)
 	{
-		x -= align.x;
-		y -= align.y;
+		x += align.x;
+		y += align.y;
 		z += 1.0f;
 
 		int offset = vertices.Count;

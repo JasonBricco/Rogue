@@ -36,11 +36,17 @@ public class TileEditor : EditorWindow
 	private void SaveAsset()
 	{
 		if (!AssetDatabase.Contains(data))
-		{
 			AssetDatabase.CreateAsset(data, "Assets/Data/TileData.asset");
-			AssetDatabase.SaveAssets();
-			AssetDatabase.Refresh();
-		}
+
+		EditorUtility.SetDirty(data);
+		AssetDatabase.SaveAssets();
+		AssetDatabase.Refresh();
+	}
+
+	private void ResetData()
+	{
+		AssetDatabase.DeleteAsset("Assets/Data/TileData.asset");
+		data = null;
 	}
 
 	private void OnGUI()
@@ -57,6 +63,13 @@ public class TileEditor : EditorWindow
 			Assert.IsNotNull(data);
 		}
 
+		if (data.Count == -1)
+		{
+			Debug.LogWarning("TileData asset exists, but contains no data!");
+			ResetData();
+			return;
+		}
+
 		if (collapsed.Length != data.Count)
 		{
 			collapsed = new bool[data.Count];
@@ -69,7 +82,14 @@ public class TileEditor : EditorWindow
 			SaveAsset();
 
 		if (GUI.Button(new Rect(position.width - 140.0f, 50.0f, 100.0f, 30.0f), "Refresh"))
-			data.Refresh();
+		{
+			if (!data.Refresh())
+			{
+				Debug.LogWarning("Something went wrong. Resetting the tile data.");
+				ResetData();
+				return;
+			}
+		}
 
 		float y = 15.0f;
 

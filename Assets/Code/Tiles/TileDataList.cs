@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 public class TileDataList : ScriptableObject
 {
-	private TileData[] data;
+	[SerializeField] private TileData[] data;
 
 	public void Init()
 	{
@@ -27,7 +27,11 @@ public class TileDataList : ScriptableObject
 
 	public int Count
 	{
-		get { return data.Length - 1; }
+		get
+		{
+			if (data == null) return -1;
+			return data.Length - 1;
+		}
 	}
 	
 	public TileData Get(TileType type)
@@ -35,33 +39,43 @@ public class TileDataList : ScriptableObject
 		return data[(int)type];
 	}
 
-	public void Refresh()
+	public bool Refresh()
 	{
-		Dictionary<string, TileData> map = new Dictionary<string, TileData>(data.Length);
-
-		for (int i = 0; i < data.Length; i++)
-			map.Add(data[i].name, data[i]);
-
-		string[] names = Enum.GetNames(typeof(TileType));
-		TileType[] values = (TileType[])Enum.GetValues(typeof(TileType));
-
-		List<TileData> newData = new List<TileData>(names.Length);
-
-		for (int i = 0; i < names.Length; i++)
+		try
 		{
-			TileData td;
-			if (map.TryGetValue(names[i], out td))
-				newData.Add(td);
-			else
-			{
-				td = new TileData();
-				td.name = names[i];
-				td.type = values[i];
-				newData.Add(td);
-			}
-		}
+			Dictionary<string, TileData> map = new Dictionary<string, TileData>(data.Length);
 
-		data = newData.ToArray();
+			for (int i = 0; i < data.Length; i++)
+				map.Add(data[i].name, data[i]);
+
+			string[] names = Enum.GetNames(typeof(TileType));
+			TileType[] values = (TileType[])Enum.GetValues(typeof(TileType));
+
+			List<TileData> newData = new List<TileData>(names.Length);
+
+			for (int i = 0; i < names.Length; i++)
+			{
+				TileData td;
+				if (map.TryGetValue(names[i], out td))
+					newData.Add(td);
+				else
+				{
+					td = new TileData();
+					td.name = names[i];
+					td.type = values[i];
+					newData.Add(td);
+				}
+			}
+
+			data = newData.ToArray();
+			return true;
+		}
+		catch (Exception e)
+		{
+			Debug.LogWarning("Exception occurred: " + e.Message);
+			Debug.LogWarning(e.StackTrace);
+			return false;
+		}
 	}
 
 	public void Sort()

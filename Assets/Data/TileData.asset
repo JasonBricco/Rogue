@@ -11,3 +11,480 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b942d1ff2e65bd469377a34ad303788, type: 3}
   m_Name: TileData
   m_EditorClassIdentifier: 
+  data:
+  - name: Air
+    type: 0
+    invisible: 1
+    hasCollider: 0
+    trigger: 0
+    colliderSize: {x: 0, y: 0}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 0}
+    sprite: {fileID: 0}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: DungeonWall
+    type: 1
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 1, y: 2}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: c39d90f6e0728e84c88b1cb161d0b2bc, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: DungeonWall1
+    type: 2
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 1, y: 2}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: ea998d4f8412322479074116eb762677, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: DungeonWall2
+    type: 3
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 2, y: 1}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: 9ec9b8be3ab2fa340a350362e64408b4, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: DungeonWall3
+    type: 4
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 2, y: 1}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: 534ac2a28b9e62b40a0608eb90335682, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: DungeonWall4
+    type: 5
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 2, y: 2}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: 48a1cd187dd42a14db3cfb7c7914886d, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: DungeonWall5
+    type: 6
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 2, y: 2}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: 1776d5197da21014a9a0278b80abdae9, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: DungeonWall6
+    type: 7
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 2, y: 2}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: 31d38471cf2fea1449576c23505988ae, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: DungeonWall7
+    type: 8
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 2, y: 2}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: 9a077f316acc2164aa713116e34bc167, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: Barrier
+    type: 9
+    invisible: 1
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 1, y: 1}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 0}
+    sprite: {fileID: 0}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: Portal
+    type: 10
+    invisible: 0
+    hasCollider: 1
+    trigger: 1
+    colliderSize: {x: 0.1, y: 0.1}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: 008069a4edcd5b2419556768df79f9af, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: DungeonFloor
+    type: 11
+    invisible: 0
+    hasCollider: 0
+    trigger: 0
+    colliderSize: {x: 0, y: 0}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: 58afdeab1cc38f04e8316e5888e9bdaa, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: Spikes
+    type: 12
+    invisible: 0
+    hasCollider: 1
+    trigger: 1
+    colliderSize: {x: 1, y: 2}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: db12d97dd2934c74bb9cf3d0094d7eae, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: Torch
+    type: 13
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 1, y: 1}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0.5, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: 1365de82bbc7ec546ac7a1f618e4b43f, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 114650601760224922, guid: 027191cf76e633f45951bac149c3db5a,
+      type: 2}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: PlainsGrass
+    type: 14
+    invisible: 0
+    hasCollider: 0
+    trigger: 0
+    colliderSize: {x: 0, y: 0}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: 179492b31a0f95840a1b430647d15a30, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: PlainsWall
+    type: 15
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 1, y: 3}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: f5b2eda1085bcce4a8858af573c4a71b, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: PlainsWall1
+    type: 16
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 1, y: 3}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: 8997dc2ebfec7554882472e847f5738f, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: PlainsWall2
+    type: 17
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 3, y: 1}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: ea27c14cb93a5744f88f6e2b27e34fe0, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: PlainsWall3
+    type: 18
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 3, y: 1}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: 5df242b675b280e4ea839383e9138fdc, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: PlainsWall4
+    type: 19
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 3, y: 3}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: 5ab57fe3bdc80fc4eb5b44b9f779cb9a, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: PlainsWall5
+    type: 20
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 3, y: 3}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: 426e2461c4db8a2448734ba8ba2e88a7, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: PlainsWall6
+    type: 21
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 3, y: 3}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: b483f735c75024f4b87db99b2206e8df, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: PlainsWall7
+    type: 22
+    invisible: 0
+    hasCollider: 1
+    trigger: 0
+    colliderSize: {x: 3, y: 3}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: 1e6814ce668d6434c939b3ed2111109c, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: PlainsDoor
+    type: 23
+    invisible: 0
+    hasCollider: 1
+    trigger: 1
+    colliderSize: {x: 1, y: 1}
+    colliderOffset: {x: 0, y: 0.7}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+    sprite: {fileID: 21300000, guid: b0e714075ab81864dba42f29f7373e70, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
+  - name: Count
+    type: 24
+    invisible: 0
+    hasCollider: 0
+    trigger: 0
+    colliderSize: {x: 0, y: 0}
+    colliderOffset: {x: 0, y: 0}
+    align: {x: 0, y: 0}
+    baseMaterial: {fileID: 0}
+    sprite: {fileID: 0}
+    color:
+      serializedVersion: 2
+      rgba: 0
+    component: {fileID: 0}
+    spriteIndex: 0
+    index: 0
+    width: 0
+    height: 0
+    material: {fileID: 0}
