@@ -159,10 +159,14 @@ public class TileEditor : EditorWindow
 				EditorGUI.BeginChangeCheck();
 				td.sprite = (Sprite)EditorGUI.ObjectField(new Rect(15.0f, y, 150.0f, 15.0f), td.sprite, typeof(Sprite), false);
 
-				if (EditorGUI.EndChangeCheck() && td.hasCollider)
+				if (EditorGUI.EndChangeCheck())
 				{
-					td.colliderSize.x = td.sprite.rect.width / td.sprite.pixelsPerUnit;
-					td.colliderSize.y = td.sprite.rect.height / td.sprite.pixelsPerUnit;
+					if (td.hasCollider)
+					{
+						td.colliderSize.x = td.sprite.rect.width / td.sprite.pixelsPerUnit;
+						td.colliderSize.y = td.sprite.rect.height / td.sprite.pixelsPerUnit;
+					}
+
 					td.baseMaterial = defaultMat;
 				}
 

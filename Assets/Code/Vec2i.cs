@@ -31,33 +31,25 @@ public struct Vec2i : IEquatable<Vec2i>
 		y = (int)p.y;
 	}
 
-	/// <summary>
-	/// The squared length of the vector.
-	/// </summary>
+	// The squared length of the vector.
 	public int LengthSq
 	{
 		get { return Dot(this, this); }
 	}
 
-	/// <summary>
-	/// Convert this vector to a floating-point Vector2.
-	/// </summary>
+	// Convert this vector to a floating-point Vector2.
 	public Vector2 ToVector2()
 	{
 		return new Vector2(x, y);
 	}
 
-	/// <summary>
-	/// Convert this vector to a floating-point Vector3.
-	/// </summary>
+	// Convert this vector to a floating-point Vector3.
 	public Vector3 ToVector3()
 	{
 		return new Vector3(x, y);
 	}
 
-	/// <summary>
-	/// Returns the absolute value of this vector.
-	/// </summary>
+	// Returns the absolute value of this vector.
 	public Vec2i Abs()
 	{
 		return new Vec2i(Mathf.Abs(x), Mathf.Abs(y));
@@ -78,9 +70,7 @@ public struct Vec2i : IEquatable<Vec2i>
 		return 29 * x + 17 * y;
 	}
 
-	/// <summary>
-	/// Returns the dot product between the two given vectors.
-	/// </summary>
+	// Returns the dot product between the two given vectors.
 	public static int Dot(Vec2i a, Vec2i b)
 	{
 		Vec2i tmp = a * b;

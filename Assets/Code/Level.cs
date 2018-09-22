@@ -14,11 +14,6 @@ public sealed class Level
 
 	private Room[] rooms = new Room[RoomCount * RoomCount];
 
-	public Room[] GetRooms
-	{
-		get { return rooms; }
-	}
-
 	private List<Room> loadedRooms = new List<Room>();
 
 	private LevelEntities entities;

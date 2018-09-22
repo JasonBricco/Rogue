@@ -74,7 +74,5 @@ public sealed class TileManager : MonoBehaviour
 
 			index++;
 		}
-
-		dataList.Sort();
 	}
 }

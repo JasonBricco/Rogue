@@ -78,11 +78,6 @@ public class TileDataList : ScriptableObject
 		}
 	}
 
-	public void Sort()
-	{
-		Array.Sort(data);
-	}
-
 	public TileData this[int i]
 	{
 		get { return data[i]; }
