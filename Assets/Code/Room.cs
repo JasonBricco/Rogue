@@ -140,7 +140,8 @@ public sealed class Room
 	// Adds all entities in this room to the given active entities list.
 	public void GetActiveEntities(List<Entity> activeEntities)
 	{
-		activeEntities.AddRange(entities);
+		for (int i = 0; i < entities.Count; i++)
+			activeEntities.Add(entities[i]);
 	}
 
 	// Adds colliders for all tiles that require them in this room.

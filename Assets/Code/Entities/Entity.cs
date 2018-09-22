@@ -164,13 +164,10 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	// Moves the entity using the given accel. Accel represents the move direcction and should 
 	// have values in the range -1 to 1. When the distRemaining value becomes 0, the callback
 	// 'onDistReached' will be invoked.
-	public void Move(Vector2 accel, ref float distRemaining, Action onDistReached)
+	public void Move(Vector2 accel, ref float distRemaining)
 	{
 		Vector2 delta = Move(accel);
 		distRemaining -= delta.magnitude;
-
-		if (distRemaining <= 0.0f)
-			onDistReached.Invoke();
 	}
 
 

@@ -35,12 +35,10 @@ public sealed class EntityPacingAI : MonoBehaviour
 			timer.SetValue(Random.Range(4.0f, 8.0f));
 		}
 
-		entity.Move(dir, ref distRemaining, OnDistanceReached);
-	}
+		entity.Move(dir, ref distRemaining);
 
-	private void OnDistanceReached()
-	{
-		dir = Vector2.zero;
+		if (distRemaining <= 0.0f)
+			dir = Vector2.zero;
 	}
 
 	private void Kill()
