@@ -2,32 +2,41 @@
 // Copyright (c) 2018 Jason Bricco
 //
 
-using UnityEngine;
 using System;
 
 [Serializable]
-public sealed class TileData : IComparable<TileData>
+public sealed class TileData : IEquatable<TileData>
 {
-	// Filled in by the tile data editor.
 	public string name;
 	public TileType type;
-	public bool invisible, hasCollider, trigger;
-	public Vector2 colliderSize, colliderOffset;
-	public Vector2 align;
-	public Material baseMaterial;
-	public Sprite sprite;
-	public Color32 color;
-	public TileComponent component;
+	public int variantCount;
+	public TileProperties[] variants;
 
-	// Computed during runtime.
-	public float spriteIndex;
-	public int index;
-	public int width, height;
-	public Material material;
-
-	public int CompareTo(TileData other)
+	public TileData()
 	{
-		return type.CompareTo(other.type);
+		variantCount = 1;
+		variants = new TileProperties[variantCount];
+
+		variants[0] = new TileProperties();
+	}
+
+	public TileProperties GetProperties(int variant)
+	{
+		return variants[variant];
+	}
+
+	public void InitializeProperties()
+	{
+		for (int i = 0; i < variants.Length; i++)
+		{
+			if (variants[i] == null)
+				variants[i] = new TileProperties();
+		}
+	}
+
+	public bool Equals(TileData other)
+	{
+		return type == other.type;
 	}
 
 	public override int GetHashCode()

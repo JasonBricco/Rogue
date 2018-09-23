@@ -57,7 +57,7 @@ public sealed class TileCollision
 			for (int x = 0; x < Room.SizeX; x++)
 			{
 				Tile tile = room.GetTile(x, y);
-				TileData data = tile.Data;
+				TileProperties data = tile.Properties;
 
 				if (data.hasCollider)
 				{

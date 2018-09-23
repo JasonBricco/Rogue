@@ -34,9 +34,9 @@ public class TileDataList : ScriptableObject
 		}
 	}
 	
-	public TileData Get(TileType type)
+	public TileProperties GetProperties(Tile tile)
 	{
-		return data[(int)type];
+		return data[(int)tile.id].GetProperties(tile.variant);
 	}
 
 	public bool Refresh()

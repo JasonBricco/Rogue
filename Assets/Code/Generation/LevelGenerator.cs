@@ -4,9 +4,8 @@
 
 public class LevelGenerator
 {
-	public virtual void Generate(Level level, LevelEntities entities, out Vec2i spawnRoom, out Vec2i spawnCell)
+	public virtual void Generate(Level level, LevelEntities entities, out SpawnPoint spawnPoint)
 	{
-		spawnRoom = Vec2i.Zero;
-		spawnCell = Vec2i.Zero;
+		spawnPoint = new SpawnPoint();
 	}
 }

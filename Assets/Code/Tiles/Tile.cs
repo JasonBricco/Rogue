@@ -7,22 +7,25 @@ using System;
 public struct Tile : IEquatable<Tile>
 {
 	public TileType id;
+	public ushort variant;
 
 	public Tile(TileType id)
 	{
 		this.id = id;
+		variant = 0;
 	}
 
-	public Tile(TileType id, int offset)
+	public Tile(TileType id, int variant)
 	{
-		this.id = id + offset;
+		this.id = id;
+		this.variant = (ushort)variant;
 	}
 
 	// Returns the tile data for this tile. This contains all information about
 	// this particular tile.
-	public TileData Data
+	public TileProperties Properties
 	{
-		get { return TileManager.Instance.GetData(id); }
+		get { return TileManager.Instance.GetProperties(this); }
 	}
 
 	public static implicit operator Tile(TileType id)

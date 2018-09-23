@@ -71,25 +71,26 @@ public sealed class LevelEntities
 		BuildCollisionMatrices();
 	}
 
-	private void SpawnEntity(Entity entity, Vec2i roomP, Vector2 pos)
+	private void SpawnEntity(Entity entity, Vec2i roomP, Vector2 pos, int facing = 0)
 	{
 		Room room = level.GetRoom(roomP.x, roomP.y);
 		room.AddEntity(entity);
 		entity.Init(this, room);
 		entity.MoveTo(pos);
+		entity.facing = facing;
 	}
 
-	private void SpawnEntity(Entity entity, Vec2i roomP, Vec2i cell)
+	private void SpawnEntity(Entity entity, Vec2i roomP, Vec2i cell, int facing = 0)
 	{
 		float cellX = cell.x + 0.5f, cellY = cell.y + 0.5f;
 		Vector2 pos = new Vector2(roomP.x * Room.SizeX + cellX, roomP.y * Room.SizeY + cellY);
-		SpawnEntity(entity, roomP, pos);
+		SpawnEntity(entity, roomP, pos, facing);
 	}
 
-	public void SpawnEntity(EntityType type, Vec2i room, Vec2i cell)
+	public void SpawnEntity(EntityType type, Vec2i room, Vec2i cell, int facing = 0)
 	{
 		Entity entity = Object.Instantiate(entityPrefabs[(int)type], tManager).GetComponent<Entity>();
-		SpawnEntity(entity, room, cell);
+		SpawnEntity(entity, room, cell, facing);
 	}
 
 	public void AddCollisionRule(Entity a, Entity b)
@@ -177,6 +178,12 @@ public sealed class LevelEntities
 			{
 				if (entity.Type == EntityType.Player)
 					manager.ChangeLevel(LevelType.Dungeon);
+			} break;
+
+			case TileType.DungeonDoor:
+			{
+				if (entity.Type == EntityType.Player)
+					manager.ChangeLevel(LevelType.Plains);
 			} break;
 
 			case TileType.Spikes:
@@ -364,7 +371,8 @@ public sealed class LevelEntities
 
 	public void SpawnPlayer()
 	{
-		SpawnEntity(playerEntity, level.SpawnRoom, level.SpawnCell);
+		SpawnPoint spawn = level.SpawnPoint;
+		SpawnEntity(playerEntity, spawn.room, spawn.cell, spawn.facing);
 		player.OnSpawn();
 	}
 

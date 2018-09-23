@@ -23,12 +23,18 @@ public sealed class GenDungeon : LevelGenerator
 		}
 	}
 
-	public override void Generate(Level level, LevelEntities entities, out Vec2i spawnRoom, out Vec2i spawnCell)
+	public override void Generate(Level level, LevelEntities entities, out SpawnPoint spawnPoint)
 	{
 		int roomCount = Random.Range(3, 21);
 		Vec2i roomP = new Vec2i(25, 25);
 
 		List<Connection> connections = new List<Connection>(roomCount);
+		List<Vec2i> invalid = new List<Vec2i>();
+
+		spawnPoint = new SpawnPoint();
+
+		spawnPoint.room = new Vec2i(25, 25);
+		invalid.Add(new Vec2i(spawnPoint.room.x, spawnPoint.room.y - 1));
 
 		int i = 0;
 		while (i < roomCount)
@@ -81,17 +87,18 @@ public sealed class GenDungeon : LevelGenerator
 				entities.SpawnEntity(EntityType.Mole, roomP, new Vec2i(pX, pY));
 			}
 
-			Vec2i next;
-
-			do
+			while (true)
 			{
 				if (++i == roomCount) break;
+				Vec2i next = roomP + Vec2i.Directions[Random.Range(0, 4)];
 
-				next = roomP + Vec2i.Directions[Random.Range(0, 4)];
+				if (level.GetRoom(next) != null || invalid.Contains(next))
+					continue;
+
 				connections.Add(new Connection(roomP, next, roomP.x != next.x));
 				roomP = next;
+				break;
 			}
-			while (level.GetRoom(next) != null);
 		}
 
 		for (int c = 0; c < connections.Count; c++)
@@ -139,10 +146,18 @@ public sealed class GenDungeon : LevelGenerator
 		Room familiarRoom = level.GetRandomRoom();
 		entities.SpawnEntity(EntityType.Familiar, familiarRoom.Pos, new Vec2i(27, 13));
 
-		level.GetRoom(25, 25).SetTile(25, 11, MainLayer, TileType.Torch);
+		Room spawn = level.GetRoom(spawnPoint.room);
+		spawn.SetTile(25, 11, MainLayer, TileType.Torch);
+		spawn.SetTile(Room.HalfSizeX, 0, MainLayer, new Tile(TileType.DungeonDoor, 0));
 
-		spawnRoom = new Vec2i(25, 25);
-		spawnCell = new Vec2i(4, 4);
+		for (int y = 0; y <= 1; y++)
+		{
+			spawn.SetTile(Room.HalfSizeX - 1, y, MainLayer, TileType.Barrier);
+			spawn.SetTile(Room.HalfSizeX + 1, y, MainLayer, TileType.Barrier);
+		}
+
+		spawnPoint.cell = new Vec2i(Room.HalfSizeX, 1);
+		spawnPoint.facing = Direction.Front;
 
 		Camera.main.GetComponent<GameCamera>().SetFollow(false);
 		level.SetLightMode(false);

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 public sealed class TextureArrays
 {
-	public void BuildTextureArray(List<TileData> data, Material material, int w, int h)
+	public void BuildTextureArray(List<TileProperties> data, Material material, int w, int h)
 	{
 		if (data.Count == 0) return;
 

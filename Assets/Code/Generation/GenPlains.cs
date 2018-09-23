@@ -25,7 +25,7 @@ public sealed class GenPlains : LevelGenerator
 		}
 	}
 
-	public override void Generate(Level level, LevelEntities entities, out Vec2i spawnRoom, out Vec2i spawnCell)
+	public override void Generate(Level level, LevelEntities entities, out SpawnPoint spawnPoint)
 	{
 		Vec2i rooms = new Vec2i(5, 7);
 
@@ -99,8 +99,10 @@ public sealed class GenPlains : LevelGenerator
 		room.SetTile(midX + 1, 0, MainLayer, TileType.Barrier);
 		room.SetTile(midX, 1, MainLayer, TileType.Barrier);
 
-		spawnRoom = new Vec2i(1, 1);
-		spawnCell = new Vec2i(4, 4);
+		spawnPoint = new SpawnPoint();
+		spawnPoint.room = new Vec2i(1, 1);
+		spawnPoint.cell = new Vec2i(4, 4);
+		spawnPoint.facing = Direction.Back;
 
 		Camera.main.GetComponent<GameCamera>().SetFollow(true);
 		level.SetLightMode(false);

@@ -65,7 +65,7 @@ public sealed class Room
 		Assert.IsTrue(InBounds(x, y));
 		tiles[x + SizeX * (y + SizeY * layer)] = tile;
 
-		TileData data = tile.Data;
+		TileProperties data = tile.Properties;
 		data.component?.OnSet(ToTilePos(Pos, x, y));
 	}
 
@@ -90,7 +90,7 @@ public sealed class Room
 				for (int x = 0; x < SizeX; x++)
 				{
 					Tile tile = GetTile(x, y, layer);
-					TileData data = tile.Data;
+					TileProperties data = tile.Properties;
 
 					if (!data.invisible)
 					{

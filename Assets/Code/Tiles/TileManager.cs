@@ -17,59 +17,64 @@ public sealed class TileManager : MonoBehaviour
 		InitTiles();
 	}
 
-	public TileData GetData(TileType type)
+	public TileProperties GetProperties(Tile tile)
 	{
-		return dataList.Get(type);
+		return dataList.GetProperties(tile);
 	}
 
 	// Takes information provided in the inspector and stored in the tile group array and assigns the
 	// appropriate tile data into the TileData arrays. This allows the code to access tile information.
 	private void InitTiles()
 	{
-		var arrayData = new Dictionary<SpriteArrayInfo, List<TileData>>();
+		var arrayData = new Dictionary<SpriteArrayInfo, List<TileProperties>>();
 
 		for (int i = 0; i < dataList.Count; i++)
 		{
 			TileData data = dataList[i];
 
-			if (data.invisible)
-				continue;
-
-			// Duplicate the material so tile groups that utilize the same material don't share it 
-			// and overwrite the assigned texture information.
-			data.material = new Material(data.baseMaterial);
-
-			Sprite sprite = data.sprite;
-
-			data.width = sprite.texture.width;
-			data.height = sprite.texture.height;
-
-			SpriteArrayInfo info = new SpriteArrayInfo(data.material, data.width, data.height);
-
-			List<TileData> list;
-			if (!arrayData.TryGetValue(info, out list))
+			for (int v = 0; v < data.variantCount; v++)
 			{
-				list = new List<TileData>();
-				arrayData[info] = list;
-			}
+				TileProperties props = data.GetProperties(v);
 
-			list.Add(data);
+				if (props.invisible)
+					continue;
+
+				// Duplicate the material so tile groups that utilize the same material don't share it 
+				// and overwrite the assigned texture information.
+				props.material = new Material(props.baseMaterial);
+
+				Sprite sprite = props.sprite;
+
+				props.width = sprite.texture.width;
+				props.height = sprite.texture.height;
+
+				SpriteArrayInfo info = new SpriteArrayInfo(props.material, props.width, props.height);
+
+				List<TileProperties> list;
+				if (!arrayData.TryGetValue(info, out list))
+				{
+					list = new List<TileProperties>();
+					arrayData[info] = list;
+				}
+
+				list.Add(props);
+			}
 		}
 
 		TextureArrays arrays = new TextureArrays();
 		int index = 0;
 
-		foreach (KeyValuePair<SpriteArrayInfo, List<TileData>> pair in arrayData)
+		foreach (KeyValuePair<SpriteArrayInfo, List<TileProperties>> pair in arrayData)
 		{
 			SpriteArrayInfo info = pair.Key;
-			List<TileData> data = pair.Value;
+			List<TileProperties> props = pair.Value;
 
-			arrays.BuildTextureArray(data, info.material, info.w, info.h);
+			arrays.BuildTextureArray(props, info.material, info.w, info.h);
 
-			for (int i = 0; i < data.Count; i++)
+			for (int i = 0; i < props.Count; i++)
 			{
-				data[i].index = index;
-				data[i].spriteIndex = i;
+				props[i].index = index;
+				props[i].spriteIndex = i;
 			}
 
 			index++;

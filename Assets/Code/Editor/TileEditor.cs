@@ -5,6 +5,8 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.Assertions;
+using System;
+using static UnityEngine.Mathf;
 
 public class TileEditor : EditorWindow
 {
@@ -132,54 +134,100 @@ public class TileEditor : EditorWindow
 			td.type = (TileType)EditorGUI.EnumPopup(new Rect(15.0f, y, 120.0f, 20.0f), td.type);
 
 			y += 25.0f;
-			EditorGUI.LabelField(new Rect(15.0f, y, 60.0f, 20.0f), "Invisible");
-			td.invisible = EditorGUI.Toggle(new Rect(70.0f, y, 15.0f, 25.0f), td.invisible);
+			EditorGUI.BeginChangeCheck();
 
-			EditorGUI.LabelField(new Rect(100.0f, y, 80.0f, 20.0f), "Has Collider");
-			td.hasCollider = EditorGUI.Toggle(new Rect(175.0f, y, 15.0f, 25.0f), td.hasCollider);
+			EditorGUI.LabelField(new Rect(15.0f, y, 50.0f, 20.0f), "Variants");
+			td.variantCount = EditorGUI.IntField(new Rect(80.0f, y, 25.0f, 20.0f), td.variantCount);
 
-			if (td.hasCollider)
+			if (EditorGUI.EndChangeCheck())
 			{
-				EditorGUI.LabelField(new Rect(205.0f, y, 60.0f, 20.0f), "Trigger");
-				td.trigger = EditorGUI.Toggle(new Rect(255.0f, y, 15.0f, 25.0f), td.trigger);
-
-				y += 25.0f;
-				td.colliderSize = EditorGUI.Vector2Field(new Rect(15.0f, y, 120.0f, 20.0f), "Collider Size", td.colliderSize);
-				td.colliderOffset = EditorGUI.Vector2Field(new Rect(150.0f, y, 120.0f, 20.0f), "Collider Offset", td.colliderOffset);
-				y += 15.0f;
-			}
-
-			if (!td.invisible)
-			{
-				y += 25.0f;
-				td.align = EditorGUI.Vector2Field(new Rect(15.0f, y, 120.0f, 20.0f), "Align", td.align);
-
-				y += 45.0f;
-
-				EditorGUI.BeginChangeCheck();
-				td.sprite = (Sprite)EditorGUI.ObjectField(new Rect(15.0f, y, 150.0f, 15.0f), td.sprite, typeof(Sprite), false);
-
-				if (EditorGUI.EndChangeCheck())
-				{
-					if (td.hasCollider)
-					{
-						td.colliderSize.x = td.sprite.rect.width / td.sprite.pixelsPerUnit;
-						td.colliderSize.y = td.sprite.rect.height / td.sprite.pixelsPerUnit;
-					}
-
-					td.baseMaterial = defaultMat;
-				}
-
-				td.color = EditorGUI.ColorField(new Rect(180.0f, y, 150.0f, 15.0f), td.color);
-				y += 20.0f;
-
-				td.baseMaterial = (Material)EditorGUI.ObjectField(new Rect(15.0f, y, 150.0f, 15.0f), td.baseMaterial, typeof(Material), false);
+				td.variantCount = Clamp(td.variantCount, 1, 100);
+				Array.Resize(ref td.variants, td.variantCount);
+				td.InitializeProperties();
 			}
 
 			y += 25.0f;
-			td.component = (TileComponent)EditorGUI.ObjectField(new Rect(15.0f, y, 160.0f, 15.0f), td.component, typeof(TileComponent), false);
 
-			y += 30.0f;
+			float x = 15.0f;
+			float lastLeftY = 0.0f, lastRightY = 0.0f;
+
+			for (int v = 0; v < td.variantCount; v++)
+			{
+				float startY = y;
+
+				if (td.variantCount != 1)
+				{
+					GUI.contentColor = Color.magenta;
+					EditorGUI.LabelField(new Rect(x, y, 80.0f, 20.0f), "- " + v.ToString() + " -", EditorStyles.boldLabel);
+					GUI.contentColor = Color.white;
+					y += 25.0f;
+				}
+
+				TileProperties props = td.GetProperties(v);
+
+				EditorGUI.LabelField(new Rect(x, y, 60.0f, 20.0f), "Invisible");
+				props.invisible = EditorGUI.Toggle(new Rect(x + 55.0f, y, 15.0f, 25.0f), props.invisible);
+
+				EditorGUI.LabelField(new Rect(x + 85.0f, y, 80.0f, 20.0f), "Has Collider");
+				props.hasCollider = EditorGUI.Toggle(new Rect(x + 160.0f, y, 15.0f, 25.0f), props.hasCollider);
+
+				if (props.hasCollider)
+				{
+					EditorGUI.LabelField(new Rect(x + 190.0f, y, 60.0f, 20.0f), "Trigger");
+					props.trigger = EditorGUI.Toggle(new Rect(x + 240.0f, y, 15.0f, 25.0f), props.trigger);
+
+					y += 25.0f;
+					props.colliderSize = EditorGUI.Vector2Field(new Rect(x, y, 120.0f, 20.0f), "Collider Size", props.colliderSize);
+					props.colliderOffset = EditorGUI.Vector2Field(new Rect(x + 135.0f, y, 120.0f, 20.0f), "Collider Offset", props.colliderOffset);
+					y += 15.0f;
+				}
+
+				if (!props.invisible)
+				{
+					y += 25.0f;
+					props.align = EditorGUI.Vector2Field(new Rect(x, y, 120.0f, 20.0f), "Align", props.align);
+
+					y += 45.0f;
+
+					EditorGUI.BeginChangeCheck();
+					props.sprite = (Sprite)EditorGUI.ObjectField(new Rect(x, y, 150.0f, 15.0f), props.sprite, typeof(Sprite), false);
+
+					if (EditorGUI.EndChangeCheck())
+					{
+						if (props.hasCollider)
+						{
+							props.colliderSize.x = props.sprite.rect.width / props.sprite.pixelsPerUnit;
+							props.colliderSize.y = props.sprite.rect.height / props.sprite.pixelsPerUnit;
+						}
+
+						props.baseMaterial = defaultMat;
+					}
+
+					props.color = EditorGUI.ColorField(new Rect(x + 165.0f, y, 150.0f, 15.0f), props.color);
+					y += 20.0f;
+
+					props.baseMaterial = (Material)EditorGUI.ObjectField(new Rect(x, y, 150.0f, 15.0f), props.baseMaterial, typeof(Material), false);
+				}
+
+				y += 25.0f;
+				props.component = (TileComponent)EditorGUI.ObjectField(new Rect(x, y, 160.0f, 15.0f), props.component, typeof(TileComponent), false);
+
+				if (v % 2 == 0)
+				{
+					x += 400.0f;
+					lastLeftY = y;
+
+					if (v < td.variantCount - 1)
+						y = startY;
+					else y += 25.0f;
+				}
+				else
+				{
+					lastRightY = y;
+					y = Max(lastLeftY, lastRightY) + 25.0f;
+					x = 15.0f;
+				}
+			}
 		}
 
 		GUILayout.Space(y - 15.0f);

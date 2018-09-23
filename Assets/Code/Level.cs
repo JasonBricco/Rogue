@@ -18,23 +18,15 @@ public sealed class Level
 
 	private LevelEntities entities;
 
-	private Vec2i spawnRoom, spawnCell;
+	private SpawnPoint spawnPoint;
 
 	private TileCollision collision;
 
 	private bool isDark;
 
-	// The coordinates of the room the player will spawn in.
-	public Vec2i SpawnRoom
+	public SpawnPoint SpawnPoint
 	{
-		get { return spawnRoom; }
-	}
-
-	// The local coordinates of the cell within the spawn room the player
-	// will spawn at.
-	public Vec2i SpawnCell
-	{
-		get { return spawnCell; }
+		get { return spawnPoint; }
 	}
 
 	private GameCamera cam;
@@ -42,7 +34,7 @@ public sealed class Level
 	public Level(LevelGenerator generator, TileCollision collision)
 	{
 		entities = new LevelEntities(this);
-		generator.Generate(this, entities, out spawnRoom, out spawnCell);
+		generator.Generate(this, entities, out spawnPoint);
 		entities.SpawnPlayer();
 
 		cam = Camera.main.GetComponent<GameCamera>();
