@@ -13,8 +13,12 @@ public sealed class GenDungeon : RoomGenerator
 	private Dictionary<Vec2i, List<Vec2i>> exitPoints = new Dictionary<Vec2i, List<Vec2i>>();
 	HashSet<Vec2i> invalid = new HashSet<Vec2i>();
 
-	public override void Init(World world)
+	private bool needsEntrance;
+	private bool familiarSpawned;
+
+	public override void Init(World world, bool needsEntrance)
 	{
+		this.needsEntrance = needsEntrance;
 		world.SetLightMode(false);
 	}
 
@@ -124,6 +128,15 @@ public sealed class GenDungeon : RoomGenerator
 				}
 			}
 		}
+
+		if (!familiarSpawned)
+		{
+			if (Random.value < 0.05f)
+			{
+				entities.SpawnEntity(EntityType.Familiar, new Vec2i(27, 13));
+				familiarSpawned = true;
+			}
+		}
 	}
 
 	private void AddConnection(Room room, Vec2i pos, Vec2i dir)
@@ -152,9 +165,6 @@ public sealed class GenDungeon : RoomGenerator
 
 	public override void Generate(World level, RoomEntities entities, out SpawnPoint spawnPoint)
 	{
-		Room familiarRoom = level.GetRandomRoom();
-		entities.SpawnEntity(EntityType.Familiar, familiarRoom.Pos, new Vec2i(27, 13));
-
 		Room spawn = level.GetRoom(spawnPoint.room);
 		spawn.SetTile(25, 11, MainLayer, TileType.Torch);
 		spawn.SetTile(Room.HalfSizeX, 0, MainLayer, new Tile(TileType.DungeonDoor, 0));
