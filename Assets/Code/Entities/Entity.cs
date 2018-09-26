@@ -34,7 +34,7 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 
 	private Transform t;
 
-	public LevelEntities Entities { get; private set; }
+	public RoomEntities Entities { get; private set; }
 
 	public Vector2 Pos
 	{
@@ -51,7 +51,7 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		get { return velocity.normalized; }
 	}
 
-	public void Init(LevelEntities entities, Room room)
+	public void Init(RoomEntities entities, Room room)
 	{
 		t = GetComponent<Transform>();
 		controller = GetComponent<CharacterController>();
@@ -99,7 +99,7 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	}
 
 	// Updates all updatable entity components and ensures the entity is in the correct room.
-	public void UpdateEntity(Level level)
+	public void UpdateEntity(World level)
 	{
 		InvokeEvent(EntityEvent.Update);
 

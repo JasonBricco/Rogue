@@ -4,5 +4,5 @@
 
 public interface ITileSet
 {
-	void OnSet(Vec2i tPos, TileComponent tc);
+	void OnSet(int x, int y, TileComponent tc);
 }

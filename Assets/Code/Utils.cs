@@ -17,46 +17,6 @@ public static class Utils
 		return v * v;
 	}
 
-	public static Vec2i ToRoomPos(int x, int y)
-	{
-		return new Vec2i(x >> Room.ShiftX, FloorToInt((float)y / Room.SizeY));
-	}
-
-	public static Vec2i ToRoomPos(Vec2i pos)
-	{
-		return ToRoomPos(pos.x, pos.y);
-	}
-
-	public static Vec2i ToRoomPos(Vector2 pos)
-	{
-		return ToRoomPos(RoundToInt(pos.x), RoundToInt(pos.y));
-	}
-
-	public static Vec2i ToLocalPos(int x, int y)
-	{
-		return new Vec2i(x & Room.MaskX, y % Room.SizeY);
-	}
-
-	public static Vec2i ToLocalPos(Vec2i p)
-	{
-		return ToLocalPos(p.x, p.y);
-	}
-
-	public static Vec2i ToTilePos(Vec2i roomPos, int lX, int lY)
-	{
-		return new Vec2i(roomPos.x * Room.SizeX + lX, roomPos.y * Room.SizeY + lY);
-	}
-
-	public static Vec2i TilePos(float x, float y)
-	{
-		return new Vec2i(RoundToInt(x), RoundToInt(y));
-	}
-
-	public static Vec2i TilePos(Vector2 p)
-	{
-		return TilePos(p.x, p.y);
-	}
-
 	public static int GetNumericDir(Vec2i dir)
 	{
 		if (Abs(dir.x) > Abs(dir.y))

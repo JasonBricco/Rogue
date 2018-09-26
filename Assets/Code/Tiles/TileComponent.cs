@@ -14,11 +14,11 @@ public sealed class TileComponent : MonoBehaviour
 		get { return lightPrefab; }
 	}
 
-	public void OnSet(Vec2i tPos)
+	public void OnSet(int x, int y)
 	{
 		if (!enableOnSet) return;
 
 		ITileSet set = GetComponent<ITileSet>();
-		set.OnSet(tPos, this);
+		set.OnSet(x, y, this);
 	}
 }

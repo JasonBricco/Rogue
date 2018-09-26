@@ -5,14 +5,17 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using System.Collections.Generic;
-using static Utils;
 
 public sealed class Room
 {
-	public const int SizeX = 32, SizeY = 18;
-	public const int HalfSizeX = SizeX / 2, HalfSizeY = SizeY / 2;
-	public const int LimX = SizeX - 1, LimY = SizeY - 1;
-	public const int ShiftX = 5, MaskX = SizeX - 1;
+	public int SizeX { get; private set; }
+	public int SizeY { get; private set; }
+
+	public int HalfX { get; private set; }
+	public int HalfY { get; private set; }
+
+	public int LimX { get; private set; }
+	public int LimY { get; private set; }
 
 	public Vec2i Pos { get; private set; }
 	public Vector2 WorldPos { get; private set; }
@@ -33,9 +36,18 @@ public sealed class Room
 
 	private List<Entity> entities = new List<Entity>();
 
-	public Room(int pX, int pY, int layers, int mainLayer)
+	public Room(int pX, int pY, int layers, int mainLayer, int sizeX, int sizeY)
 	{
-		tiles = new Tile[SizeX * SizeY * layers];
+		SizeX = sizeX;
+		SizeY = sizeY;
+
+		HalfX = sizeX / 2;
+		HalfY = sizeY / 2;
+
+		LimX = sizeX - 1;
+		LimY = sizeY - 1;
+
+		tiles = new Tile[sizeX * sizeY * layers];
 		this.layers = layers;
 		this.mainLayer = mainLayer;
 
@@ -66,7 +78,7 @@ public sealed class Room
 		tiles[x + SizeX * (y + SizeY * layer)] = tile;
 
 		TileProperties data = tile.Properties;
-		data.component?.OnSet(ToTilePos(Pos, x, y));
+		data.component?.OnSet(x, y);
 	}
 
 	// Replaces every tile in the given layer with the given tile.
@@ -171,11 +183,13 @@ public sealed class Room
 			mesh.Destroy();
 
 		RemoveColliders(collision);
+
+		// TODO: Save to disk.
 	}
 
 	// Returns true if the given coordinates are within the boundaries of this room.
 	// Coordinates are specified in local room space between 0 and room size - 1.
-	public static bool InBounds(int x, int y)
+	public bool InBounds(int x, int y)
 	{
 		return x >= 0 && x < SizeX && y >= 0 && y < SizeY;
 	}

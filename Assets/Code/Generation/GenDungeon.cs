@@ -4,145 +4,154 @@
 
 using UnityEngine;
 using System.Collections.Generic;
-using static Utils;
+using static UnityEngine.Mathf;
 
-public sealed class GenDungeon : LevelGenerator
+public sealed class GenDungeon : RoomGenerator
 {
 	private const int MainLayer = 0, FloorLayer = 1;
 
-	private struct Connection
-	{
-		public Vec2i a, b;
-		public bool xAxis;
+	private Dictionary<Vec2i, List<Vec2i>> exitPoints = new Dictionary<Vec2i, List<Vec2i>>();
+	HashSet<Vec2i> invalid = new HashSet<Vec2i>();
 
-		public Connection(Vec2i a, Vec2i b, bool xAxis)
+	public override void Init(World world)
+	{
+		world.SetLightMode(false);
+	}
+
+	public override Vec2i SpawnCell()
+	{
+		
+	}
+
+	public override void Generate(World world, Vec2i roomP, RoomEntities entities)
+	{
+		invalid.Add(roomP);
+		Room room = world.CreateRoom(roomP.x, roomP.y, 2, MainLayer, 32, 18);
+
+		for (int x = 2; x <= room.LimX - 2; x++)
 		{
-			this.a = a;
-			this.b = b;
-			this.xAxis = xAxis;
+			room.SetTile(x, room.LimY - 1, MainLayer, new Tile(TileType.DungeonWall, Direction.Front));
+			room.SetTile(x, 0, MainLayer, new Tile(TileType.DungeonWall, Direction.Back));
+		}
+
+		for (int y = 2; y <= room.LimY - 2; y++)
+		{
+			room.SetTile(0, y, MainLayer, new Tile(TileType.DungeonWall, Direction.Left));
+			room.SetTile(room.LimX - 1, y, MainLayer, new Tile(TileType.DungeonWall, Direction.Right));
+		}
+
+		room.SetTile(0, room.LimY - 1, MainLayer, new Tile(TileType.DungeonWall, Direction.FrontLeft));
+		room.SetTile(room.LimX - 1, room.LimY - 1, MainLayer, new Tile(TileType.DungeonWall, Direction.FrontRight));
+		room.SetTile(0, 0, MainLayer, new Tile(TileType.DungeonWall, Direction.BackLeft));
+		room.SetTile(room.LimX - 1, 0, MainLayer, new Tile(TileType.DungeonWall, Direction.BackRight));
+
+		for (int y = 2; y <= room.LimY - 2; y++)
+		{
+			for (int x = 2; x <= room.LimX - 2; x++)
+				room.SetTile(x, y, FloorLayer, TileType.DungeonFloor);
+		}
+
+		int spikeCount = Random.Range(0, 6);
+
+		for (int s = 0; s < spikeCount; s++)
+		{
+			int pX = Random.Range(4, room.LimX - 3);
+			int pY = Random.Range(4, room.LimY - 3);
+
+			for (int y = pY; y <= pY + 1; y++)
+			{
+				for (int x = pX; x <= pX + 1; x++)
+					room.SetTile(x, y, MainLayer, TileType.Spikes);
+			}
+		}
+
+		int enemyCount = Random.Range(2, 6);
+
+		for (int e = 0; e < enemyCount; e++)
+		{
+			int pX = Random.Range(room.HalfX - 4, room.HalfX + 5);
+			int pY = Random.Range(room.HalfY - 3, room.HalfY + 4);
+			entities.SpawnEntity(EntityType.Mole, new Vec2i(pX, pY));
+		}
+
+		List<Vec2i> possibleRooms = new List<Vec2i>(4)
+		{
+			roomP + Vec2i.Directions[Direction.Front],
+			roomP + Vec2i.Directions[Direction.Back],
+			roomP + Vec2i.Directions[Direction.Left],
+			roomP + Vec2i.Directions[Direction.Right]
+		};
+
+		// Add connections to already existing rooms.
+		for (int i = 0; i < possibleRooms.Count; i++)
+		{
+			List<Vec2i> points;
+			if (exitPoints.TryGetValue(possibleRooms[i], out points))
+			{
+				for (int p = 0; p < points.Count; p++)
+					AddConnection(room, points[p], roomP - possibleRooms[i]);
+			}
+		}
+
+		for (int i = possibleRooms.Count - 1; i >= 0; i--)
+		{
+			if (invalid.Contains(possibleRooms[i]))
+				possibleRooms.RemoveAt(i);
+		}
+
+		// No possible ways to generate, exit with a portal.
+		if (possibleRooms.Count == 0)
+			room.SetTile(room.HalfX, room.HalfY, MainLayer, TileType.Portal);
+		else
+		{
+			bool[] paths = new bool[possibleRooms.Count];
+
+			possibleRooms.Shuffle();
+			float chance = 1.0f;
+
+			for (int i = 0; i < possibleRooms.Count; i++)
+			{
+				paths[i] = Random.value < chance;
+				chance /= 2.0f;
+			}
+
+			for (int i = 0; i < paths.Length; i++)
+			{
+				if (paths[i])
+				{
+					Vec2i cen = new Vec2i(room.HalfX, room.HalfY);
+					AddConnection(room, cen, roomP - possibleRooms[i]);
+				}
+			}
 		}
 	}
 
-	public override void Generate(Level level, LevelEntities entities, out SpawnPoint spawnPoint)
+	private void AddConnection(Room room, Vec2i pos, Vec2i dir)
 	{
-		int roomCount = Random.Range(3, 21);
-		Vec2i roomP = new Vec2i(25, 25);
-
-		List<Connection> connections = new List<Connection>(roomCount);
-		List<Vec2i> invalid = new List<Vec2i>();
-
-		spawnPoint = new SpawnPoint();
-
-		spawnPoint.room = new Vec2i(25, 25);
-		invalid.Add(new Vec2i(spawnPoint.room.x, spawnPoint.room.y - 1));
-
-		int i = 0;
-		while (i < roomCount)
+		if (Abs(dir.x) > 0)
 		{
-			Room room = level.CreateRoom(roomP.x, roomP.y, 2, MainLayer);
+			int startX = room.LimX - 1;
 
-			for (int x = 2; x <= Room.LimX - 2; x++)
+			for (int x = startX; x < startX + 2; x++)
 			{
-				room.SetTile(x, Room.LimY - 1, MainLayer, new Tile(TileType.DungeonWall, Direction.Front));
-				room.SetTile(x, 0, MainLayer, new Tile(TileType.DungeonWall, Direction.Back));
-			}
-
-			for (int y = 2; y <= Room.LimY - 2; y++)
-			{
-				room.SetTile(0, y, MainLayer, new Tile(TileType.DungeonWall, Direction.Left));
-				room.SetTile(Room.LimX - 1, y, MainLayer, new Tile(TileType.DungeonWall, Direction.Right));
-			}
-
-			room.SetTile(0, Room.LimY - 1, MainLayer, new Tile(TileType.DungeonWall, Direction.FrontLeft));
-			room.SetTile(Room.LimX - 1, Room.LimY - 1, MainLayer, new Tile(TileType.DungeonWall, Direction.FrontRight));
-			room.SetTile(0, 0, MainLayer, new Tile(TileType.DungeonWall, Direction.BackLeft));
-			room.SetTile(Room.LimX - 1, 0, MainLayer, new Tile(TileType.DungeonWall, Direction.BackRight));
-
-			for (int y = 2; y <= Room.LimY - 2; y++)
-			{
-				for (int x = 2; x <= Room.LimX - 2; x++)
-					room.SetTile(x, y, FloorLayer, TileType.DungeonFloor);
-			}
-
-			int spikeCount = Random.Range(0, 6);
-
-			for (int s = 0; s < spikeCount; s++)
-			{
-				int pX = Random.Range(4, Room.LimX - 3);
-				int pY = Random.Range(4, Room.LimY - 3);
-
-				for (int y = pY; y <= pY + 1; y++)
-				{
-					for (int x = pX; x <= pX + 1; x++)
-						room.SetTile(x, y, MainLayer, TileType.Spikes);
-				}
-			}
-
-			int enemyCount = Random.Range(2, 6);
-
-			for (int e = 0; e < enemyCount; e++)
-			{
-				int pX = Random.Range(Room.HalfSizeX - 4, Room.HalfSizeX + 5);
-				int pY = Random.Range(Room.HalfSizeY - 3, Room.HalfSizeY + 4);
-				entities.SpawnEntity(EntityType.Mole, roomP, new Vec2i(pX, pY));
-			}
-
-			while (true)
-			{
-				if (++i == roomCount) break;
-				Vec2i next = roomP + Vec2i.Directions[Random.Range(0, 4)];
-
-				if (level.GetRoom(next) != null || invalid.Contains(next))
-					continue;
-
-				connections.Add(new Connection(roomP, next, roomP.x != next.x));
-				roomP = next;
-				break;
+				room.SetTile(x, pos.y, MainLayer, TileType.Air);
+				room.SetTile(x, pos.y, FloorLayer, TileType.DungeonFloor);
 			}
 		}
-
-		for (int c = 0; c < connections.Count; c++)
+		else
 		{
-			Connection info = connections[c];
+			int startY = room.LimY - 1;
 
-			Vec2i a = info.a * new Vec2i(Room.SizeX, Room.SizeY);
-			Vec2i b = info.b * new Vec2i(Room.SizeX, Room.SizeY);
-
-			if (b.LengthSq < a.LengthSq)
-				Swap(ref a, ref b);
-
-			if (info.xAxis)
+			for (int y = startY; y < startY + 4; y++)
 			{
-				int startX = a.x + (Room.LimX - 1), y = a.y + Room.HalfSizeY;
-
-				for (int x = startX; x < startX + 4; x++)
-				{
-					level.SetTile(x, y, MainLayer, TileType.Air);
-					level.SetTile(x, y, FloorLayer, TileType.DungeonFloor);
-				}
-			}
-			else
-			{
-				int startY = a.y + (Room.LimY - 1), x = a.x + Room.HalfSizeX;
-
-				for (int y = startY; y < startY + 4; y++)
-				{
-					level.SetTile(x, y, MainLayer, TileType.Air);
-					level.SetTile(x, y, FloorLayer, TileType.DungeonFloor);
-				}
+				room.SetTile(pos.x, y, MainLayer, TileType.Air);
+				room.SetTile(pos.x, y, FloorLayer, TileType.DungeonFloor);
 			}
 		}
+	}
 
-		Room portalRoom = level.GetRandomRoom();
-
-		for (int y = Room.HalfSizeY - 4; y <= Room.HalfSizeY + 4; y++)
-		{
-			for (int x = Room.HalfSizeX - 4; x <= Room.HalfSizeX + 4; x++)
-				portalRoom.SetTile(x, y, MainLayer, TileType.Air);
-		}
-
-		portalRoom.SetTile(Room.HalfSizeX, Room.HalfSizeY, MainLayer, TileType.Portal);
-
+	public override void Generate(World level, RoomEntities entities, out SpawnPoint spawnPoint)
+	{
 		Room familiarRoom = level.GetRandomRoom();
 		entities.SpawnEntity(EntityType.Familiar, familiarRoom.Pos, new Vec2i(27, 13));
 
@@ -156,10 +165,7 @@ public sealed class GenDungeon : LevelGenerator
 			spawn.SetTile(Room.HalfSizeX + 1, y, MainLayer, TileType.Barrier);
 		}
 
-		spawnPoint.cell = new Vec2i(Room.HalfSizeX, 1);
-		spawnPoint.facing = Direction.Front;
-
+			// TODO: depends on room.
 		Camera.main.GetComponent<GameCamera>().SetFollow(false);
-		level.SetLightMode(false);
 	}
 }

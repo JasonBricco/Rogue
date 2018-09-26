@@ -49,7 +49,7 @@ public sealed class OTEffects
 		return false;
 	}
 
-	private bool ApplyEffect(Entity entity, Level level, OTEffectType type, ref float timer)
+	private bool ApplyEffect(Entity entity, World level, OTEffectType type, ref float timer)
 	{
 		switch (type)
 		{
@@ -63,7 +63,7 @@ public sealed class OTEffects
 		return true;
 	}
 
-	public void Apply(Level level)
+	public void Apply(World level)
 	{
 		foreach (var pair in effects)
 		{

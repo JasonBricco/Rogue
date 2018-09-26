@@ -77,6 +77,16 @@ public struct Vec2i : IEquatable<Vec2i>
 		return tmp.x + tmp.y;
 	}
 
+	public override string ToString()
+	{
+		return x + ", " + y;
+	}
+
+	public string ToPathString()
+	{
+		return x.ToString() + y.ToString();
+	}
+
 	public static bool operator ==(Vec2i a, Vec2i b)
 	{
 		return a.x == b.x && a.y == b.y;

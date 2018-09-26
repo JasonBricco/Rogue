@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-public sealed class GenPlains : LevelGenerator
+public sealed class GenPlains : RoomGenerator
 {
 	private const int MainLayer = 0, FloorLayer = 1;
 
@@ -25,7 +25,7 @@ public sealed class GenPlains : LevelGenerator
 		}
 	}
 
-	public override void Generate(Level level, LevelEntities entities, out SpawnPoint spawnPoint)
+	public override void Generate(World level, RoomEntities entities, out SpawnPoint spawnPoint)
 	{
 		Vec2i rooms = new Vec2i(5, 7);
 

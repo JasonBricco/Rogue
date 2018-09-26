@@ -69,7 +69,7 @@ public sealed class GameCamera : MonoBehaviour
 	/// The minimum value is the room coordinates of the bottom-left room and the maximum
 	/// value is the room coordinates of the upper-right room.
 	/// </summary>
-	public RectInt GetIntersectingRooms(Level level)
+	public RectInt GetIntersectingRooms(World level)
 	{
 		if (following)
 		{
