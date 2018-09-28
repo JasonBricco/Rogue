@@ -3,17 +3,17 @@
 //
 
 using UnityEngine;
+using UnityEngine.Assertions;
 using System.Collections.Generic;
 
-public sealed class RoomEntities
+public class RoomCollision
 {
-	// Entities in this list are updated. Entity updates are deferred to this list since, if we
-	// update them in place, they may mutate the lists they reside within during updating.
-	private List<Entity> activeEntities = new List<Entity>();
+	private Room room;
+	private bool hasColliders;
 
-	// Entities are flagged to be removed. Their removal is deferred to the 
-	// end of the frame using this list, to prevent issues while iterating the entities.
-	private List<Entity> deadEntities = new List<Entity>();
+	// Stores box colliders being used by this room. We store them here so that we can return 
+	// them when the room doesn't need them anymore.
+	private Queue<TileCollider> colliders = new Queue<TileCollider>(16);
 
 	// Stores collisions that have occurred within the level between two entities. 
 	// Not all collisions are stored here; this structure is used when an entity
@@ -25,39 +25,45 @@ public sealed class RoomEntities
 	private List<TrackedCollision> entityCollisions = new List<TrackedCollision>();
 	private List<TrackedCollision> tileCollisions = new List<TrackedCollision>();
 
-	private Entity playerEntity;
-	private EntityPlayer player;
+	// The collision matrices should be shared among all rooms and only defined once.
+	private static CollisionMatrix collisionMatrix = new CollisionMatrix();
+	private static CollisionMatrix exitMatrix = new CollisionMatrix();
 
-	private World world;
-
-	public RoomEntities(World world)
+	public RoomCollision(Room room)
 	{
-		this.world = world;
+		this.room = room;
 
-		playerEntity = GameObject.FindWithTag("Player").GetComponent<Entity>();
-		player = playerEntity.GetComponent<EntityPlayer>();
+		if (collisionMatrix == null)
+			BuildCollisionMatrices();
 	}
 
-	private void SpawnEntity(Entity entity, Vector2 pos, int facing = 0)
+	public void Update()
 	{
-		Room room = world.Room;
-		room.AddEntity(entity);
-		entity.Init(this, room);
-		entity.MoveTo(pos);
-		entity.facing = facing;
+		if (!hasColliders)
+			Generate();
+
+		RunCollisions();
 	}
 
-	private void SpawnEntity(Entity entity, Vec2i cell, int facing = 0)
+	private void BuildCollisionMatrices()
 	{
-		float cellX = cell.x + 0.5f, cellY = cell.y + 0.5f;
-		Vector2 pos = new Vector2(cellX, cellY);
-		SpawnEntity(entity, pos, facing);
-	}
+		int lPlayer = LayerMask.NameToLayer("Player");
+		int lEnemy = LayerMask.NameToLayer("Enemy");
+		int lProjectile = LayerMask.NameToLayer("Projectile");
+		int lTerrain = LayerMask.NameToLayer("Terrain");
+		int lTerrainTrigger = LayerMask.NameToLayer("Terrain Trigger");
 
-	public void SpawnEntity(EntityType type, Vec2i cell, int facing = 0)
-	{
-		Entity entity = Object.Instantiate(world.EntityPrefab(type), world.transform).GetComponent<Entity>();
-		SpawnEntity(entity, cell, facing);
+		collisionMatrix.Add(lPlayer, lTerrainTrigger, null, OnTriggerTile);
+		collisionMatrix.Add(lEnemy, lTerrainTrigger, null, OnTriggerTile);
+
+		collisionMatrix.Add(lProjectile, lTerrain, null, KillOnCollide);
+		collisionMatrix.Add(lProjectile, lPlayer, OnTriggerEntity, null);
+		collisionMatrix.Add(lProjectile, lEnemy, OnTriggerEntity, null);
+
+		collisionMatrix.Add(lPlayer, lEnemy, OnTriggerEntity, null);
+
+		exitMatrix.Add(lPlayer, lTerrainTrigger, null, TriggerTileExit);
+		exitMatrix.Add(lEnemy, lTerrainTrigger, null, TriggerTileExit);
 	}
 
 	public void AddCollisionRule(Entity a, Entity b)
@@ -73,6 +79,31 @@ public sealed class RoomEntities
 	public void RemoveCollisionRules(Entity entity)
 	{
 		collisionRules.Remove(entity);
+	}
+
+	// Adds colliders for all tiles that require them in this room.
+	public void Generate()
+	{
+		Assert.IsFalse(hasColliders);
+		ColliderPool pool = World.Instance.ColliderPool;
+
+		for (int y = 0; y < room.SizeY; y++)
+		{
+			for (int x = 0; x < room.SizeX; x++)
+			{
+				Tile tile = room.GetTile(x, y);
+				TileProperties data = tile.Properties;
+
+				if (data.hasCollider)
+				{
+					TileCollider col = pool.GetCollider(tile, colliders);
+					Vector2 size = data.colliderSize;
+					col.SetInfo(size, data.trigger, x, y, data.colliderOffset);
+				}
+			}
+		}
+
+		hasColliders = true;
 	}
 
 	private Vector2 GetKnockbackDir(Entity pusher, Entity other, KnockbackType type)
@@ -133,29 +164,30 @@ public sealed class RoomEntities
 			case TileType.Portal:
 			{
 				if (entity.Type == EntityType.Player)
-					manager.ChangeLevel(LevelType.Plains);
-			} break;
+					World.Instance.BeginNewSection(RoomType.Plains);
+			}
+			break;
 
 			case TileType.PlainsDoor:
 			{
 				if (entity.Type == EntityType.Player)
-					manager.ChangeLevel(LevelType.Dungeon);
-			} break;
+					World.Instance.BeginNewSection(Vec2i.Directions[Direction.Front], RoomType.Dungeon);
+			}
+			break;
 
 			case TileType.DungeonDoor:
 			{
 				if (entity.Type == EntityType.Player)
-					manager.ChangeLevel(LevelType.Plains);
-			} break;
+					World.Instance.BeginNewSection(Vec2i.Directions[Direction.Back], RoomType.Plains);
+			}
+			break;
 
 			case TileType.Spikes:
 			{
-				if (!entity.HasFlag(EntityFlags.Invincible) && !effects.Exists(entity, OTEffectType.Spikes))
-				{
-					OTEffect effect = new OTEffect(OTEffectType.Spikes, 0.0f);
-					effects.Add(entity, effect);
-				}
-			} break;
+				if (!entity.HasFlag(EntityFlags.Invincible))
+					room.Entities.AddOTEffect(entity, OTEffectType.Spikes);
+			}
+			break;
 		}
 	}
 
@@ -164,7 +196,7 @@ public sealed class RoomEntities
 		switch (tile.id)
 		{
 			case TileType.Spikes:
-				effects.Remove(entity, OTEffectType.Spikes);
+				room.Entities.RemoveOTEffect(entity, OTEffectType.Spikes);
 				break;
 		}
 	}
@@ -185,7 +217,7 @@ public sealed class RoomEntities
 
 	public void TrackCollision(Entity a, int layerA, Entity b, int layerB)
 	{
-		TrackCollisionInternal(entityCollisions, a, layerA, b, layerB,  default(Tile), 0);
+		TrackCollisionInternal(entityCollisions, a, layerA, b, layerB, default(Tile), 0);
 	}
 
 	public void TrackCollision(Entity a, int layerA, Tile tile, int tileLayer)
@@ -280,107 +312,23 @@ public sealed class RoomEntities
 		ClearTrackedCollisions(tileCollisions, entity);
 	}
 
-	public Entity FireProjectile(Vector2 start, int facing, EntityType type)
+	public void Enable()
 	{
-		Queue<Entity> queue = projectiles[(int)type % projectiles.Length];
-
-		Entity proj;
-
-		if (queue.Count > 0)
-		{
-			proj = queue.Dequeue();
-			proj.gameObject.SetActive(true);
-		}
-		else proj = Object.Instantiate(entityPrefabs[(int)type]).GetComponent<Entity>();
-
-		proj.facing = facing;
-		proj.transform.rotation = Quaternion.Euler(Vector3.forward * Direction.Rotations[facing]);
-
-		start.y += 0.3f;
-		Vec2i roomP = ToRoomPos(start);
-		SpawnEntity(proj, roomP, start);
-
-		return proj;
+		Generate();
 	}
 
-	public void ReturnProjectile(Entity projectile)
+	public void Disable()
 	{
-		Queue<Entity> queue = projectiles[(int)projectile.Type % projectiles.Length];
-		projectile.gameObject.SetActive(false);
-		queue.Enqueue(projectile);
+		RemoveColliders();
 	}
 
-	public void SpawnPlayer()
+	// Removes all colliders for this room.
+	public void RemoveColliders()
 	{
-		SpawnPoint spawn = world.SpawnPoint;
-		SpawnEntity(playerEntity, spawn.room, spawn.cell, spawn.facing);
-		player.OnSpawn();
-	}
-
-	public void Update(TileCollision collision)
-	{
-		Transform camera = Camera.main.transform;
-		Vec2i camRoomP = ToRoomPos(camera.position);
-
-		// Generate colliders.
-		for (int y = camRoomP.y - 2; y <= camRoomP.y + 2; y++)
+		if (hasColliders)
 		{
-			for (int x = camRoomP.x - 2; x <= camRoomP.x + 2; x++)
-			{
-				Room room = world.GetRoom(x, y);
-				room?.GenerateColliders(collision);
-			}
+			World.Instance.ColliderPool.ReturnColliders(colliders);
+			hasColliders = false;
 		}
-
-		// Update entities.
-		for (int y = camRoomP.y - 1; y <= camRoomP.y + 1; y++)
-		{
-			for (int x = camRoomP.x - 1; x <= camRoomP.x + 1; x++)
-			{
-				Room room = world.GetRoom(x, y);
-				room?.GetActiveEntities(activeEntities);
-			}
-		}
-
-		RunCollisions();
-
-		// Apply all over-time effects.
-		effects.Apply(world);
-
-		for (int i = 0; i < activeEntities.Count; i++)
-		{
-			Entity entity = activeEntities[i];
-			entity.UpdateEntity(world);
-
-			if (entity.HasFlag(EntityFlags.Dead))
-				deadEntities.Add(entity);
-		}
-
-		for (int i = 0; i < deadEntities.Count; i++)
-			deadEntities[i].KillEntity();
-
-		activeEntities.Clear();
-		deadEntities.Clear();
-
-		if (playerEntity.HasFlag(EntityFlags.Dead))
-		{
-			// Update the player's respawn time here instead of in UpdateComponent() since
-			// UpdateComponent() requires that the player is inside the room to be called.
-			player.RespawnTime -= Time.deltaTime;
-
-			if (player.RespawnTime <= 0.0f)
-			{
-				SpawnPlayer();
-				playerEntity.UnsetFlag(EntityFlags.Dead);
-			}
-		}
-	}
-
-	public void Destroy()
-	{
-		GameObject[] objects = GameObject.FindGameObjectsWithTag("Disposable");
-
-		for (int i = 0; i < objects.Length; i++)
-			GameObject.Destroy(objects[i]);
 	}
 }

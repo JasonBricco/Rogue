@@ -6,8 +6,8 @@ using UnityEngine;
 
 public sealed class TileLight : MonoBehaviour, ITileSet
 {
-	public void OnSet(Vec2i tPos, TileComponent tc)
+	public void OnSet(Room room, int x, int y, TileComponent tc)
 	{
-		Instantiate(tc.LightPrefab, new Vector3(tPos.x + 0.5f, tPos.y + 0.5f), Quaternion.identity);
+		Instantiate(tc.LightPrefab, new Vector3(x + 0.5f, y + 0.5f), Quaternion.identity);
 	}
 }

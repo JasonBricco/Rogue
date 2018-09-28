@@ -17,6 +17,16 @@ public static class Utils
 		return v * v;
 	}
 
+	public static Vec2i TilePos(float x, float y)
+	{
+		return new Vec2i(RoundToInt(x), RoundToInt(y));
+	}
+
+	public static Vec2i TilePos(Vector2 p)
+	{
+		return TilePos(p.x, p.y);
+	}
+
 	public static int GetNumericDir(Vec2i dir)
 	{
 		if (Abs(dir.x) > Abs(dir.y))

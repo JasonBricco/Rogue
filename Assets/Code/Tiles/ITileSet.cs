@@ -4,5 +4,5 @@
 
 public interface ITileSet
 {
-	void OnSet(int x, int y, TileComponent tc);
+	void OnSet(Room room, int x, int y, TileComponent tc);
 }

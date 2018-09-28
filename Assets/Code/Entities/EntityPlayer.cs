@@ -11,6 +11,7 @@ public sealed class EntityPlayer : MonoBehaviour
 	private Entity entity;
 	private EntityHealth entityHealth;
 	private EntityTimer timer;
+	private World world;
 
 	private EntityType projectile = EntityType.Arrow;
 	public float RespawnTime { get; set; }
@@ -25,6 +26,11 @@ public sealed class EntityPlayer : MonoBehaviour
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
 		entity.ListenForEvent(EntityEvent.Kill, Kill);
 		entity.ListenForEvent(EntityEvent.HealthChanged, HealthChanged);
+	}
+
+	private void Start()
+	{
+		world = World.Instance;
 	}
 
 	public void OnSpawn()
@@ -61,8 +67,8 @@ public sealed class EntityPlayer : MonoBehaviour
 			if (fireDir != Vec2i.Zero)
 			{
 				entity.facing = GetNumericDir(fireDir);
-				Entity proj = entity.Entities.FireProjectile(entity.Pos + fireDir.ToVector2(), GetNumericDirFull(fireDir), projectile);
-				entity.Entities.AddCollisionRule(proj, entity);
+				Entity proj = world.Room.Entities.FireProjectile(entity.Pos + fireDir.ToVector2(), GetNumericDirFull(fireDir), projectile);
+				world.Room.Collision.AddCollisionRule(proj, entity);
 				timer.SetValue(0.25f);
 			}
 		}

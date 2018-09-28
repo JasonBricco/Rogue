@@ -49,7 +49,7 @@ public sealed class OTEffects
 		return false;
 	}
 
-	private bool ApplyEffect(Entity entity, World level, OTEffectType type, ref float timer)
+	private bool ApplyEffect(Entity entity, OTEffectType type, ref float timer)
 	{
 		switch (type)
 		{
@@ -63,7 +63,7 @@ public sealed class OTEffects
 		return true;
 	}
 
-	public void Apply(World level)
+	public void Apply()
 	{
 		foreach (var pair in effects)
 		{
@@ -77,7 +77,7 @@ public sealed class OTEffects
 
 				if (effect.timer <= 0.0f)
 				{
-					if (!ApplyEffect(entity, level, effect.type, ref effect.timer))
+					if (!ApplyEffect(entity, effect.type, ref effect.timer))
 						effects.RemoveAt(i);
 					else effects[i] = effect;
 				}

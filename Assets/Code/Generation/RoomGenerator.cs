@@ -2,9 +2,9 @@
 // Copyright (c) 2018 Jason Bricco
 //
 
-public abstract class RoomGenerator
+public class RoomGenerator
 {
-	public abstract Vec2i SpawnCell();
-	public abstract void Init(World world);
-	public abstract void Generate(World world, Vec2i roomP, RoomEntities entities);
+	protected static bool firstRoom = true;
+
+	public virtual void Generate(Room room, Vec2i roomP, bool initial) { }
 }

@@ -34,16 +34,9 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 
 	private Transform t;
 
-	public RoomEntities Entities { get; private set; }
-
 	public Vector2 Pos
 	{
 		get { return t.position; }
-	}
-
-	public Vec2i TilePos
-	{
-		get { return TilePos(t.position); }
 	}
 
 	public Vector2 FacingDir
@@ -51,12 +44,10 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		get { return velocity.normalized; }
 	}
 
-	public void Init(RoomEntities entities, Room room)
+	public void Init(Room room)
 	{
 		t = GetComponent<Transform>();
 		controller = GetComponent<CharacterController>();
-
-		Entities = entities;
 
 		speed = defaultSpeed;
 		Room = room;
@@ -99,37 +90,24 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	}
 
 	// Updates all updatable entity components and ensures the entity is in the correct room.
-	public void UpdateEntity(World level)
+	public void UpdateEntity()
 	{
 		InvokeEvent(EntityEvent.Update);
-
-		Vec2i roomP = ToRoomPos(TilePos);
-
-		if (roomP != Room.Pos)
-		{
-			Room.RemoveEntity(this);
-			Room newRoom = level.GetRoom(roomP);
-			newRoom.AddEntity(this);
-			Room = newRoom;
-			InvokeEvent(EntityEvent.RoomChanged);
-		}
 	}
 
-	/// <summary>
-	/// Destroys the entity. The kill behavior is defined by the entity's components.
-	/// Removes the entity from its room and clears its collision rules.
-	/// </summary>
+	// Destroys the entity. The kill behavior is defined by the entity's components.
+	// Removes the entity from its room and clears its collision rules.
 	public void KillEntity()
 	{
-		Room.RemoveEntity(this);
-		Entities.RemoveCollisionRules(this);
-		Entities.RemoveOTEffects(this);
-		Entities.ClearTrackedCollisions(this);
+		Room.Entities.Remove(this);
+		Room.Collision.RemoveCollisionRules(this);
+		Room.Entities.RemoveOTEffects(this);
+		Room.Collision.ClearTrackedCollisions(this);
 
 		InvokeEvent(EntityEvent.Kill);
 	}
 
-	// Moves the entity using the given accel. Accel represents the move direcction and should 
+	// Moves the entity using the given accel. Accel represents the move direction and should 
 	// have values in the range -1 to 1.
 	public Vector2 Move(Vector2 accel)
 	{

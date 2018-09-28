@@ -16,29 +16,31 @@ public sealed class EntityCollisionHandler : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
+		Room room = World.Instance.Room;
 		Entity target = other.GetComponentInParent<Entity>();
 
 		if (target != null)
-			entity.Entities.TrackCollision(entity, gameObject.layer, target, other.gameObject.layer);
+			room.Collision.TrackCollision(entity, gameObject.layer, target, other.gameObject.layer);
 		else
 		{
 			TileCollider tileCollider = other.GetComponent<TileCollider>();
 			Assert.IsNotNull(tileCollider);
-			entity.Entities.TrackCollision(entity, gameObject.layer, tileCollider.tile, other.gameObject.layer);
+			room.Collision.TrackCollision(entity, gameObject.layer, tileCollider.tile, other.gameObject.layer);
 		}
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
+		Room room = World.Instance.Room;
 		Entity target = other.GetComponentInParent<Entity>();
 
 		if (target != null)
-			entity.Entities.RemoveCollision(entity, gameObject.layer, target, other.gameObject.layer);
+			room.Collision.RemoveCollision(entity, gameObject.layer, target, other.gameObject.layer);
 		else
 		{
 			TileCollider tileCollider = other.GetComponent<TileCollider>();
 			Assert.IsNotNull(tileCollider);
-			entity.Entities.RemoveCollision(entity, gameObject.layer, tileCollider.tile, other.gameObject.layer);
+			room.Collision.RemoveCollision(entity, gameObject.layer, tileCollider.tile, other.gameObject.layer);
 		}
 	}
 }

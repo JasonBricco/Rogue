@@ -10,27 +10,12 @@ public sealed class GenDungeon : RoomGenerator
 {
 	private const int MainLayer = 0, FloorLayer = 1;
 
-	private Dictionary<Vec2i, List<Vec2i>> exitPoints = new Dictionary<Vec2i, List<Vec2i>>();
-	HashSet<Vec2i> invalid = new HashSet<Vec2i>();
-
-	private bool needsEntrance;
 	private bool familiarSpawned;
 
-	public override void Init(World world, bool needsEntrance)
+	public override void Generate(Room room, Vec2i roomP, bool initial)
 	{
-		this.needsEntrance = needsEntrance;
-		world.SetLightMode(false);
-	}
-
-	public override Vec2i SpawnCell()
-	{
-		
-	}
-
-	public override void Generate(World world, Vec2i roomP, RoomEntities entities)
-	{
-		invalid.Add(roomP);
-		Room room = world.CreateRoom(roomP.x, roomP.y, 2, MainLayer, 32, 18);
+		World.Instance.SetLightMode(false);
+		room.Init(roomP, 2, MainLayer, 32, 18);
 
 		for (int x = 2; x <= room.LimX - 2; x++)
 		{
@@ -75,7 +60,21 @@ public sealed class GenDungeon : RoomGenerator
 		{
 			int pX = Random.Range(room.HalfX - 4, room.HalfX + 5);
 			int pY = Random.Range(room.HalfY - 3, room.HalfY + 4);
-			entities.SpawnEntity(EntityType.Mole, new Vec2i(pX, pY));
+			room.Entities.SpawnEntity(EntityType.Mole, new Vec2i(pX, pY));
+		}
+
+		if (initial)
+		{
+			room.SetTile(25, 11, MainLayer, TileType.Torch);
+			room.SetTile(room.HalfX, 0, MainLayer, new Tile(TileType.DungeonDoor, 0));
+
+			for (int y = 0; y <= 1; y++)
+			{
+				room.SetTile(room.HalfX - 1, y, MainLayer, TileType.Barrier);
+				room.SetTile(room.HalfX + 1, y, MainLayer, TileType.Barrier);
+			}
+
+			World.Instance.SpawnPoint = new SpawnPoint(room.HalfX, 1, Direction.Front);
 		}
 
 		List<Vec2i> possibleRooms = new List<Vec2i>(4)
@@ -90,7 +89,7 @@ public sealed class GenDungeon : RoomGenerator
 		for (int i = 0; i < possibleRooms.Count; i++)
 		{
 			List<Vec2i> points;
-			if (exitPoints.TryGetValue(possibleRooms[i], out points))
+			if (World.Instance.TryGetExit(possibleRooms[i], out points))
 			{
 				for (int p = 0; p < points.Count; p++)
 					AddConnection(room, points[p], roomP - possibleRooms[i]);
@@ -99,7 +98,7 @@ public sealed class GenDungeon : RoomGenerator
 
 		for (int i = possibleRooms.Count - 1; i >= 0; i--)
 		{
-			if (invalid.Contains(possibleRooms[i]))
+			if (World.Instance.RoomExists(possibleRooms[i]))
 				possibleRooms.RemoveAt(i);
 		}
 
@@ -133,7 +132,7 @@ public sealed class GenDungeon : RoomGenerator
 		{
 			if (Random.value < 0.05f)
 			{
-				entities.SpawnEntity(EntityType.Familiar, new Vec2i(27, 13));
+				room.Entities.SpawnEntity(EntityType.Familiar, new Vec2i(27, 13));
 				familiarSpawned = true;
 			}
 		}
@@ -161,21 +160,7 @@ public sealed class GenDungeon : RoomGenerator
 				room.SetTile(pos.x, y, FloorLayer, TileType.DungeonFloor);
 			}
 		}
-	}
 
-	public override void Generate(World level, RoomEntities entities, out SpawnPoint spawnPoint)
-	{
-		Room spawn = level.GetRoom(spawnPoint.room);
-		spawn.SetTile(25, 11, MainLayer, TileType.Torch);
-		spawn.SetTile(Room.HalfSizeX, 0, MainLayer, new Tile(TileType.DungeonDoor, 0));
-
-		for (int y = 0; y <= 1; y++)
-		{
-			spawn.SetTile(Room.HalfSizeX - 1, y, MainLayer, TileType.Barrier);
-			spawn.SetTile(Room.HalfSizeX + 1, y, MainLayer, TileType.Barrier);
-		}
-
-			// TODO: depends on room.
 		Camera.main.GetComponent<GameCamera>().SetFollow(false);
 	}
 }

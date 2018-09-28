@@ -5,7 +5,6 @@
 public enum EntityEvent
 {
 	Update,
-	RoomChanged,
 	Kill,
 	HealthChanged,
 	Count

@@ -6,31 +6,19 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using System.Collections.Generic;
 using System;
-using System.IO;
 using System.Linq;
 using Random = UnityEngine.Random;
 
 public sealed class World : MonoBehaviour
 {
-	private Entity[] entityPrefabs;
+	[SerializeField] private Entity[] entityPrefabs;
 
 	public Room Room { get; private set; }
-	private RoomEntities entities;
-
-	private Queue<Entity>[] projectiles;
-
-	private CollisionMatrix collisionMatrix = new CollisionMatrix();
-	private CollisionMatrix exitMatrix = new CollisionMatrix();
 
 	private const int MaxRecent = 10;
 	private Queue<Vec2i> recentRooms = new Queue<Vec2i>(MaxRecent);
 
-	// Stores all active over-time effects within the world.
-	private OTEffects effects = new OTEffects();
-
-	private TileCollision collision;
-
-	private string dataPath;
+	public ColliderPool ColliderPool { get; private set; }
 
 	private RoomGenerator[] generators =
 	{
@@ -43,46 +31,38 @@ public sealed class World : MonoBehaviour
 
 	private void Start()
 	{
-		dataPath = Application.persistentDataPath + "/World/";
-		collision = new TileCollision(transform);
+		ColliderPool = new ColliderPool(transform);
 		Array.Sort(entityPrefabs);
 	}
 
-	private SpawnPoint spawnPoint;
-
-	public SpawnPoint SpawnPoint
-	{
-		get { return spawnPoint; }
-	}
+	public SpawnPoint SpawnPoint { get; set; }
 
 	private bool isDark;
 
 	private GameCamera cam;
 
+	private Dictionary<Vec2i, Room> loadedRooms = new Dictionary<Vec2i, Room>();
+
+	// Stores the positions of each exit point for each room (key). This ensures rooms will
+	// connect properly to each other.
+	private Dictionary<Vec2i, List<Vec2i>> exitPoints = new Dictionary<Vec2i, List<Vec2i>>();
+
+	public static World Instance { get; private set; }
+
 	public World()
 	{
-		entities = new RoomEntities(this);
+		Instance = this;
 
-		int projectileCount = 0;
-
-		for (int i = 0; i < entityPrefabs.Length; i++)
-		{
-			if (entityPrefabs[i].GetComponent<EntityProjectile>() != null)
-				projectileCount++;
-		}
-
-		projectiles = new Queue<Entity>[projectileCount];
-
-		for (int i = 0; i < projectileCount; i++)
-			projectiles[i] = new Queue<Entity>();
-
-		BuildCollisionMatrices();
-
-		generator.Generate(this, entities, out spawnPoint);
-		entities.SpawnPlayer();
+		BeginNewSection(RoomType.Plains);
+		Room.Entities.SpawnPlayer();
 
 		cam = Camera.main.GetComponent<GameCamera>();
 		cam.MoveToPlayer();
+	}
+
+	public int EntityPrefabCount()
+	{
+		return entityPrefabs.Length;
 	}
 
 	public Entity EntityPrefab(EntityType type)
@@ -90,25 +70,19 @@ public sealed class World : MonoBehaviour
 		return entityPrefabs[(int)type];
 	}
 
-	private void BuildCollisionMatrices()
+	public Entity EntityPrefab(int i)
 	{
-		int lPlayer = LayerMask.NameToLayer("Player");
-		int lEnemy = LayerMask.NameToLayer("Enemy");
-		int lProjectile = LayerMask.NameToLayer("Projectile");
-		int lTerrain = LayerMask.NameToLayer("Terrain");
-		int lTerrainTrigger = LayerMask.NameToLayer("Terrain Trigger");
+		return entityPrefabs[i];
+	}
 
-		collisionMatrix.Add(lPlayer, lTerrainTrigger, null, entities.OnTriggerTile);
-		collisionMatrix.Add(lEnemy, lTerrainTrigger, null, entities.OnTriggerTile);
+	public bool RoomExists(Vec2i pos)
+	{
+		return loadedRooms.ContainsKey(pos);
+	}
 
-		collisionMatrix.Add(lProjectile, lTerrain, null, entities.KillOnCollide);
-		collisionMatrix.Add(lProjectile, lPlayer, entities.OnTriggerEntity, null);
-		collisionMatrix.Add(lProjectile, lEnemy, entities.OnTriggerEntity, null);
-
-		collisionMatrix.Add(lPlayer, lEnemy, entities.OnTriggerEntity, null);
-
-		exitMatrix.Add(lPlayer, lTerrainTrigger, null, entities.TriggerTileExit);
-		exitMatrix.Add(lEnemy, lTerrainTrigger, null, entities.TriggerTileExit);
+	public bool TryGetExit(Vec2i pos, out List<Vec2i> list)
+	{
+		return exitPoints.TryGetValue(pos, out list);
 	}
 
 	// Returns a random room position out of the last loaded rooms.
@@ -118,54 +92,74 @@ public sealed class World : MonoBehaviour
 		return recentRooms.ElementAt(index);
 	}
 
-	public Room CreateRoom(int x, int y, int layers, int mainLayer, int sizeX, int sizeY)
+	public void NewRoom()
 	{
-		Room room = new Room(x, y, layers, mainLayer, sizeX, sizeY);
-		this.Room = room;
+		Room = new Room();
 
 		if (recentRooms.Count > MaxRecent)
 			recentRooms.Dequeue();
 
-		recentRooms.Enqueue(room.Pos);
-		return room;
+		recentRooms.Enqueue(Room.Pos);
+		loadedRooms.Add(Room.Pos, Room);
 	}
 
 	public void Update()
 	{
-		entities.Update(collision);
 		cam.SetPosition();
-
-		if (!Room.built)
-			Room.BuildMeshes();
-
-		Room.Draw();
+		Room.Update();
 
 		if (Input.GetKeyDown(KeyCode.Tab))
 			SetLightMode(!isDark);
 	}
 
-	public void RemoveOTEffects(Entity entity)
-	{
-		effects.RemoveAll(entity);
-	}
-
-	public void LoadRoom(Vec2i pos)
+	public void LoadRoom(Vec2i pos, bool initial)
 	{
 		Assert.IsTrue(pos != Room.Pos);
 
-		Room.Destroy(collision);
-		entities.Destroy();
+		Room.Entities.RemovePlayer();
+		Room.Disable();
 
-		if (File.Exists(dataPath + pos.ToPathString()))
+		Room newRoom;
+		if (loadedRooms.TryGetValue(pos, out newRoom))
 		{
+			Room = newRoom;
+			newRoom.Enable();
 
+			if (initial)
+				SpawnPoint = Room.Spawn;
 		}
 		else
 		{
-			generator.Generate();
+			NewRoom();
+			generator.Generate(Room, pos, initial);
 		}
 
-		GC.Collect();
+		newRoom.Entities.AddPlayer();
+	}
+
+	public void ChangeRoomType(RoomType type)
+	{
+		generator = generators[(int)type];
+	}
+
+	public void BeginNewSection(Vec2i dir, RoomType type)
+	{
+		ChangeRoomType(type);
+		LoadRoom(Room.Pos + dir, true);
+		Room.Entities.MovePlayerTo(SpawnPoint.cell, SpawnPoint.facing);
+	}
+
+	public void BeginNewSection(RoomType type)
+	{
+		Room.Entities.RemovePlayer();
+
+		foreach (Room room in loadedRooms.Values)
+			room.Destroy();
+
+		ChangeRoomType(type);
+		NewRoom();
+		generator.Generate(Room, Vec2i.Zero, true);
+		Room.Entities.MovePlayerTo(SpawnPoint.cell, SpawnPoint.facing);
 	}
 
 	public void SetLightMode(bool dark)
