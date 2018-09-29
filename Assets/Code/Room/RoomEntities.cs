@@ -8,10 +8,6 @@ using System.Collections.Generic;
 
 public sealed class RoomEntities
 {
-	// Entities are flagged to be removed. Their removal is deferred to the 
-	// end of the frame using this list, to prevent issues while iterating the entities.
-	private List<Entity> deadEntities = new List<Entity>();
-
 	// All entities belonging to this room.
 	private List<Entity> entities = new List<Entity>();
 
@@ -81,7 +77,7 @@ public sealed class RoomEntities
 	private void SpawnEntity(Entity entity, Vector2 pos, int facing = 0)
 	{
 		room.Entities.Add(entity);
-		entity.Init(room);
+		entity.Init();
 		entity.MoveTo(pos);
 		entity.facing = facing;
 	}
@@ -157,20 +153,6 @@ public sealed class RoomEntities
 	{
 		// Apply all over-time effects.
 		effects.Apply();
-
-		for (int i = 0; i < entities.Count; i++)
-		{
-			Entity entity = entities[i];
-			entity.UpdateEntity();
-
-			if (entity.HasFlag(EntityFlags.Dead))
-				deadEntities.Add(entity);
-		}
-
-		for (int i = 0; i < deadEntities.Count; i++)
-			deadEntities[i].KillEntity();
-
-		deadEntities.Clear();
 
 		if (playerEntity.HasFlag(EntityFlags.Dead))
 		{

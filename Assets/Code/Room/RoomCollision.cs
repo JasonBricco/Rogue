@@ -26,8 +26,8 @@ public class RoomCollision
 	private List<TrackedCollision> tileCollisions = new List<TrackedCollision>();
 
 	// The collision matrices should be shared among all rooms and only defined once.
-	private static CollisionMatrix collisionMatrix = new CollisionMatrix();
-	private static CollisionMatrix exitMatrix = new CollisionMatrix();
+	private static CollisionMatrix collisionMatrix;
+	private static CollisionMatrix exitMatrix;
 
 	public RoomCollision(Room room)
 	{
@@ -47,6 +47,9 @@ public class RoomCollision
 
 	private void BuildCollisionMatrices()
 	{
+		collisionMatrix = new CollisionMatrix();
+		exitMatrix = new CollisionMatrix();
+
 		int lPlayer = LayerMask.NameToLayer("Player");
 		int lEnemy = LayerMask.NameToLayer("Enemy");
 		int lProjectile = LayerMask.NameToLayer("Projectile");
@@ -184,8 +187,10 @@ public class RoomCollision
 
 			case TileType.Spikes:
 			{
+				// Because the collision matrices are shared, we cannot rely on our stored room reference
+				// in this method. We must always get it directly from the world.
 				if (!entity.HasFlag(EntityFlags.Invincible))
-					room.Entities.AddOTEffect(entity, OTEffectType.Spikes);
+					World.Instance.Room.Entities.AddOTEffect(entity, OTEffectType.Spikes);
 			}
 			break;
 		}
@@ -196,7 +201,7 @@ public class RoomCollision
 		switch (tile.id)
 		{
 			case TileType.Spikes:
-				room.Entities.RemoveOTEffect(entity, OTEffectType.Spikes);
+				World.Instance.Room.Entities.RemoveOTEffect(entity, OTEffectType.Spikes);
 				break;
 		}
 	}

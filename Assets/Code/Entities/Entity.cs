@@ -30,8 +30,6 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 
 	private CharacterController controller;
 
-	public Room Room { get; private set; }
-
 	private Transform t;
 
 	public Vector2 Pos
@@ -44,13 +42,12 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		get { return velocity.normalized; }
 	}
 
-	public void Init(Room room)
+	public void Init()
 	{
 		t = GetComponent<Transform>();
 		controller = GetComponent<CharacterController>();
 
 		speed = defaultSpeed;
-		Room = room;
 	}
 
 	public void SetFlag(EntityFlags flag)
@@ -90,19 +87,23 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	}
 
 	// Updates all updatable entity components and ensures the entity is in the correct room.
-	public void UpdateEntity()
+	private void Update()
 	{
 		InvokeEvent(EntityEvent.Update);
+
+		if (HasFlag(EntityFlags.Dead))
+			Kill();
 	}
 
 	// Destroys the entity. The kill behavior is defined by the entity's components.
 	// Removes the entity from its room and clears its collision rules.
-	public void KillEntity()
+	public void Kill()
 	{
-		Room.Entities.Remove(this);
-		Room.Collision.RemoveCollisionRules(this);
-		Room.Entities.RemoveOTEffects(this);
-		Room.Collision.ClearTrackedCollisions(this);
+		Room room = World.Instance.Room;
+		room.Entities.Remove(this);
+		room.Collision.RemoveCollisionRules(this);
+		room.Entities.RemoveOTEffects(this);
+		room.Collision.ClearTrackedCollisions(this);
 
 		InvokeEvent(EntityEvent.Kill);
 	}

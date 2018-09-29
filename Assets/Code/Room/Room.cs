@@ -28,11 +28,15 @@ public sealed class Room
 	public RoomRenderer Renderer { get; private set; }
 	public RoomEntities Entities { get; private set; }
 
-	public Room()
+	private bool disabled;
+
+	public Room(Vec2i pos)
 	{
 		Collision = new RoomCollision(this);
 		Renderer = new RoomRenderer(this);
 		Entities = new RoomEntities(this);
+
+		Pos = pos;
 	}
 
 	public void Init(Vec2i pos, int layers, int mainLayer, int sizeX, int sizeY)
@@ -49,8 +53,6 @@ public sealed class Room
 		tiles = new Tile[sizeX * sizeY * layers];
 		Layers = layers;
 		MainLayer = mainLayer;
-
-		Pos = pos;
 	}
 
 	// Returns a tile at the given location from this room. Fails if the location is out of bounds of the room.
@@ -91,6 +93,7 @@ public sealed class Room
 
 	public void Update()
 	{
+		Assert.IsFalse(disabled);
 		Collision.Update();
 		Entities.Update();
 		Renderer.Update();
@@ -102,6 +105,7 @@ public sealed class Room
 	{
 		Collision.Enable();
 		Entities.Enable();
+		disabled = false;
 	}
 
 	// Disables the room so it can exist in memory but not be the active room.
@@ -109,6 +113,7 @@ public sealed class Room
 	{
 		Entities.Disable();
 		Collision.Disable();
+		disabled = true;
 	}
 
 	// Destroys the room, freeing it from memory.

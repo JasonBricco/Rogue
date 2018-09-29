@@ -38,7 +38,7 @@ public sealed class GameCamera : MonoBehaviour
 	// Sets the camera position based on the camera mode. If the camera is following the player,
 	// the camera will move to the player's position. If it isn't, it will center itself within
 	// the room the player is in.
-	public void SetPosition()
+	public void LateUpdate()
 	{
 		if (following)
 		{
@@ -49,8 +49,7 @@ public sealed class GameCamera : MonoBehaviour
 		else
 		{
 			Room room = World.Instance.Room;
-			Vec2i wPos = room.Pos * new Vec2i(room.SizeX, room.SizeY);
-			t.position = new Vector3(wPos.x + room.HalfX, wPos.y + room.HalfY, t.position.z);
+			t.position = new Vector3(room.HalfX, room.HalfY, t.position.z);
 		}
 	}
 

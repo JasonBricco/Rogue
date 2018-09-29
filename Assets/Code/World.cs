@@ -83,7 +83,11 @@ public sealed class World : MonoBehaviour
 
 	public void AddExit(Vec2i room, Vec2i cell)
 	{
-		exitPoints[room].Add(cell);
+		List<Vec2i> list;
+		if (!exitPoints.TryGetValue(room, out list))
+			list = new List<Vec2i>();
+
+		list.Add(cell);
 	}
 
 	public bool TryGetExit(Vec2i pos, out List<Vec2i> list)
@@ -98,9 +102,9 @@ public sealed class World : MonoBehaviour
 		return recentRooms.ElementAt(index);
 	}
 
-	public void NewRoom()
+	public void NewRoom(Vec2i pos)
 	{
-		Room = new Room();
+		Room = new Room(pos);
 
 		if (recentRooms.Count > MaxRecent)
 			recentRooms.Dequeue();
@@ -111,7 +115,6 @@ public sealed class World : MonoBehaviour
 
 	public void Update()
 	{
-		cam.SetPosition();
 		Room.Update();
 
 		if (Input.GetKeyDown(KeyCode.Tab))
@@ -136,13 +139,13 @@ public sealed class World : MonoBehaviour
 		}
 		else
 		{
-			NewRoom();
+			NewRoom(pos);
 			generator.Generate(Room, pos, initial);
 		}
 
 		AdjustBarriers();
 		cam.SetBoundaries();
-		newRoom.Entities.AddPlayer();
+		Room.Entities.AddPlayer();
 	}
 
 	private void AdjustBarriers()
@@ -167,6 +170,7 @@ public sealed class World : MonoBehaviour
 
 	public void BeginNewSection(Vec2i dir, RoomType type)
 	{
+		Assert.IsTrue(dir != Vec2i.Zero);
 		ChangeRoomType(type);
 		LoadRoom(Room.Pos + dir, true);
 		Room.Entities.MovePlayerTo(SpawnPoint.cell, SpawnPoint.facing);
@@ -181,8 +185,8 @@ public sealed class World : MonoBehaviour
 			room.Destroy();
 
 		ChangeRoomType(type);
-		NewRoom();
-		generator.Generate(Room, Vec2i.Zero, true);
+		NewRoom(Vec2i.Zero);
+		generator.Generate(Room, Room.Pos, true);
 		AdjustBarriers();
 		cam.SetBoundaries();
 
