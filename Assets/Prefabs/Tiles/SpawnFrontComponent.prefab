@@ -20,9 +20,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4128022942303582}
   - component: {fileID: 114650601760224922}
-  - component: {fileID: 114033212564225456}
+  - component: {fileID: 114618164466942844}
   m_Layer: 0
-  m_Name: TorchComponent
+  m_Name: SpawnFrontComponent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -41,7 +41,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114033212564225456
+--- !u!114 &114618164466942844
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -49,11 +49,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1553007565737862}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fd8fd16e791217439d986b4ecdc2fe9, type: 3}
+  m_Script: {fileID: 11500000, guid: a2c55e5610246a14d8482aed99acba62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightPrefab: {fileID: 1000012308407584, guid: fcd4bdf83bb21784285a75afb725bc0d,
-    type: 2}
+  facing:
+    x: 0
+    y: 1
 --- !u!114 &114650601760224922
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -66,3 +67,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableOnSet: 1
+  lightPrefab: {fileID: 1000012308407584, guid: fcd4bdf83bb21784285a75afb725bc0d,
+    type: 2}

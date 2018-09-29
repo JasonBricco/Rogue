@@ -148,7 +148,6 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		distRemaining -= delta.magnitude;
 	}
 
-
 	// Performs a simple translation by amount.
 	public Vector2 SimpleMove(Vector2 dir)
 	{

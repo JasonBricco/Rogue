@@ -51,8 +51,13 @@ public sealed class EntityPlayer : MonoBehaviour
 
 	private void UpdateComponent()
 	{
+		Vector3 p = entity.Pos;
+		p.x %= world.Room.SizeX;
+		p.y %= world.Room.SizeY;
+		entity.MoveTo(p);
+			
 		if (Input.GetKeyDown(KeyCode.Alpha1))
-			projectile = EntityType.Arrow;
+		projectile = EntityType.Arrow;
 
 		if (Input.GetKeyDown(KeyCode.Alpha2))
 			projectile = EntityType.PiercingArrow;

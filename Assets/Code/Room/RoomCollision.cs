@@ -164,7 +164,7 @@ public class RoomCollision
 			case TileType.Portal:
 			{
 				if (entity.Type == EntityType.Player)
-					World.Instance.BeginNewSection(RoomType.Plains);
+					World.Instance.BeginNewSection(RoomType.Plains, false);
 			}
 			break;
 

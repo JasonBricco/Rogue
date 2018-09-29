@@ -14,7 +14,7 @@ public sealed class EntityHealth : MonoBehaviour
 
 	private WaitForSeconds wait = new WaitForSeconds(0.1f);
 
-	private void Start()
+	private void Awake()
 	{
 		entity = GetComponent<Entity>();
 		FullHeal();

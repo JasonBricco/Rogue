@@ -5,6 +5,7 @@
 using UnityEngine;
 using System;
 
+[Serializable]
 public struct Vec2i : IEquatable<Vec2i>
 {
 	public int x, y;

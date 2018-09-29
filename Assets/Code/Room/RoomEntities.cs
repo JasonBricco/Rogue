@@ -74,6 +74,7 @@ public sealed class RoomEntities
 
 	public void MovePlayerTo(Vec2i cell, int facing)
 	{
+		Assert.IsNotNull(playerEntity);
 		playerEntity.MoveTo(new Vector2(cell.x + 0.5f, cell.y + 0.5f));
 	}
 
@@ -140,7 +141,7 @@ public sealed class RoomEntities
 		proj.transform.rotation = Quaternion.Euler(Vector3.forward * Direction.Rotations[facing]);
 
 		start.y += 0.3f;
-		SpawnEntity(proj, start);
+		SpawnEntity(proj, start, facing);
 
 		return proj;
 	}

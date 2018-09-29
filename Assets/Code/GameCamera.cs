@@ -3,6 +3,7 @@
 //
 
 using UnityEngine;
+using static UnityEngine.Mathf;
 
 public sealed class GameCamera : MonoBehaviour
 {
@@ -12,10 +13,26 @@ public sealed class GameCamera : MonoBehaviour
 	private Vector3 velocity;
 	private bool following;
 
+	// Boundary values for clamping the camera within the room.
+	private float minX, maxX, minY, maxY;
+
+	private Camera cam;
+
 	private void Awake()
 	{
 		t = GetComponent<Transform>();
 		player = GameObject.FindWithTag("Player").GetComponent<Entity>();
+		cam = GetComponent<Camera>();
+	}
+
+	public void SetBoundaries()
+	{
+		Room room = World.Instance.Room;
+		float width = cam.aspect * cam.orthographicSize * 2.0f;
+		minX = width / 2.0f;
+		maxX = room.SizeX - minX;
+		minY = cam.orthographicSize;
+		maxY = room.SizeY - minY;
 	}
 
 	// Sets the camera position based on the camera mode. If the camera is following the player,
@@ -23,28 +40,24 @@ public sealed class GameCamera : MonoBehaviour
 	// the room the player is in.
 	public void SetPosition()
 	{
-		if (!following)
+		if (following)
 		{
-			Room room = player.Room;
+			Vector3 target = player.Pos;
+			t.position = Vector3.Slerp(t.position, target, 5.0f * Time.deltaTime);
+			t.position = new Vector3(Clamp(t.position.x, minX, maxX), Clamp(t.position.y, minY, maxY), -10.0f);
+		}
+		else
+		{
+			Room room = World.Instance.Room;
 			Vec2i wPos = room.Pos * new Vec2i(room.SizeX, room.SizeY);
 			t.position = new Vector3(wPos.x + room.HalfX, wPos.y + room.HalfY, t.position.z);
 		}
 	}
 
-	// Sets the camera follow mode. If true, the camera will follow the player. If false, it will
-	// be fixed in place and show only the room the player is in.
+	// Sets the camera follow mode. If true, the camera will follow the player. 
+	// If false, it will be fixed in place.
 	public void SetFollow(bool follow)
 	{
-		if (follow)
-		{
-			if (player == null)
-				player = GameObject.FindWithTag("Player").GetComponent<Entity>();
-
-			t.SetParent(player.transform, false);
-			t.position = new Vector3(0.0f, 0.0f, t.position.z);
-		}
-		else t.SetParent(null);
-
 		following = follow;
 	}
 

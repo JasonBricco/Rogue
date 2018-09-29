@@ -11,7 +11,7 @@ public sealed class EntityLight : MonoBehaviour
 
 	private Entity entity;
 
-	private void Start()
+	private void Awake()
 	{
 		entity = GetComponent<Entity>();
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);

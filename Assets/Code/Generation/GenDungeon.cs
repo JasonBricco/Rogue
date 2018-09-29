@@ -143,22 +143,28 @@ public sealed class GenDungeon : RoomGenerator
 		if (Abs(dir.x) > 0)
 		{
 			int startX = room.LimX - 1;
+			int endX = startX + 1;
 
-			for (int x = startX; x < startX + 2; x++)
+			for (int x = startX; x <= endX; x++)
 			{
 				room.SetTile(x, pos.y, MainLayer, TileType.Air);
 				room.SetTile(x, pos.y, FloorLayer, TileType.DungeonFloor);
 			}
+
+			World.Instance.AddExit(room.Pos, new Vec2i(endX, pos.y));
 		}
 		else
 		{
 			int startY = room.LimY - 1;
+			int endY = startY + 1;
 
-			for (int y = startY; y < startY + 4; y++)
+			for (int y = startY; y <= endY; y++)
 			{
 				room.SetTile(pos.x, y, MainLayer, TileType.Air);
 				room.SetTile(pos.x, y, FloorLayer, TileType.DungeonFloor);
 			}
+
+			World.Instance.AddExit(room.Pos, new Vec2i(pos.x, endY));
 		}
 
 		Camera.main.GetComponent<GameCamera>().SetFollow(false);

@@ -3,6 +3,7 @@
 //
 
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public sealed class RoomBarrier : MonoBehaviour
 {
@@ -10,7 +11,10 @@ public sealed class RoomBarrier : MonoBehaviour
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		if (collision.gameObject.GetComponent<Entity>().Type == EntityType.Player)
+		Entity entity = collision.gameObject.GetComponent<Entity>();
+		Assert.IsNotNull(entity);
+
+		if (entity.Type == EntityType.Player)
 		{
 			World world = World.Instance;
 			world.LoadRoom(world.Room.Pos + dir, false);

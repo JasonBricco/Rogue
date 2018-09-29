@@ -49,16 +49,35 @@ public sealed class GenPlains : RoomGenerator
 	{
 		World.Instance.SetLightMode(false);
 
-		room.Init(roomP, 2, MainLayer, 128, 128);
+		room.Init(roomP, 2, MainLayer, 64, 36);
 		SetFloor(room);
 
 		CreatePlateau(room, 0, 0, room.SizeX, room.SizeY);
-		CreatePlateau(room, 59, 59, 69, 69);
 
-		room.SetTile(64, 59, MainLayer, TileType.PlainsDoor);
-		room.SetTile(63, 59, MainLayer, TileType.Barrier);
-		room.SetTile(65, 59, MainLayer, TileType.Barrier);
-		room.SetTile(64, 60, MainLayer, TileType.Barrier);
+		// Raised plateau for the exit door.
+		Vec2i start = new Vec2i(25, 18);
+		Vec2i end = new Vec2i(38, 26);
+		int midX = start.x + (end.x - start.x) / 2;
+
+		CreatePlateau(room, start.x, start.y, end.x, end.y);
+
+		room.SetTile(midX, start.y, MainLayer, TileType.PlainsDoor);
+		room.SetTile(midX - 1, start.y, MainLayer, TileType.Barrier);
+		room.SetTile(midX + 1, start.y, MainLayer, TileType.Barrier);
+		room.SetTile(midX, start.y + 1, MainLayer, TileType.Barrier);
+
+		int enemyCount = Random.Range(8, 14);
+
+		for (int e = 0; e < enemyCount; e++)
+		{
+			int pX = Random.Range(10, 54);
+			int pY = Random.Range(10, 26);
+
+			if (pX >= start.x && pX < end.x && pY >= start.y && pY <= end.y)
+				continue;
+
+			room.Entities.SpawnEntity(EntityType.Wolf, new Vec2i(pX, pY));
+		}
 
 		if (firstRoom)
 		{

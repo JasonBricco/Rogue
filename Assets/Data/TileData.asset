@@ -540,7 +540,8 @@ MonoBehaviour:
       color:
         serializedVersion: 2
         rgba: 0
-      component: {fileID: 0}
+      component: {fileID: 114650601760224922, guid: 641ee5c3443e80648a1eadaf2ac9768d,
+        type: 2}
       spriteIndex: 0
       index: 26
       width: 96
@@ -561,7 +562,8 @@ MonoBehaviour:
       color:
         serializedVersion: 2
         rgba: 0
-      component: {fileID: 0}
+      component: {fileID: 114650601760224922, guid: 15f32587187780b4196813e7eab43bd0,
+        type: 2}
       spriteIndex: 0
       index: 27
       width: 96

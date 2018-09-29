@@ -20,6 +20,10 @@ public sealed class World : MonoBehaviour
 
 	public ColliderPool ColliderPool { get; private set; }
 
+	// Barriers that surround a room. They trap enemies within the room and 
+	// allow the player to load new rooms.
+	[SerializeField] private BoxCollider[] barriers;
+
 	private RoomGenerator[] generators =
 	{
 		new GenPlains(),
@@ -29,10 +33,18 @@ public sealed class World : MonoBehaviour
 	// The active generator.
 	private RoomGenerator generator;
 
+	private void Awake()
+	{
+		Instance = this;
+		ColliderPool = new ColliderPool(transform);
+		cam = Camera.main.GetComponent<GameCamera>();
+		Array.Sort(entityPrefabs);
+	}
+
 	private void Start()
 	{
-		ColliderPool = new ColliderPool(transform);
-		Array.Sort(entityPrefabs);
+		BeginNewSection(RoomType.Plains, true);
+		cam.MoveToPlayer();
 	}
 
 	public SpawnPoint SpawnPoint { get; set; }
@@ -48,17 +60,6 @@ public sealed class World : MonoBehaviour
 	private Dictionary<Vec2i, List<Vec2i>> exitPoints = new Dictionary<Vec2i, List<Vec2i>>();
 
 	public static World Instance { get; private set; }
-
-	public World()
-	{
-		Instance = this;
-
-		BeginNewSection(RoomType.Plains);
-		Room.Entities.SpawnPlayer();
-
-		cam = Camera.main.GetComponent<GameCamera>();
-		cam.MoveToPlayer();
-	}
 
 	public int EntityPrefabCount()
 	{
@@ -78,6 +79,11 @@ public sealed class World : MonoBehaviour
 	public bool RoomExists(Vec2i pos)
 	{
 		return loadedRooms.ContainsKey(pos);
+	}
+
+	public void AddExit(Vec2i room, Vec2i cell)
+	{
+		exitPoints[room].Add(cell);
 	}
 
 	public bool TryGetExit(Vec2i pos, out List<Vec2i> list)
@@ -134,7 +140,24 @@ public sealed class World : MonoBehaviour
 			generator.Generate(Room, pos, initial);
 		}
 
+		AdjustBarriers();
+		cam.SetBoundaries();
 		newRoom.Entities.AddPlayer();
+	}
+
+	private void AdjustBarriers()
+	{
+		barriers[Direction.Left].center = new Vector3(-0.5f, Room.SizeY * 0.5f);
+		barriers[Direction.Left].size = new Vector3(1.0f, Room.SizeY);
+
+		barriers[Direction.Right].center = new Vector3(Room.SizeX + 0.5f, Room.SizeY * 0.5f);
+		barriers[Direction.Right].size = new Vector3(1.0f, Room.SizeY);
+
+		barriers[Direction.Back].center = new Vector3(Room.SizeX * 0.5f, -0.5f);
+		barriers[Direction.Back].size = new Vector3(Room.SizeX, 1.0f);
+
+		barriers[Direction.Front].center = new Vector3(Room.SizeX * 0.5f, Room.SizeY + 0.5f);
+		barriers[Direction.Front].size = new Vector3(Room.SizeX, 1.0f);
 	}
 
 	public void ChangeRoomType(RoomType type)
@@ -149,9 +172,10 @@ public sealed class World : MonoBehaviour
 		Room.Entities.MovePlayerTo(SpawnPoint.cell, SpawnPoint.facing);
 	}
 
-	public void BeginNewSection(RoomType type)
+	public void BeginNewSection(RoomType type, bool spawnPlayer)
 	{
-		Room.Entities.RemovePlayer();
+		if (Room != null)
+			Room.Entities.RemovePlayer();
 
 		foreach (Room room in loadedRooms.Values)
 			room.Destroy();
@@ -159,7 +183,11 @@ public sealed class World : MonoBehaviour
 		ChangeRoomType(type);
 		NewRoom();
 		generator.Generate(Room, Vec2i.Zero, true);
-		Room.Entities.MovePlayerTo(SpawnPoint.cell, SpawnPoint.facing);
+		AdjustBarriers();
+		cam.SetBoundaries();
+
+		if (spawnPlayer) Room.Entities.SpawnPlayer();
+		else Room.Entities.MovePlayerTo(SpawnPoint.cell, SpawnPoint.facing);
 	}
 
 	public void SetLightMode(bool dark)
