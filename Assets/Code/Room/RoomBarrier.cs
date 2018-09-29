@@ -18,6 +18,7 @@ public sealed class RoomBarrier : MonoBehaviour
 		{
 			World world = World.Instance;
 			world.LoadRoom(world.Room.Pos + dir, false);
+			entity.ShiftPosition(dir);
 		}
 	}
 }

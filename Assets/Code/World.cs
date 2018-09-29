@@ -144,28 +144,10 @@ public sealed class World : MonoBehaviour
 		}
 
 		AdjustBarriers();
-		cam.SetBoundaries();
+		cam.UpdateValues();
 		Room.Entities.AddPlayer();
-	}
 
-	private void AdjustBarriers()
-	{
-		barriers[Direction.Left].center = new Vector3(-0.5f, Room.SizeY * 0.5f);
-		barriers[Direction.Left].size = new Vector3(1.0f, Room.SizeY);
-
-		barriers[Direction.Right].center = new Vector3(Room.SizeX + 0.5f, Room.SizeY * 0.5f);
-		barriers[Direction.Right].size = new Vector3(1.0f, Room.SizeY);
-
-		barriers[Direction.Back].center = new Vector3(Room.SizeX * 0.5f, -0.5f);
-		barriers[Direction.Back].size = new Vector3(Room.SizeX, 1.0f);
-
-		barriers[Direction.Front].center = new Vector3(Room.SizeX * 0.5f, Room.SizeY + 0.5f);
-		barriers[Direction.Front].size = new Vector3(Room.SizeX, 1.0f);
-	}
-
-	public void ChangeRoomType(RoomType type)
-	{
-		generator = generators[(int)type];
+		GC.Collect();
 	}
 
 	public void BeginNewSection(Vec2i dir, RoomType type)
@@ -188,10 +170,32 @@ public sealed class World : MonoBehaviour
 		NewRoom(Vec2i.Zero);
 		generator.Generate(Room, Room.Pos, true);
 		AdjustBarriers();
-		cam.SetBoundaries();
+		cam.UpdateValues();
 
 		if (spawnPlayer) Room.Entities.SpawnPlayer();
 		else Room.Entities.MovePlayerTo(SpawnPoint.cell, SpawnPoint.facing);
+
+		GC.Collect();
+	}
+
+	private void AdjustBarriers()
+	{
+		barriers[Direction.Left].center = new Vector3(-0.5f, Room.SizeY * 0.5f);
+		barriers[Direction.Left].size = new Vector3(1.0f, Room.SizeY);
+
+		barriers[Direction.Right].center = new Vector3(Room.SizeX + 0.5f, Room.SizeY * 0.5f);
+		barriers[Direction.Right].size = new Vector3(1.0f, Room.SizeY);
+
+		barriers[Direction.Back].center = new Vector3(Room.SizeX * 0.5f, -0.5f);
+		barriers[Direction.Back].size = new Vector3(Room.SizeX, 1.0f);
+
+		barriers[Direction.Front].center = new Vector3(Room.SizeX * 0.5f, Room.SizeY + 0.5f);
+		barriers[Direction.Front].size = new Vector3(Room.SizeX, 1.0f);
+	}
+
+	public void ChangeRoomType(RoomType type)
+	{
+		generator = generators[(int)type];
 	}
 
 	public void SetLightMode(bool dark)

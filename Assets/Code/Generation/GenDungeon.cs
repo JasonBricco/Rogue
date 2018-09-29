@@ -167,6 +167,6 @@ public sealed class GenDungeon : RoomGenerator
 			World.Instance.AddExit(room.Pos, new Vec2i(pos.x, endY));
 		}
 
-		Camera.main.GetComponent<GameCamera>().SetFollow(false);
+		room.cameraFollow = false;
 	}
 }

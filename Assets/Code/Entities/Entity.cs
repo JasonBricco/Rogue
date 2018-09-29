@@ -42,7 +42,7 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		get { return velocity.normalized; }
 	}
 
-	public void Init()
+	private void Awake()
 	{
 		t = GetComponent<Transform>();
 		controller = GetComponent<CharacterController>();
@@ -179,6 +179,28 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	{
 		if (rooted) return;
 		velocity = dir * force;
+	}
+	
+	public void ShiftPosition(Vec2i loadDir)
+	{
+		switch (GetNumericDir(loadDir))
+		{
+			case Direction.Front:
+				t.SetY(0.5f);
+				break;
+
+			case Direction.Back:
+				t.SetY(World.Instance.Room.SizeY - 0.5f);
+				break;
+
+			case Direction.Left:
+				t.SetX(World.Instance.Room.SizeX - 0.5f);
+				break;
+
+			case Direction.Right:
+				t.SetX(0.5f);
+				break;
+		}
 	}
 
 	public int CompareTo(Entity other)

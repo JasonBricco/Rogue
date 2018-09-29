@@ -20,6 +20,8 @@ public sealed class Room
 
 	public Vec2i Pos { get; private set; }
 
+	public bool cameraFollow;
+
 	private Tile[] tiles;
 
 	public SpawnPoint Spawn { get; set; }

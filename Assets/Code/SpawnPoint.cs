@@ -9,7 +9,7 @@ public struct SpawnPoint
 
 	public SpawnPoint(int x, int y, int facing)
 	{
-		this.cell = new Vec2i(x, y);
+		cell = new Vec2i(x, y);
 		this.facing = facing;
 	}
 }

@@ -11,7 +11,6 @@ public sealed class EntityPlayer : MonoBehaviour
 	private Entity entity;
 	private EntityHealth entityHealth;
 	private EntityTimer timer;
-	private World world;
 
 	private EntityType projectile = EntityType.Arrow;
 	public float RespawnTime { get; set; }
@@ -28,11 +27,6 @@ public sealed class EntityPlayer : MonoBehaviour
 		entity.ListenForEvent(EntityEvent.HealthChanged, HealthChanged);
 	}
 
-	private void Start()
-	{
-		world = World.Instance;
-	}
-
 	public void OnSpawn()
 	{
 		entity.velocity = Vector2.zero;
@@ -41,7 +35,6 @@ public sealed class EntityPlayer : MonoBehaviour
 
 		EntityLight light = GetComponent<EntityLight>();
 		light.MakePersist();
-		light.Enable();
 	}
 
 	private void HealthChanged()
@@ -51,11 +44,8 @@ public sealed class EntityPlayer : MonoBehaviour
 
 	private void UpdateComponent()
 	{
-		Vector3 p = entity.Pos;
-		p.x %= world.Room.SizeX;
-		p.y %= world.Room.SizeY;
-		entity.MoveTo(p);
-			
+		Room room = World.Instance.Room;
+
 		if (Input.GetKeyDown(KeyCode.Alpha1))
 		projectile = EntityType.Arrow;
 
@@ -72,8 +62,8 @@ public sealed class EntityPlayer : MonoBehaviour
 			if (fireDir != Vec2i.Zero)
 			{
 				entity.facing = GetNumericDir(fireDir);
-				Entity proj = world.Room.Entities.FireProjectile(entity.Pos + fireDir.ToVector2(), GetNumericDirFull(fireDir), projectile);
-				world.Room.Collision.AddCollisionRule(proj, entity);
+				Entity proj = room.Entities.FireProjectile(entity.Pos + fireDir.ToVector2(), GetNumericDirFull(fireDir), projectile);
+				room.Collision.AddCollisionRule(proj, entity);
 				timer.SetValue(0.25f);
 			}
 		}
@@ -98,7 +88,6 @@ public sealed class EntityPlayer : MonoBehaviour
 	private void Kill()
 	{
 		GetComponent<EntityImage>().Disable();
-		GetComponent<EntityLight>().Disable();
 		RespawnTime = 2.0f;
 	}
 }

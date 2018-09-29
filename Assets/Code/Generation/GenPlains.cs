@@ -86,7 +86,7 @@ public sealed class GenPlains : RoomGenerator
 		}
 		else if (initial)
 			World.Instance.SpawnPoint = new SpawnPoint(64, 58, Direction.Back);
-		
-		Camera.main.GetComponent<GameCamera>().SetFollow(true);
+
+		room.cameraFollow = true;
 	}
 }

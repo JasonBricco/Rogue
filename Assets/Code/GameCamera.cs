@@ -25,7 +25,7 @@ public sealed class GameCamera : MonoBehaviour
 		cam = GetComponent<Camera>();
 	}
 
-	public void SetBoundaries()
+	public void UpdateValues()
 	{
 		Room room = World.Instance.Room;
 		float width = cam.aspect * cam.orthographicSize * 2.0f;
@@ -33,6 +33,14 @@ public sealed class GameCamera : MonoBehaviour
 		maxX = room.SizeX - minX;
 		minY = cam.orthographicSize;
 		maxY = room.SizeY - minY;
+
+		following = room.cameraFollow;
+		
+		if (following)
+		{
+			t.position = player.Pos;
+			t.SetZ(-10.0f);
+		}
 	}
 
 	// Sets the camera position based on the camera mode. If the camera is following the player,
@@ -43,7 +51,7 @@ public sealed class GameCamera : MonoBehaviour
 		if (following)
 		{
 			Vector3 target = player.Pos;
-			t.position = Vector3.Slerp(t.position, target, 5.0f * Time.deltaTime);
+			t.position = target;
 			t.position = new Vector3(Clamp(t.position.x, minX, maxX), Clamp(t.position.y, minY, maxY), -10.0f);
 		}
 		else
@@ -51,13 +59,6 @@ public sealed class GameCamera : MonoBehaviour
 			Room room = World.Instance.Room;
 			t.position = new Vector3(room.HalfX, room.HalfY, t.position.z);
 		}
-	}
-
-	// Sets the camera follow mode. If true, the camera will follow the player. 
-	// If false, it will be fixed in place.
-	public void SetFollow(bool follow)
-	{
-		following = follow;
 	}
 
 	// Instantly move the camera to the player's location.

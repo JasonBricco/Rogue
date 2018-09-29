@@ -77,7 +77,6 @@ public sealed class RoomEntities
 	private void SpawnEntity(Entity entity, Vector2 pos, int facing = 0)
 	{
 		room.Entities.Add(entity);
-		entity.Init();
 		entity.MoveTo(pos);
 		entity.facing = facing;
 	}
@@ -168,21 +167,30 @@ public sealed class RoomEntities
 		}
 	}
 
+	private GameObject[] GetDisposable()
+	{
+		return GameObject.FindGameObjectsWithTag("Disposable");
+	}
+
 	public void Enable()
 	{
-		for (int i = 0; i < entities.Count; i++)
-			entities[i].gameObject.SetActive(true);
+		GameObject[] objects = GetDisposable();
+
+		for (int i = 0; i < objects.Length; i++)
+			objects[i].SetActive(true);
 	}
 
 	public void Disable()
 	{
-		for (int i = 0; i < entities.Count; i++)
-			entities[i].gameObject.SetActive(false);
+		GameObject[] objects = GetDisposable();
+
+		for (int i = 0; i < objects.Length; i++)
+			objects[i].SetActive(false);
 	}
 
 	public void Destroy()
 	{
-		GameObject[] objects = GameObject.FindGameObjectsWithTag("Disposable");
+		GameObject[] objects = GetDisposable();
 
 		for (int i = 0; i < objects.Length; i++)
 			GameObject.Destroy(objects[i]);

@@ -142,10 +142,12 @@ public class RoomCollision
 				target.ApplyKnockback(GetKnockbackDir(entity, target, effects.KnockbackType), effects.KnockbackForce);
 
 			if (effects.DieOnTouch)
-				entity.SetFlag(EntityFlags.Dead);
-
-			if (effects.AddCollisionRule)
-				AddCollisionRule(entity, target);
+				entity.Kill();
+			else
+			{
+				if (effects.AddCollisionRule)
+					AddCollisionRule(entity, target);
+			}
 		}
 	}
 
@@ -325,6 +327,8 @@ public class RoomCollision
 	public void Disable()
 	{
 		RemoveColliders();
+		entityCollisions.Clear();
+		tileCollisions.Clear();
 	}
 
 	// Removes all colliders for this room.

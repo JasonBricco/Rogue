@@ -28,13 +28,13 @@ public sealed class EntityLight : MonoBehaviour
 		tLight.position = entity.Pos;
 	}
 
-	public void Enable()
+	private void OnEnable()
 	{
 		tLight.position = entity.Pos;
 		tLight.gameObject.SetActive(true);
 	}
 
-	public void Disable()
+	public void OnDisable()
 	{
 		tLight.gameObject.SetActive(false);
 	}
