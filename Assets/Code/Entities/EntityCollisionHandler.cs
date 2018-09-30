@@ -3,7 +3,6 @@
 //
 
 using UnityEngine;
-using UnityEngine.Assertions;
 
 public sealed class EntityCollisionHandler : MonoBehaviour
 {
@@ -24,8 +23,9 @@ public sealed class EntityCollisionHandler : MonoBehaviour
 		else
 		{
 			TileCollider tileCollider = other.GetComponent<TileCollider>();
-			Assert.IsNotNull(tileCollider);
-			room.Collision.TrackCollision(entity, gameObject.layer, tileCollider.tile, other.gameObject.layer);
+			
+			if (tileCollider != null)
+				room.Collision.TrackCollision(entity, gameObject.layer, tileCollider.tile, other.gameObject.layer);
 		}
 	}
 
@@ -39,8 +39,9 @@ public sealed class EntityCollisionHandler : MonoBehaviour
 		else
 		{
 			TileCollider tileCollider = other.GetComponent<TileCollider>();
-			Assert.IsNotNull(tileCollider);
-			room.Collision.RemoveCollision(entity, gameObject.layer, tileCollider.tile, other.gameObject.layer);
+			
+			if (tileCollider != null)
+				room.Collision.RemoveCollision(entity, gameObject.layer, tileCollider.tile, other.gameObject.layer);
 		}
 	}
 }

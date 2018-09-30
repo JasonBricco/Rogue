@@ -5,11 +5,11 @@
 		_MainTex("Texture", 2D) = "white" {}
 	}
 
-		Subshader
+	Subshader
 	{
 		Pass
 		{
-			Tags{ "Queue" = "Opaque" "IgnoreProjector" = "True" "RenderType" = "Opaque" "PreviewType" = "Plane" }
+			Tags { "Queue" = "Opaque" "IgnoreProjector" = "True" "RenderType" = "Opaque" "PreviewType" = "Plane" }
 			Blend OneMinusDstColor One
 			Lighting Off
 			ZWrite Off

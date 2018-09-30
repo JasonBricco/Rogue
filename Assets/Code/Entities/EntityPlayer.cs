@@ -85,6 +85,18 @@ public sealed class EntityPlayer : MonoBehaviour
 		entity.Move(accel.ToVector2());
 	}
 
+	private void OnControllerColliderHit(ControllerColliderHit hit)
+	{
+		RoomBarrier barrier = hit.gameObject.GetComponent<RoomBarrier>();
+
+		if (barrier != null)
+		{
+			World world = World.Instance;
+			world.LoadRoom(world.Room.Pos + barrier.dir, false);
+			entity.ShiftPosition(barrier.dir);
+		}
+	}
+
 	private void Kill()
 	{
 		GetComponent<EntityImage>().Disable();

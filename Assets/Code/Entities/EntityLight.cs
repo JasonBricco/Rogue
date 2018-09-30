@@ -36,6 +36,7 @@ public sealed class EntityLight : MonoBehaviour
 
 	public void OnDisable()
 	{
-		tLight.gameObject.SetActive(false);
+		if (tLight != null)
+			tLight.gameObject.SetActive(false);
 	}
 }

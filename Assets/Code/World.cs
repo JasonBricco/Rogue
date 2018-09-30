@@ -85,7 +85,10 @@ public sealed class World : MonoBehaviour
 	{
 		List<Vec2i> list;
 		if (!exitPoints.TryGetValue(room, out list))
+		{
 			list = new List<Vec2i>();
+			exitPoints[room] = list;
+		}
 
 		list.Add(cell);
 	}
@@ -181,16 +184,16 @@ public sealed class World : MonoBehaviour
 	private void AdjustBarriers()
 	{
 		barriers[Direction.Left].center = new Vector3(-0.5f, Room.SizeY * 0.5f);
-		barriers[Direction.Left].size = new Vector3(1.0f, Room.SizeY);
+		barriers[Direction.Left].size = new Vector3(1.0f, Room.SizeY, 10.0f);
 
 		barriers[Direction.Right].center = new Vector3(Room.SizeX + 0.5f, Room.SizeY * 0.5f);
-		barriers[Direction.Right].size = new Vector3(1.0f, Room.SizeY);
+		barriers[Direction.Right].size = new Vector3(1.0f, Room.SizeY, 10.0f);
 
 		barriers[Direction.Back].center = new Vector3(Room.SizeX * 0.5f, -0.5f);
-		barriers[Direction.Back].size = new Vector3(Room.SizeX, 1.0f);
+		barriers[Direction.Back].size = new Vector3(Room.SizeX, 1.0f, 10.0f);
 
 		barriers[Direction.Front].center = new Vector3(Room.SizeX * 0.5f, Room.SizeY + 0.5f);
-		barriers[Direction.Front].size = new Vector3(Room.SizeX, 1.0f);
+		barriers[Direction.Front].size = new Vector3(Room.SizeX, 1.0f, 10.0f);
 	}
 
 	public void ChangeRoomType(RoomType type)

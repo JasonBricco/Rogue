@@ -66,6 +66,9 @@ public sealed class GenPlains : RoomGenerator
 		room.SetTile(midX + 1, start.y, MainLayer, TileType.Barrier);
 		room.SetTile(midX, start.y + 1, MainLayer, TileType.Barrier);
 
+		start -= 1;
+		end += 1;
+
 		int enemyCount = Random.Range(8, 14);
 
 		for (int e = 0; e < enemyCount; e++)

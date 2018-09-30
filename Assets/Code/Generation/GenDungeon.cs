@@ -92,7 +92,10 @@ public sealed class GenDungeon : RoomGenerator
 			if (World.Instance.TryGetExit(possibleRooms[i], out points))
 			{
 				for (int p = 0; p < points.Count; p++)
-					AddConnection(room, points[p], roomP - possibleRooms[i]);
+				{
+					Vec2i invP = new Vec2i(room.SizeX, room.SizeY) - points[p];
+					AddConnection(room, invP, roomP - possibleRooms[i]);
+				}
 			}
 		}
 

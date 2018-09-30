@@ -103,9 +103,19 @@ public struct Vec2i : IEquatable<Vec2i>
 		return new Vec2i(a.x + b.x, a.y + b.y);
 	}
 
+	public static Vec2i operator +(Vec2i a, int v)
+	{
+		return new Vec2i(a.x + v, a.y + v);
+	}
+
 	public static Vec2i operator -(Vec2i a, Vec2i b)
 	{
 		return new Vec2i(a.x - b.x, a.y - b.y);
+	}
+
+	public static Vec2i operator -(Vec2i a, int v)
+	{
+		return new Vec2i(a.x - v, a.y - v);
 	}
 
 	public static Vec2i operator *(Vec2i a, Vec2i b)
