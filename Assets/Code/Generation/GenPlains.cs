@@ -84,11 +84,11 @@ public sealed class GenPlains : RoomGenerator
 
 		if (firstRoom)
 		{
-			World.Instance.SpawnPoint = new SpawnPoint(4, 4, Direction.Front);
+			World.Instance.SpawnPoint = new SpawnPoint(roomP, 4, 4, Direction.Front);
 			firstRoom = false;
 		}
 		else if (initial)
-			World.Instance.SpawnPoint = new SpawnPoint(64, 58, Direction.Back);
+			World.Instance.SpawnPoint = new SpawnPoint(roomP, 64, 58, Direction.Back);
 
 		room.cameraFollow = true;
 	}

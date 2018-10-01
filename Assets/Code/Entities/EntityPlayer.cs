@@ -31,7 +31,6 @@ public sealed class EntityPlayer : MonoBehaviour
 	{
 		entity.velocity = Vector2.zero;
 		entityHealth.FullHeal();
-		GetComponent<EntityImage>().Enable();
 
 		EntityLight light = GetComponent<EntityLight>();
 		light.MakePersist();
@@ -45,6 +44,9 @@ public sealed class EntityPlayer : MonoBehaviour
 	private void UpdateComponent()
 	{
 		Room room = World.Instance.Room;
+
+		if (Input.GetKey(KeyCode.K))
+			entity.SetFlag(EntityFlags.Dead);
 
 		if (Input.GetKeyDown(KeyCode.Alpha1))
 		projectile = EntityType.Arrow;
@@ -85,21 +87,9 @@ public sealed class EntityPlayer : MonoBehaviour
 		entity.Move(accel.ToVector2());
 	}
 
-	private void OnControllerColliderHit(ControllerColliderHit hit)
-	{
-		RoomBarrier barrier = hit.gameObject.GetComponent<RoomBarrier>();
-
-		if (barrier != null)
-		{
-			World world = World.Instance;
-			world.LoadRoom(world.Room.Pos + barrier.dir, false);
-			entity.ShiftPosition(barrier.dir);
-		}
-	}
-
 	private void Kill()
 	{
-		GetComponent<EntityImage>().Disable();
+		gameObject.SetActive(false);
 		RespawnTime = 2.0f;
 	}
 }

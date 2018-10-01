@@ -16,6 +16,11 @@ public sealed class RoomEntities
 
 	private static Queue<Entity>[] projectiles;
 
+	// Stores disposable objects that are disabled when the room shifts. 
+	// This allows us to enable them again when the room is loaded again,
+	// since FindGameObjectsWithTag() does not find inactive objects.
+	private GameObject[] disposable;
+
 	private Entity playerEntity;
 	private EntityPlayer player;
 	private Room room;
@@ -96,6 +101,10 @@ public sealed class RoomEntities
 	public void SpawnPlayer()
 	{
 		SpawnPoint spawn = World.Instance.SpawnPoint;
+
+		if (spawn.room != room.Pos)
+			World.Instance.LoadRoom(spawn.room, false);
+
 		SpawnEntity(playerEntity, spawn.cell, spawn.facing);
 		player.OnSpawn();
 	}
@@ -162,37 +171,36 @@ public sealed class RoomEntities
 			if (player.RespawnTime <= 0.0f)
 			{
 				SpawnPlayer();
+				playerEntity.gameObject.SetActive(true);
 				playerEntity.UnsetFlag(EntityFlags.Dead);
 			}
 		}
 	}
 
-	private GameObject[] GetDisposable()
+	private void GetDisposable()
 	{
-		return GameObject.FindGameObjectsWithTag("Disposable");
+		disposable = GameObject.FindGameObjectsWithTag("Disposable");
 	}
 
 	public void Enable()
 	{
-		GameObject[] objects = GetDisposable();
-
-		for (int i = 0; i < objects.Length; i++)
-			objects[i].SetActive(true);
+		for (int i = 0; i < disposable.Length; i++)
+			disposable[i].SetActive(true);
 	}
 
 	public void Disable()
 	{
-		GameObject[] objects = GetDisposable();
+		GetDisposable();
 
-		for (int i = 0; i < objects.Length; i++)
-			objects[i].SetActive(false);
+		for (int i = 0; i < disposable.Length; i++)
+			disposable[i].SetActive(false);
 	}
 
 	public void Destroy()
 	{
-		GameObject[] objects = GetDisposable();
+		GetDisposable();
 
-		for (int i = 0; i < objects.Length; i++)
-			GameObject.Destroy(objects[i]);
+		for (int i = 0; i < disposable.Length; i++)
+			Object.Destroy(disposable[i]);
 	}
 }

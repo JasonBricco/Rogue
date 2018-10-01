@@ -4,12 +4,13 @@
 
 public struct SpawnPoint
 {
-	public Vec2i cell;
+	public Vec2i room, cell;
 	public int facing;
 
-	public SpawnPoint(int x, int y, int facing)
+	public SpawnPoint(Vec2i room, int x, int y, int facing)
 	{
-		cell = new Vec2i(x, y);
+		this.room = room;
 		this.facing = facing;
+		cell = new Vec2i(x, y);
 	}
 }

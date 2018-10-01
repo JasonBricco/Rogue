@@ -12,6 +12,6 @@ public class TileSpawnSetter : MonoBehaviour, ITileSet
 	public void OnSet(Room room, int x, int y, TileComponent tc)
 	{
 		Vec2i p = new Vec2i(x, y) + facing;
-		room.Spawn = new SpawnPoint(p.x, p.y, GetNumericDir(facing));
+		room.Spawn = new SpawnPoint(room.Pos, p.x, p.y, GetNumericDir(facing));
 	}
 }

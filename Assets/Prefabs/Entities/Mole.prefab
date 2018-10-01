@@ -120,6 +120,7 @@ MonoBehaviour:
   type: 1
   defaultSpeed: 90
   friction: -12
+  rooted: 0
   speed: 50
   velocity: {x: 0, y: 0}
   facing: 0
@@ -177,6 +178,8 @@ MonoBehaviour:
   knockback: 1
   force: 35
   type: 1
+  dieOnTouch: 0
+  addCollisionRule: 0
 --- !u!114 &114601495318407372
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -189,7 +192,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 10
-  invincibleOnDamage: 0
 --- !u!114 &114889839167283356
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -201,7 +203,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 497bc6523e78b4e4080d17bd0ff8a145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allowOnTriggerStay: 1
 --- !u!143 &143894086051093968
 CharacterController:
   m_ObjectHideFlags: 1

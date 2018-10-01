@@ -275,8 +275,9 @@ GameObject:
   m_Component:
   - component: {fileID: 452988463}
   - component: {fileID: 452988464}
+  - component: {fileID: 452988466}
   - component: {fileID: 452988465}
-  m_Layer: 8
+  m_Layer: 14
   m_Name: Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -303,7 +304,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 452988462}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 17, z: 10}
@@ -322,6 +323,18 @@ MonoBehaviour:
   dir:
     x: -1
     y: 0
+--- !u!65 &452988466
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 452988462}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,7 +658,7 @@ GameObject:
   - component: {fileID: 735743887}
   - component: {fileID: 735743888}
   - component: {fileID: 735743889}
-  m_Layer: 8
+  m_Layer: 14
   m_Name: Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -672,7 +685,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 735743886}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 30, y: 1, z: 10}
@@ -770,7 +783,7 @@ GameObject:
   - component: {fileID: 1360954618}
   - component: {fileID: 1360954619}
   - component: {fileID: 1360954620}
-  m_Layer: 8
+  m_Layer: 14
   m_Name: Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -797,7 +810,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1360954617}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 17, z: 10}
@@ -920,7 +933,7 @@ GameObject:
   - component: {fileID: 1551673233}
   - component: {fileID: 1551673234}
   - component: {fileID: 1551673235}
-  m_Layer: 8
+  m_Layer: 14
   m_Name: Front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -947,7 +960,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1551673232}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 30, y: 1, z: 10}
@@ -1077,10 +1090,10 @@ MonoBehaviour:
   - {fileID: 114304071881856946, guid: 188d20553fc23144e92750f4a7379671, type: 2}
   - {fileID: 549773586}
   barriers:
-  - {fileID: 735743888}
-  - {fileID: 1551673234}
-  - {fileID: 452988464}
-  - {fileID: 1360954619}
+  - {fileID: 735743889}
+  - {fileID: 1551673235}
+  - {fileID: 452988465}
+  - {fileID: 1360954620}
 --- !u!4 &1991068601
 Transform:
   m_ObjectHideFlags: 0

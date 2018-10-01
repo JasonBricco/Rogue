@@ -56,17 +56,18 @@ public class RoomCollision
 		int lTerrain = LayerMask.NameToLayer("Terrain");
 		int lTerrainTrigger = LayerMask.NameToLayer("Terrain Trigger");
 
-		collisionMatrix.Add(lPlayer, lTerrainTrigger, null, OnTriggerTile);
-		collisionMatrix.Add(lEnemy, lTerrainTrigger, null, OnTriggerTile);
+		collisionMatrix.Add(lPlayer, lTerrainTrigger, tcr: OnTriggerTile, bcr: ShiftRoom);
+		collisionMatrix.Add(lEnemy, lTerrainTrigger, tcr: OnTriggerTile, bcr: BarrierKnockback);
 
-		collisionMatrix.Add(lProjectile, lTerrain, null, KillOnCollide);
-		collisionMatrix.Add(lProjectile, lPlayer, OnTriggerEntity, null);
-		collisionMatrix.Add(lProjectile, lEnemy, OnTriggerEntity, null);
+		collisionMatrix.Add(lProjectile, lTerrain, tcr: KillOnCollide);
+		collisionMatrix.Add(lProjectile, lPlayer, ecr: OnTriggerEntity);
+		collisionMatrix.Add(lProjectile, lEnemy, ecr: OnTriggerEntity);
+		collisionMatrix.Add(lProjectile, lTerrainTrigger, bcr: KillOnBarrier);
 
-		collisionMatrix.Add(lPlayer, lEnemy, OnTriggerEntity, null);
+		collisionMatrix.Add(lPlayer, lEnemy, ecr: OnTriggerEntity);
 
-		exitMatrix.Add(lPlayer, lTerrainTrigger, null, TriggerTileExit);
-		exitMatrix.Add(lEnemy, lTerrainTrigger, null, TriggerTileExit);
+		exitMatrix.Add(lPlayer, lTerrainTrigger, tcr: TriggerTileExit);
+		exitMatrix.Add(lEnemy, lTerrainTrigger, tcr: TriggerTileExit);
 	}
 
 	public void AddCollisionRule(Entity a, Entity b)
@@ -151,7 +152,19 @@ public class RoomCollision
 		}
 	}
 
-	public void OnTriggerEntity(Entity a, Entity b)
+	private void ShiftRoom(Entity a, Vec2i dir)
+	{
+		World world = World.Instance;
+		world.LoadRoom(world.Room.Pos + dir, false);
+		a.ShiftPosition(dir);
+	}
+
+	private void BarrierKnockback(Entity a, Vec2i dir)
+	{
+		a.ApplyKnockback(-dir.ToVector2(), 10.0f);
+	}
+
+	private void OnTriggerEntity(Entity a, Entity b)
 	{
 		if (CollisionRuleExists(a, b)) return;
 
@@ -162,7 +175,7 @@ public class RoomCollision
 		ApplyOnTouchEffects(onTouchedB, b, a);
 	}
 
-	public void OnTriggerTile(Entity entity, Tile tile)
+	private void OnTriggerTile(Entity entity, Tile tile)
 	{
 		switch (tile.id)
 		{
@@ -198,7 +211,7 @@ public class RoomCollision
 		}
 	}
 
-	public void TriggerTileExit(Entity entity, Tile tile)
+	private void TriggerTileExit(Entity entity, Tile tile)
 	{
 		switch (tile.id)
 		{
@@ -264,6 +277,11 @@ public class RoomCollision
 			HandleCollisionExit(a, layerA, tile, tileLayer);
 	}
 
+	public void KillOnBarrier(Entity a, Vec2i dir)
+	{
+		a.SetFlag(EntityFlags.Dead);
+	}
+
 	public void KillOnCollide(Entity a, Tile tile)
 	{
 		a.SetFlag(EntityFlags.Dead);
@@ -277,6 +295,11 @@ public class RoomCollision
 	public void HandleCollision(Entity a, int layerA, Tile tile, int tileLayer)
 	{
 		collisionMatrix.GetTileResponse(layerA, tileLayer)?.Invoke(a, tile);
+	}
+
+	public void HandleBarrier(Entity a, int layerA, int barrierLayer, Vec2i dir)
+	{
+		collisionMatrix.GetBarrierResponse(layerA, barrierLayer)?.Invoke(a, dir);
 	}
 
 	public void HandleCollisionExit(Entity a, int layerA, Entity b, int layerB)

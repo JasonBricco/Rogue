@@ -3,8 +3,9 @@
 //
 
 using UnityEngine;
+using UnityEngine.Assertions;
 using System.Collections.Generic;
-using static UnityEngine.Mathf;
+using static Utils;
 
 public sealed class GenDungeon : RoomGenerator
 {
@@ -34,11 +35,7 @@ public sealed class GenDungeon : RoomGenerator
 		room.SetTile(0, 0, MainLayer, new Tile(TileType.DungeonWall, Direction.BackLeft));
 		room.SetTile(room.LimX - 1, 0, MainLayer, new Tile(TileType.DungeonWall, Direction.BackRight));
 
-		for (int y = 2; y <= room.LimY - 2; y++)
-		{
-			for (int x = 2; x <= room.LimX - 2; x++)
-				room.SetTile(x, y, FloorLayer, TileType.DungeonFloor);
-		}
+		room.Fill(FloorLayer, TileType.DungeonFloor);
 
 		int spikeCount = Random.Range(0, 6);
 
@@ -74,7 +71,7 @@ public sealed class GenDungeon : RoomGenerator
 				room.SetTile(room.HalfX + 1, y, MainLayer, TileType.Barrier);
 			}
 
-			World.Instance.SpawnPoint = new SpawnPoint(room.HalfX, 1, Direction.Front);
+			World.Instance.SpawnPoint = new SpawnPoint(roomP, room.HalfX, 1, Direction.Front);
 		}
 
 		List<Vec2i> possibleRooms = new List<Vec2i>(4)
@@ -84,20 +81,6 @@ public sealed class GenDungeon : RoomGenerator
 			roomP + Vec2i.Directions[Direction.Left],
 			roomP + Vec2i.Directions[Direction.Right]
 		};
-
-		// Add connections to already existing rooms.
-		for (int i = 0; i < possibleRooms.Count; i++)
-		{
-			List<Vec2i> points;
-			if (World.Instance.TryGetExit(possibleRooms[i], out points))
-			{
-				for (int p = 0; p < points.Count; p++)
-				{
-					Vec2i invP = new Vec2i(room.SizeX, room.SizeY) - points[p];
-					AddConnection(room, invP, roomP - possibleRooms[i]);
-				}
-			}
-		}
 
 		for (int i = possibleRooms.Count - 1; i >= 0; i--)
 		{
@@ -126,9 +109,18 @@ public sealed class GenDungeon : RoomGenerator
 				if (paths[i])
 				{
 					Vec2i cen = new Vec2i(room.HalfX, room.HalfY);
-					AddConnection(room, cen, roomP - possibleRooms[i]);
+					AddConnection(room, cen, possibleRooms[i] - roomP);
 				}
 			}
+		}
+
+		List<Vec2i> exits;
+		World.Instance.TryGetExit(roomP, out exits);
+
+		for (int i = 0; i < exits.Count; i++)
+		{
+			Vec2i p = exits[i];
+			room.SetTile(p.x, p.y, MainLayer, TileType.Air);
 		}
 
 		if (!familiarSpawned)
@@ -139,37 +131,38 @@ public sealed class GenDungeon : RoomGenerator
 				familiarSpawned = true;
 			}
 		}
+
+		room.cameraFollow = false;
 	}
 
 	private void AddConnection(Room room, Vec2i pos, Vec2i dir)
 	{
-		if (Abs(dir.x) > 0)
+		Assert.IsTrue(dir != Vec2i.Zero);
+		World world = World.Instance;
+
+		int d = GetNumericDir(dir);
+
+		switch (d)
 		{
-			int startX = room.LimX - 1;
-			int endX = startX + 1;
+			case Direction.Left:
+				world.AddExit(room.Pos, new Vec2i(0, pos.y));
+				world.AddExit(room.Pos + dir, new Vec2i(room.LimX - 1, pos.y));
+				break;
 
-			for (int x = startX; x <= endX; x++)
-			{
-				room.SetTile(x, pos.y, MainLayer, TileType.Air);
-				room.SetTile(x, pos.y, FloorLayer, TileType.DungeonFloor);
-			}
+			case Direction.Right:
+				world.AddExit(room.Pos, new Vec2i(room.LimX - 1, pos.y));
+				world.AddExit(room.Pos + dir, new Vec2i(0, pos.y));
+				break;
 
-			World.Instance.AddExit(room.Pos, new Vec2i(endX, pos.y));
+			case Direction.Back:
+				world.AddExit(room.Pos, new Vec2i(pos.x, 0));
+				world.AddExit(room.Pos + dir, new Vec2i(pos.x, room.LimY - 1));
+				break;
+
+			case Direction.Front:
+				world.AddExit(room.Pos, new Vec2i(pos.x, room.LimY - 1));
+				world.AddExit(room.Pos + dir, new Vec2i(pos.x, 0));
+				break;
 		}
-		else
-		{
-			int startY = room.LimY - 1;
-			int endY = startY + 1;
-
-			for (int y = startY; y <= endY; y++)
-			{
-				room.SetTile(pos.x, y, MainLayer, TileType.Air);
-				room.SetTile(pos.x, y, FloorLayer, TileType.DungeonFloor);
-			}
-
-			World.Instance.AddExit(room.Pos, new Vec2i(pos.x, endY));
-		}
-
-		room.cameraFollow = false;
 	}
 }
