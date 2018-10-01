@@ -5,6 +5,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using System.Collections.Generic;
+using System.Collections;
 using System;
 using System.Linq;
 using Random = UnityEngine.Random;
@@ -58,6 +59,8 @@ public sealed class World : MonoBehaviour
 	// Stores the positions of each exit point for each room (key). This ensures rooms will
 	// connect properly to each other.
 	private Dictionary<Vec2i, List<Vec2i>> exitPoints = new Dictionary<Vec2i, List<Vec2i>>();
+
+	private WaitForEndOfFrame wait = new WaitForEndOfFrame();
 
 	public static World Instance { get; private set; }
 
@@ -128,7 +131,6 @@ public sealed class World : MonoBehaviour
 	{
 		Assert.IsTrue(pos != Room.Pos);
 
-		Room.Entities.RemovePlayer();
 		Room.Disable();
 
 		Room newRoom;
@@ -148,8 +150,8 @@ public sealed class World : MonoBehaviour
 
 		AdjustBarriers();
 		cam.UpdateValues();
-		Room.Entities.AddPlayer();
 
+		StartCoroutine(TriggerRoomChanged(Vec2i.Zero));
 		GC.Collect();
 	}
 
@@ -163,12 +165,10 @@ public sealed class World : MonoBehaviour
 
 	public void BeginNewSection(RoomType type, bool spawnPlayer)
 	{
-		if (Room != null)
-			Room.Entities.RemovePlayer();
-
 		foreach (Room room in loadedRooms.Values)
 			room.Destroy();
 
+		loadedRooms.Clear();
 		ChangeRoomType(type);
 		NewRoom(Vec2i.Zero);
 		generator.Generate(Room, Room.Pos, true);
@@ -178,7 +178,14 @@ public sealed class World : MonoBehaviour
 		if (spawnPlayer) Room.Entities.SpawnPlayer();
 		else Room.Entities.MovePlayerTo(SpawnPoint.cell, SpawnPoint.facing);
 
+		StartCoroutine(TriggerRoomChanged(Vec2i.Zero));
 		GC.Collect();
+	}
+
+	private IEnumerator TriggerRoomChanged(Vec2i pos)
+	{
+		yield return wait;
+		EventManager.Instance.TriggerEvent(GameEvent.RoomChanged, pos);
 	}
 
 	private void AdjustBarriers()

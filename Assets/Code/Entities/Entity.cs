@@ -100,7 +100,6 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	public void Kill()
 	{
 		Room room = World.Instance.Room;
-		room.Entities.Remove(this);
 		room.Collision.RemoveCollisionRules(this);
 		room.Entities.RemoveOTEffects(this);
 		room.Collision.ClearTrackedCollisions(this);
@@ -183,24 +182,28 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	
 	public void ShiftPosition(Vec2i loadDir)
 	{
+		Vector3 p = t.position;
+
 		switch (GetNumericDir(loadDir))
 		{
 			case Direction.Front:
-				t.SetY(0.5f);
+				p.y = 0.5f;
 				break;
 
 			case Direction.Back:
-				t.SetY(World.Instance.Room.SizeY - 0.5f);
+				p.y = World.Instance.Room.SizeY - 0.5f;
 				break;
 
 			case Direction.Left:
-				t.SetX(World.Instance.Room.SizeX - 0.5f);
+				p.x = World.Instance.Room.SizeX - 0.5f;
 				break;
 
 			case Direction.Right:
-				t.SetX(0.5f);
+				p.x = 0.5f;
 				break;
 		}
+
+		MoveTo(p);
 	}
 
 	public int CompareTo(Entity other)

@@ -36,7 +36,7 @@ public sealed class EntityHealth : MonoBehaviour
 		Health -= damage;
 
 		if (Health <= 0)
-			entity.Kill();
+			entity.SetFlag(EntityFlags.Dead);
 		else
 		{
 			if (entity.HasFlag(EntityFlags.InvincibleFrames))

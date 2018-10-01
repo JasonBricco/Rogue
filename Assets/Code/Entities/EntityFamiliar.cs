@@ -19,6 +19,11 @@ public class EntityFamiliar : MonoBehaviour
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
 	}
 
+	private void OnRoomChanged(Vec2i roomP)
+	{
+		entity.MoveTo(followTarget.Pos);
+	}
+
 	private void UpdateComponent()
 	{
 		float sqDist = (entity.Pos - player.Pos).sqrMagnitude;
@@ -26,12 +31,20 @@ public class EntityFamiliar : MonoBehaviour
 		if (followTarget == null)
 		{
 			if (!player.HasFlag(EntityFlags.Dead) && sqDist <= 9.0f)
+			{
 				followTarget = player;
+				gameObject.tag = "Untagged";
+				EventManager.Instance.ListenForEvent<Vec2i>(GameEvent.RoomChanged, OnRoomChanged);
+			}
 		}
 		else
 		{
 			if (followTarget.HasFlag(EntityFlags.Dead))
+			{
 				followTarget = null;
+				gameObject.tag = "Disposable";
+				EventManager.Instance.StopListening<Vec2i>(GameEvent.RoomChanged, OnRoomChanged);
+			}
 			else
 			{
 				Vector2 targetDir = Vector2.zero;

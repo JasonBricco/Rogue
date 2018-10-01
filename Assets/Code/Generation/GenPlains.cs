@@ -82,13 +82,16 @@ public sealed class GenPlains : RoomGenerator
 			room.Entities.SpawnEntity(EntityType.Wolf, new Vec2i(pX, pY));
 		}
 
+		// If this is the first room of the world, we pick an arbitrary spawn point.
+		// If initial is true, it's the first room of this generation type after
+		// switching from another generation type or when starting the world.
 		if (firstRoom)
 		{
 			World.Instance.SpawnPoint = new SpawnPoint(roomP, 4, 4, Direction.Front);
 			firstRoom = false;
 		}
 		else if (initial)
-			World.Instance.SpawnPoint = new SpawnPoint(roomP, 64, 58, Direction.Back);
+			World.Instance.SpawnPoint = new SpawnPoint(roomP, 4, 4, Direction.Front);
 
 		room.cameraFollow = true;
 	}

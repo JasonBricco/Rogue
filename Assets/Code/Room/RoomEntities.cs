@@ -8,9 +8,6 @@ using System.Collections.Generic;
 
 public sealed class RoomEntities
 {
-	// All entities belonging to this room.
-	private List<Entity> entities = new List<Entity>();
-
 	// Stores all active over-time effects within the world.
 	private OTEffects effects = new OTEffects();
 
@@ -49,30 +46,6 @@ public sealed class RoomEntities
 		}
 	}
 
-	// Adds the given entity to this room.
-	public void Add(Entity entity)
-	{
-		Assert.IsTrue(!entities.Contains(entity));
-		entities.Add(entity);
-	}
-
-	// Removes the entity from this room.
-	public void Remove(Entity entity)
-	{
-		bool result = entities.Remove(entity);
-		Assert.IsTrue(result);
-	}
-
-	public void RemovePlayer()
-	{
-		Remove(playerEntity);
-	}
-
-	public void AddPlayer()
-	{
-		Add(playerEntity);
-	}
-
 	public void MovePlayerTo(Vec2i cell, int facing)
 	{
 		Assert.IsNotNull(playerEntity);
@@ -81,7 +54,6 @@ public sealed class RoomEntities
 
 	private void SpawnEntity(Entity entity, Vector2 pos, int facing = 0)
 	{
-		room.Entities.Add(entity);
 		entity.MoveTo(pos);
 		entity.facing = facing;
 	}

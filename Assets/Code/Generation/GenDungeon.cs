@@ -89,7 +89,7 @@ public sealed class GenDungeon : RoomGenerator
 		}
 
 		// No possible ways to generate, exit with a portal.
-		if (possibleRooms.Count == 0)
+		if (Random.value < 0.05f || possibleRooms.Count == 0)
 			room.SetTile(room.HalfX, room.HalfY, MainLayer, TileType.Portal);
 		else
 		{
@@ -115,21 +115,19 @@ public sealed class GenDungeon : RoomGenerator
 		}
 
 		List<Vec2i> exits;
-		World.Instance.TryGetExit(roomP, out exits);
-
-		for (int i = 0; i < exits.Count; i++)
+		if (World.Instance.TryGetExit(roomP, out exits))
 		{
-			Vec2i p = exits[i];
-			room.SetTile(p.x, p.y, MainLayer, TileType.Air);
+			for (int i = 0; i < exits.Count; i++)
+			{
+				Vec2i p = exits[i];
+				room.SetTile(p.x, p.y, MainLayer, TileType.Air);
+			}
 		}
 
 		if (!familiarSpawned)
 		{
-			if (Random.value < 0.05f)
-			{
-				room.Entities.SpawnEntity(EntityType.Familiar, new Vec2i(27, 13));
-				familiarSpawned = true;
-			}
+			room.Entities.SpawnEntity(EntityType.Familiar, new Vec2i(26, 11));
+			familiarSpawned = true;
 		}
 
 		room.cameraFollow = false;

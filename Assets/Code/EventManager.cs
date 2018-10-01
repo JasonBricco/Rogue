@@ -32,9 +32,17 @@ public sealed class EventManager : MonoBehaviour
 		handlers[i] = current;
 	}
 
+	public void StopListening<T>(GameEvent type, EventHandler<T> handler)
+	{
+		int i = (int)type;
+		EventHandler<T> current = (EventHandler<T>)handlers[i];
+		current -= handler;
+		handlers[i] = current;
+	}
+
 	public void TriggerEvent<T>(GameEvent type, T arg)
 	{
 		EventHandler<T> handler = (EventHandler<T>)handlers[(int)type];
-		handler.Invoke(arg);
+		handler?.Invoke(arg);
 	}
 }
