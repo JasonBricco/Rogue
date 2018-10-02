@@ -15,7 +15,6 @@ public sealed class GenDungeon : RoomGenerator
 
 	public override void Generate(Room room, Vec2i roomP, bool initial)
 	{
-		World.Instance.SetLightMode(false);
 		room.Init(roomP, 2, MainLayer, 32, 18);
 
 		for (int x = 2; x <= room.LimX - 2; x++)
@@ -62,6 +61,8 @@ public sealed class GenDungeon : RoomGenerator
 
 		if (initial)
 		{
+			World.Instance.SetLightMode(false);
+
 			room.SetTile(25, 11, MainLayer, TileType.Torch);
 			room.SetTile(room.HalfX, 0, MainLayer, new Tile(TileType.DungeonDoor, 0));
 

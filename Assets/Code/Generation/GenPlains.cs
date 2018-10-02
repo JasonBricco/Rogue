@@ -47,7 +47,7 @@ public sealed class GenPlains : RoomGenerator
 
 	public override void Generate(Room room, Vec2i roomP, bool initial)
 	{
-		World.Instance.SetLightMode(false);
+		if (initial) World.Instance.SetLightMode(false);
 
 		room.Init(roomP, 2, MainLayer, 64, 36);
 		SetFloor(room);

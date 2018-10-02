@@ -89,10 +89,10 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	// Updates all updatable entity components and ensures the entity is in the correct room.
 	private void Update()
 	{
-		InvokeEvent(EntityEvent.Update);
-
 		if (HasFlag(EntityFlags.Dead))
 			Kill();
+
+		InvokeEvent(EntityEvent.Update);
 	}
 
 	// Destroys the entity. The kill behavior is defined by the entity's components.

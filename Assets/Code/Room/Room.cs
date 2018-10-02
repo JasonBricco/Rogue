@@ -121,6 +121,7 @@ public sealed class Room
 	// Destroys the room, freeing it from memory.
 	public void Destroy()
 	{
+		Entities.Destroy();
 		Renderer.Destroy();
 		Collision.RemoveColliders();
 	}

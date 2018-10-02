@@ -133,20 +133,6 @@ public sealed class RoomEntities
 	{
 		// Apply all over-time effects.
 		effects.Apply();
-
-		if (playerEntity.HasFlag(EntityFlags.Dead))
-		{
-			// Update the player's respawn time here instead of in UpdateComponent() since
-			// UpdateComponent() requires that the player is inside the room to be called.
-			player.RespawnTime -= Time.deltaTime;
-
-			if (player.RespawnTime <= 0.0f)
-			{
-				SpawnPlayer();
-				playerEntity.gameObject.SetActive(true);
-				playerEntity.UnsetFlag(EntityFlags.Dead);
-			}
-		}
 	}
 
 	private void GetDisposable()

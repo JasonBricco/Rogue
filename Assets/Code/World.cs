@@ -127,6 +127,19 @@ public sealed class World : MonoBehaviour
 			SetLightMode(!isDark);
 	}
 
+	// Allows running a function after the given amount of seconds on this 
+	// MonoBehaviour, for objects that aren't MonoBehaviours to call.
+	public void Invoke(Action func, float seconds)
+	{
+		StartCoroutine(RunInvoke(func, seconds));
+	}
+
+	private IEnumerator RunInvoke(Action func, float seconds)
+	{
+		yield return new WaitForSeconds(seconds);
+		func.Invoke();
+	}
+
 	public void LoadRoom(Vec2i pos, bool initial)
 	{
 		Assert.IsTrue(pos != Room.Pos);

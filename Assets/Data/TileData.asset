@@ -201,7 +201,7 @@ MonoBehaviour:
     - invisible: 0
       hasCollider: 1
       trigger: 1
-      colliderSize: {x: 0.1, y: 0.1}
+      colliderSize: {x: 0.3, y: 0.3}
       colliderOffset: {x: 0, y: 0}
       align: {x: 0, y: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
