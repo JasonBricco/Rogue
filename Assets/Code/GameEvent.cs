@@ -6,5 +6,6 @@ public enum GameEvent
 {
 	PlayerHealthModifed,
 	RoomChanged,
+	Fade,
 	Count
 }

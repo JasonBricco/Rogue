@@ -3,6 +3,7 @@
 //
 
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public sealed class EntityImage : MonoBehaviour
@@ -19,6 +20,18 @@ public sealed class EntityImage : MonoBehaviour
 		rend = GetComponent<SpriteRenderer>();
 		rend.sprite = sprites[0];
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
+	}
+
+	public void TintRed(WaitForSeconds wait)
+	{
+		StartCoroutine(DoTintRed(wait));
+	}
+
+	private IEnumerator DoTintRed(WaitForSeconds wait)
+	{
+		rend.color = Color.red;
+		yield return wait;
+		rend.color = Color.white;
 	}
 
 	private void UpdateComponent()

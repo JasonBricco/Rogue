@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114650601760224922}
   - component: {fileID: 114618164466942844}
   m_Layer: 0
-  m_Name: SpawnBackComponent
+  m_Name: PlainsDoorComponent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55,6 +55,7 @@ MonoBehaviour:
   facing:
     x: 0
     y: -1
+  dist: 0
 --- !u!114 &114650601760224922
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -67,5 +68,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableOnSet: 1
-  lightPrefab: {fileID: 1000012308407584, guid: fcd4bdf83bb21784285a75afb725bc0d,
-    type: 2}

@@ -10,6 +10,7 @@ public sealed class EntityHealth : MonoBehaviour
 	[SerializeField] private int maxHealth;
 
 	private Entity entity;
+	private EntityImage image;
 	public int Health { get; private set; }
 
 	private WaitForSeconds wait = new WaitForSeconds(0.1f);
@@ -17,6 +18,8 @@ public sealed class EntityHealth : MonoBehaviour
 	private void Awake()
 	{
 		entity = GetComponent<Entity>();
+		image = GetComponent<EntityImage>();
+
 		FullHeal();
 	}
 
@@ -39,6 +42,8 @@ public sealed class EntityHealth : MonoBehaviour
 			entity.SetFlag(EntityFlags.Dead);
 		else
 		{
+			image.TintRed(wait);
+
 			if (entity.HasFlag(EntityFlags.InvincibleFrames))
 			{
 				entity.SetFlag(EntityFlags.Invincible);
