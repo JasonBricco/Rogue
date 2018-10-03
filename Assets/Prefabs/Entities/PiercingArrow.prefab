@@ -130,7 +130,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 497bc6523e78b4e4080d17bd0ff8a145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allowOnTriggerStay: 0
 --- !u!114 &114839411273458088
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -146,6 +145,7 @@ MonoBehaviour:
   defaultSpeed: 25
   friction: 50
   rooted: 1
+  transient: 1
   speed: 50
   velocity: {x: 0, y: 0}
   facing: 0

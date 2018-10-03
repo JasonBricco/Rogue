@@ -22,6 +22,7 @@ public class EntityProjectile : MonoBehaviour
 	{
 		entity = GetComponent<Entity>();
 		distRemaining = maxDistance;
+
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
 		entity.ListenForEvent(EntityEvent.Kill, Kill);
 	}

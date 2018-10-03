@@ -12,11 +12,21 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	[SerializeField] private EntityType type;
 	[SerializeField] private float defaultSpeed;
 	[SerializeField] private float friction;
+
+	[Tooltip("If true, the entity cannot be affected by pushback")]
 	[SerializeField] private bool rooted;
+
+	[Tooltip("If true, the entity will not persist when changing rooms")]
+	[SerializeField] private bool transient;
 
 	public EntityType Type
 	{
 		get { return type; }
+	}
+
+	public bool Transient
+	{
+		get { return transient; }
 	}
 
 	// Component-modified fields.

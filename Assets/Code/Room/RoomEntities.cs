@@ -143,7 +143,7 @@ public sealed class RoomEntities
 	public void Enable()
 	{
 		for (int i = 0; i < disposable.Length; i++)
-			disposable[i].SetActive(true);
+			disposable[i]?.SetActive(true);
 	}
 
 	public void Disable()
@@ -151,7 +151,18 @@ public sealed class RoomEntities
 		GetDisposable();
 
 		for (int i = 0; i < disposable.Length; i++)
-			disposable[i].SetActive(false);
+		{
+			GameObject disp = disposable[i];
+			disp.SetActive(false);
+
+			Entity entity = disp.GetComponent<Entity>();
+
+			if (entity != null && entity.Transient)
+			{
+				entity.Kill();
+				disposable[i] = null;
+			}
+		}
 	}
 
 	public void Destroy()
