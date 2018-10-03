@@ -185,7 +185,7 @@ public class TileEditor : EditorWindow
 				if (!props.invisible)
 				{
 					y += 25.0f;
-					props.align = EditorGUI.Vector2Field(new Rect(x, y, 120.0f, 20.0f), "Align", props.align);
+					props.renderOffset = EditorGUI.Vector3Field(new Rect(x, y, 180.0f, 20.0f), "Render Offset", props.renderOffset);
 
 					y += 45.0f;
 

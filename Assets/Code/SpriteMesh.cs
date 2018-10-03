@@ -25,11 +25,10 @@ public sealed class SpriteMesh
 		Material = material;
 	}
 
-	public void AddRect(float x, float y, float z, int width, int height, float tex, Vector2 align, Color32 color)
+	public void AddRect(float x, float y, float z, int width, int height, float tex, Vector3 renderOffset, Color32 color)
 	{
-		x += align.x;
-		y += align.y;
-		z += 1.0f;
+		x += renderOffset.x;
+		y += renderOffset.y;
 
 		int offset = vertices.Count;
 

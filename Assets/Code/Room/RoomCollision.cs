@@ -94,18 +94,22 @@ public class RoomCollision
 		Assert.IsFalse(hasColliders);
 		ColliderPool pool = World.Instance.ColliderPool;
 
-		for (int y = 0; y < room.SizeY; y++)
+		for (int z = 0; z < Room.Layers; z++)
 		{
-			for (int x = 0; x < room.SizeX; x++)
+			for (int y = 0; y < room.SizeY; y++)
 			{
-				Tile tile = room.GetTile(x, y);
-				TileProperties data = tile.Properties;
-
-				if (data.hasCollider)
+				for (int x = 0; x < room.SizeX; x++)
 				{
-					TileCollider col = pool.GetCollider(tile, colliders);
-					Vector2 size = data.colliderSize;
-					col.SetInfo(size, data.trigger, x, y, data.colliderOffset);
+					Tile tile = room.GetTile(x, y, z);
+					TileProperties data = tile.Properties;
+
+					if (data.hasCollider)
+					{
+						TileCollider col = pool.GetCollider(tile, colliders);
+						Vector2 size = data.colliderSize;
+						Vector2 offset = data.colliderOffset;
+						col.SetInfo(new Vector3(size.x, size.y, room.SizeY), data.trigger, x, y, new Vector3(offset.x, offset.y, room.HalfY));
+					}
 				}
 			}
 		}

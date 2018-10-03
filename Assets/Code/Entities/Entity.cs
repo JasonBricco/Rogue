@@ -105,6 +105,8 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 			Kill();
 
 		InvokeEvent(EntityEvent.Update);
+
+		t.SetZ(Pos.y / World.Instance.Room.SizeY);
 	}
 
 	// Destroys the entity. The kill behavior is defined by the entity's components.

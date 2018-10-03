@@ -21,7 +21,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 0, y: 0}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 0}
       sprite: {fileID: 0}
       color:
@@ -42,7 +42,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 1, y: 2}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: c39d90f6e0728e84c88b1cb161d0b2bc, type: 3}
       color:
@@ -59,7 +59,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 1, y: 2}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: ea998d4f8412322479074116eb762677, type: 3}
       color:
@@ -76,7 +76,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 2, y: 1}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 9ec9b8be3ab2fa340a350362e64408b4, type: 3}
       color:
@@ -93,7 +93,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 2, y: 1}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 534ac2a28b9e62b40a0608eb90335682, type: 3}
       color:
@@ -110,7 +110,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 2, y: 2}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 48a1cd187dd42a14db3cfb7c7914886d, type: 3}
       color:
@@ -127,7 +127,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 2, y: 2}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 1776d5197da21014a9a0278b80abdae9, type: 3}
       color:
@@ -144,7 +144,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 2, y: 2}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 31d38471cf2fea1449576c23505988ae, type: 3}
       color:
@@ -161,7 +161,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 2, y: 2}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 9a077f316acc2164aa713116e34bc167, type: 3}
       color:
@@ -182,7 +182,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 1, y: 1}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 0}
       sprite: {fileID: 0}
       color:
@@ -203,7 +203,7 @@ MonoBehaviour:
       trigger: 1
       colliderSize: {x: 0.3, y: 0.3}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 008069a4edcd5b2419556768df79f9af, type: 3}
       color:
@@ -224,7 +224,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 0, y: 0}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0.5}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 58afdeab1cc38f04e8316e5888e9bdaa, type: 3}
       color:
@@ -245,7 +245,7 @@ MonoBehaviour:
       trigger: 1
       colliderSize: {x: 1, y: 1}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: db12d97dd2934c74bb9cf3d0094d7eae, type: 3}
       color:
@@ -266,7 +266,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 1, y: 1}
       colliderOffset: {x: 0, y: 0}
-      align: {x: -0.5, y: 0}
+      renderOffset: {x: -0.5, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 1365de82bbc7ec546ac7a1f618e4b43f, type: 3}
       color:
@@ -288,7 +288,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 0, y: 0}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0.5}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 179492b31a0f95840a1b430647d15a30, type: 3}
       color:
@@ -305,7 +305,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 0, y: 0}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0.5}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: ea935fe8fee818e448df130bcb6eba9d, type: 3}
       color:
@@ -322,7 +322,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 0, y: 0}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0.5}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 63ac3d9c841ff4f44afe99ce3095cdab, type: 3}
       color:
@@ -339,7 +339,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 0, y: 0}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0.5}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 8796ec384373912488c1f089cb42de01, type: 3}
       color:
@@ -356,7 +356,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 0, y: 0}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0.5}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 8048ec8f67988e84da8a556fe7744d1c, type: 3}
       color:
@@ -373,7 +373,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 0, y: 0}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0.5}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 92d99dddb4f07754381e68c976a1ea79, type: 3}
       color:
@@ -394,7 +394,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 1, y: 3}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: f5b2eda1085bcce4a8858af573c4a71b, type: 3}
       color:
@@ -411,7 +411,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 1, y: 3}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 8997dc2ebfec7554882472e847f5738f, type: 3}
       color:
@@ -428,7 +428,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 3, y: 1}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: ea27c14cb93a5744f88f6e2b27e34fe0, type: 3}
       color:
@@ -445,7 +445,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 3, y: 1}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 5df242b675b280e4ea839383e9138fdc, type: 3}
       color:
@@ -462,7 +462,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 3, y: 3}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 5ab57fe3bdc80fc4eb5b44b9f779cb9a, type: 3}
       color:
@@ -479,7 +479,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 3, y: 3}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 426e2461c4db8a2448734ba8ba2e88a7, type: 3}
       color:
@@ -496,7 +496,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 3, y: 3}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: b483f735c75024f4b87db99b2206e8df, type: 3}
       color:
@@ -513,7 +513,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 3, y: 3}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 1e6814ce668d6434c939b3ed2111109c, type: 3}
       color:
@@ -534,7 +534,7 @@ MonoBehaviour:
       trigger: 1
       colliderSize: {x: 1, y: 1}
       colliderOffset: {x: 0, y: 0.7}
-      align: {x: -1, y: 0}
+      renderOffset: {x: -1, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: b0e714075ab81864dba42f29f7373e70, type: 3}
       color:
@@ -555,8 +555,8 @@ MonoBehaviour:
       hasCollider: 1
       trigger: 1
       colliderSize: {x: 1, y: 1}
-      colliderOffset: {x: 0, y: 0}
-      align: {x: -1, y: 0}
+      colliderOffset: {x: 0, y: 0.4}
+      renderOffset: {x: -1, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
       sprite: {fileID: 21300000, guid: 4c571f5a4fb43cf41814d7b355037c49, type: 3}
       color:
@@ -578,7 +578,7 @@ MonoBehaviour:
       trigger: 0
       colliderSize: {x: 0, y: 0}
       colliderOffset: {x: 0, y: 0}
-      align: {x: 0, y: 0}
+      renderOffset: {x: 0, y: 0, z: 0}
       baseMaterial: {fileID: 0}
       sprite: {fileID: 0}
       color:

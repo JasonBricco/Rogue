@@ -6,8 +6,6 @@ using UnityEngine;
 
 public sealed class GenPlains : RoomGenerator
 {
-	private const int MainLayer = 0, FloorLayer = 1;
-
 	private void SetFloor(Room room)
 	{
 		for (int y = 0; y < room.SizeY; y++)
@@ -15,11 +13,11 @@ public sealed class GenPlains : RoomGenerator
 			for (int x = 0; x < room.SizeX; x++)
 			{
 				if (Random.Range(0.0f, 100.0f) > 5.0f)
-					room.SetTile(x, y, FloorLayer, TileType.PlainsGrass);
+					room.SetTile(x, y, Room.Back, TileType.PlainsGrass);
 				else
 				{
 					int variant = Random.Range(0, 6);
-					room.SetTile(x, y, FloorLayer, new Tile(TileType.PlainsGrass, variant));
+					room.SetTile(x, y, Room.Back, new Tile(TileType.PlainsGrass, variant));
 				}
 			}
 		}
@@ -29,27 +27,27 @@ public sealed class GenPlains : RoomGenerator
 	{
 		for (int x = startX + 3; x < endX - 3; x++)
 		{
-			room.SetTile(x, startY, MainLayer, new Tile(TileType.PlainsWall, Direction.Back));
-			room.SetTile(x, endY - 3, MainLayer, new Tile(TileType.PlainsWall, Direction.Front));
+			room.SetTile(x, startY, Room.Back, new Tile(TileType.PlainsWall, Direction.Back));
+			room.SetTile(x, endY - 3, Room.Back, new Tile(TileType.PlainsWall, Direction.Front));
 		}
 
 		for (int y = startY + 3; y < endY - 3; y++)
 		{
-			room.SetTile(startX, y, MainLayer, new Tile(TileType.PlainsWall, Direction.Left));
-			room.SetTile(endX - 3, y, MainLayer, new Tile(TileType.PlainsWall, Direction.Right));
+			room.SetTile(startX, y, Room.Back, new Tile(TileType.PlainsWall, Direction.Left));
+			room.SetTile(endX - 3, y, Room.Back, new Tile(TileType.PlainsWall, Direction.Right));
 		}
 
-		room.SetTile(startX, endY - 3, MainLayer, new Tile(TileType.PlainsWall, Direction.FrontLeft));
-		room.SetTile(endX - 3, endY - 3, MainLayer, new Tile(TileType.PlainsWall, Direction.FrontRight));
-		room.SetTile(startX, startY, MainLayer, new Tile(TileType.PlainsWall, Direction.BackLeft));
-		room.SetTile(endX - 3, startY, MainLayer, new Tile(TileType.PlainsWall, Direction.BackRight));
+		room.SetTile(startX, endY - 3, Room.Back, new Tile(TileType.PlainsWall, Direction.FrontLeft));
+		room.SetTile(endX - 3, endY - 3, Room.Back, new Tile(TileType.PlainsWall, Direction.FrontRight));
+		room.SetTile(startX, startY, Room.Back, new Tile(TileType.PlainsWall, Direction.BackLeft));
+		room.SetTile(endX - 3, startY, Room.Back, new Tile(TileType.PlainsWall, Direction.BackRight));
 	}
 
 	public override void Generate(Room room, Vec2i roomP, bool initial)
 	{
 		if (initial) World.Instance.SetLightMode(false);
 
-		room.Init(roomP, 2, MainLayer, 64, 36);
+		room.Init(roomP, 64, 36);
 		SetFloor(room);
 
 		CreatePlateau(room, 0, 0, room.SizeX, room.SizeY);
@@ -61,10 +59,10 @@ public sealed class GenPlains : RoomGenerator
 
 		CreatePlateau(room, start.x, start.y, end.x, end.y);
 
-		room.SetTile(midX, start.y, MainLayer, TileType.PlainsDoor);
-		room.SetTile(midX - 1, start.y, MainLayer, TileType.Barrier);
-		room.SetTile(midX + 1, start.y, MainLayer, TileType.Barrier);
-		room.SetTile(midX, start.y + 1, MainLayer, TileType.Barrier);
+		room.SetTile(midX, start.y, Room.Back, TileType.PlainsDoor);
+		room.SetTile(midX - 1, start.y, Room.Back, TileType.Barrier);
+		room.SetTile(midX + 1, start.y, Room.Back, TileType.Barrier);
+		room.SetTile(midX, start.y + 1, Room.Back, TileType.Barrier);
 
 		start -= 1;
 		end += 1;

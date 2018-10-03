@@ -15,8 +15,8 @@ public sealed class Room
 	public int LimX { get; private set; }
 	public int LimY { get; private set; }
 
-	public int Layers { get; private set; }
-	public int MainLayer { get; private set; }
+	public const int Layers = 3;
+	public const int Back = 0, Main = 1, Front = 2;
 
 	public Vec2i Pos { get; private set; }
 
@@ -41,7 +41,7 @@ public sealed class Room
 		Pos = pos;
 	}
 
-	public void Init(Vec2i pos, int layers, int mainLayer, int sizeX, int sizeY)
+	public void Init(Vec2i pos, int sizeX, int sizeY)
 	{
 		SizeX = sizeX;
 		SizeY = sizeY;
@@ -52,9 +52,7 @@ public sealed class Room
 		LimX = sizeX - 1;
 		LimY = sizeY - 1;
 
-		tiles = new Tile[sizeX * sizeY * layers];
-		Layers = layers;
-		MainLayer = mainLayer;
+		tiles = new Tile[sizeX * sizeY * Layers];
 	}
 
 	// Returns a tile at the given location from this room. Fails if the location is out of bounds of the room.
@@ -69,7 +67,7 @@ public sealed class Room
 	// bounds of the room. Coordinates are specified in local room space between 0 and room size - 1. 
 	public Tile GetTile(int x, int y)
 	{
-		return GetTile(x, y, MainLayer);
+		return GetTile(x, y, Main);
 	}
 
 	// Sets the given tile at the given location in this room. Fails if the location is out of bounds

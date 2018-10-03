@@ -9,32 +9,30 @@ using static Utils;
 
 public sealed class GenDungeon : RoomGenerator
 {
-	private const int MainLayer = 0, FloorLayer = 1;
-
 	private bool familiarSpawned;
 
 	public override void Generate(Room room, Vec2i roomP, bool initial)
 	{
-		room.Init(roomP, 2, MainLayer, 32, 18);
+		room.Init(roomP, 32, 18);
+
+		room.Fill(Room.Back, TileType.DungeonFloor);
 
 		for (int x = 2; x <= room.LimX - 2; x++)
 		{
-			room.SetTile(x, room.LimY - 1, MainLayer, new Tile(TileType.DungeonWall, Direction.Front));
-			room.SetTile(x, 0, MainLayer, new Tile(TileType.DungeonWall, Direction.Back));
+			room.SetTile(x, room.LimY - 1, Room.Back, new Tile(TileType.DungeonWall, Direction.Front));
+			room.SetTile(x, 0, Room.Back, new Tile(TileType.DungeonWall, Direction.Back));
 		}
 
 		for (int y = 2; y <= room.LimY - 2; y++)
 		{
-			room.SetTile(0, y, MainLayer, new Tile(TileType.DungeonWall, Direction.Left));
-			room.SetTile(room.LimX - 1, y, MainLayer, new Tile(TileType.DungeonWall, Direction.Right));
+			room.SetTile(0, y, Room.Back, new Tile(TileType.DungeonWall, Direction.Left));
+			room.SetTile(room.LimX - 1, y, Room.Back, new Tile(TileType.DungeonWall, Direction.Right));
 		}
 
-		room.SetTile(0, room.LimY - 1, MainLayer, new Tile(TileType.DungeonWall, Direction.FrontLeft));
-		room.SetTile(room.LimX - 1, room.LimY - 1, MainLayer, new Tile(TileType.DungeonWall, Direction.FrontRight));
-		room.SetTile(0, 0, MainLayer, new Tile(TileType.DungeonWall, Direction.BackLeft));
-		room.SetTile(room.LimX - 1, 0, MainLayer, new Tile(TileType.DungeonWall, Direction.BackRight));
-
-		room.Fill(FloorLayer, TileType.DungeonFloor);
+		room.SetTile(0, room.LimY - 1, Room.Back, new Tile(TileType.DungeonWall, Direction.FrontLeft));
+		room.SetTile(room.LimX - 1, room.LimY - 1, Room.Back, new Tile(TileType.DungeonWall, Direction.FrontRight));
+		room.SetTile(0, 0, Room.Back, new Tile(TileType.DungeonWall, Direction.BackLeft));
+		room.SetTile(room.LimX - 1, 0, Room.Back, new Tile(TileType.DungeonWall, Direction.BackRight));
 
 		int spikeCount = Random.Range(0, 6);
 
@@ -46,7 +44,7 @@ public sealed class GenDungeon : RoomGenerator
 			for (int y = pY; y <= pY + 1; y++)
 			{
 				for (int x = pX; x <= pX + 1; x++)
-					room.SetTile(x, y, MainLayer, TileType.Spikes);
+					room.SetTile(x, y, Room.Back, TileType.Spikes);
 			}
 		}
 
@@ -63,14 +61,15 @@ public sealed class GenDungeon : RoomGenerator
 		{
 			World.Instance.SetLightMode(false);
 
-			room.SetTile(25, 11, MainLayer, TileType.Torch);
-			room.SetTile(room.HalfX, 0, MainLayer, new Tile(TileType.DungeonDoor, 0));
+			room.SetTile(25, 11, Room.Main, TileType.Torch);
 
 			for (int y = 0; y <= 1; y++)
 			{
-				room.SetTile(room.HalfX - 1, y, MainLayer, TileType.Barrier);
-				room.SetTile(room.HalfX + 1, y, MainLayer, TileType.Barrier);
+				room.SetTile(room.HalfX - 1, y, Room.Back, TileType.Barrier);
+				room.SetTile(room.HalfX + 1, y, Room.Back, TileType.Barrier);
 			}
+
+			room.SetTile(room.HalfX, 0, Room.Back, new Tile(TileType.DungeonDoor, 0));
 
 			World.Instance.SpawnPoint = new SpawnPoint(roomP, room.HalfX, 1, Direction.Front);
 		}
@@ -91,7 +90,7 @@ public sealed class GenDungeon : RoomGenerator
 
 		// No possible ways to generate, exit with a portal.
 		if (Random.value < 0.05f || possibleRooms.Count == 0)
-			room.SetTile(room.HalfX, room.HalfY, MainLayer, TileType.Portal);
+			room.SetTile(room.HalfX, room.HalfY, Room.Back, TileType.Portal);
 		else
 		{
 			bool[] paths = new bool[possibleRooms.Count];
@@ -121,7 +120,7 @@ public sealed class GenDungeon : RoomGenerator
 			for (int i = 0; i < exits.Count; i++)
 			{
 				Vec2i p = exits[i];
-				room.SetTile(p.x, p.y, MainLayer, TileType.Air);
+				room.SetTile(p.x, p.y, Room.Back, TileType.DungeonFloor);
 			}
 		}
 
