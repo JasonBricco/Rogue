@@ -5,6 +5,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using System.Collections.Generic;
+using System;
 
 public class RoomCollision
 {
@@ -18,7 +19,7 @@ public class RoomCollision
 	// Stores collisions that have occurred within the level between two entities. 
 	// Not all collisions are stored here; this structure is used when an entity
 	// requires this information, such as to avoid repeated collisions with the same entity.
-	private CollisionRules collisionRules = new CollisionRules();
+	private static CollisionRules collisionRules = new CollisionRules();
 
 	// Simulates OnTriggerStay() by adding to this list when OnTriggerEnter() is called
 	// and removing from it when OnTriggerExit() is called.
@@ -39,6 +40,8 @@ public class RoomCollision
 
 	public void Update()
 	{
+		if (Engine.Paused) return;
+
 		if (!hasColliders)
 			Generate();
 
@@ -182,23 +185,37 @@ public class RoomCollision
 			case TileType.Portal:
 			{
 				if (entity.Type == EntityType.Player)
-					World.Instance.BeginNewSection(RoomType.Plains, false);
-			}
-			break;
+				{
+					Action callback = () =>
+					{
+						World.Instance.BeginNewSection(RoomType.Plains, false);
+						FadeInfo fadeIn = new FadeInfo(true, 0.0f, 0.0f, 0.0f, 0.2f, null);
+						EventManager.Instance.TriggerEvent(GameEvent.Fade, fadeIn);
+					};
+
+					FadeInfo fadeOut = new FadeInfo(false, 0.0f, 0.0f, 0.0f, 0.2f, callback);
+					EventManager.Instance.TriggerEvent(GameEvent.Fade, fadeOut);
+				}
+			} break;
 
 			case TileType.PlainsDoor:
-			{
-				if (entity.Type == EntityType.Player)
-					World.Instance.BeginNewSection(Vec2i.Directions[Direction.Front], RoomType.Dungeon);
-			}
-			break;
-
 			case TileType.DungeonDoor:
 			{
 				if (entity.Type == EntityType.Player)
-					World.Instance.BeginNewSection(Vec2i.Directions[Direction.Back], RoomType.Plains);
-			}
-			break;
+				{
+					Action callback = () =>
+					{
+						int dir = tile.id == TileType.PlainsDoor ? Direction.Front : Direction.Back;
+						World.Instance.BeginNewSection(Vec2i.Directions[dir], RoomType.Dungeon);
+
+						FadeInfo fadeIn = new FadeInfo(true, 0.0f, 0.0f, 0.0f, 0.2f, null);
+						EventManager.Instance.TriggerEvent(GameEvent.Fade, fadeIn);
+					};
+
+					FadeInfo fadeOut = new FadeInfo(false, 0.0f, 0.0f, 0.0f, 0.2f, callback);
+					EventManager.Instance.TriggerEvent(GameEvent.Fade, fadeOut);
+				}
+			} break;
 
 			case TileType.Spikes:
 			{
@@ -206,8 +223,7 @@ public class RoomCollision
 				// in this method. We must always get it directly from the world.
 				if (!entity.HasFlag(EntityFlags.Invincible))
 					World.Instance.Room.Entities.AddOTEffect(entity, OTEffectType.Spikes);
-			}
-			break;
+			} break;
 		}
 	}
 

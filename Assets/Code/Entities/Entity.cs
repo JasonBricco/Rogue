@@ -89,6 +89,8 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	// Updates all updatable entity components and ensures the entity is in the correct room.
 	private void Update()
 	{
+		if (Engine.Paused) return;
+
 		if (HasFlag(EntityFlags.Dead))
 			Kill();
 

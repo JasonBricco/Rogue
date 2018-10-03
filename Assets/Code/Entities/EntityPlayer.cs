@@ -74,8 +74,7 @@ public sealed class EntityPlayer : MonoBehaviour
 				if (fireDir != Vec2i.Zero)
 				{
 					entity.facing = GetNumericDir(fireDir);
-					Entity proj = room.Entities.FireProjectile(entity.Pos + fireDir.ToVector2(), GetNumericDirFull(fireDir), projectile);
-					room.Collision.AddCollisionRule(proj, entity);
+					room.Entities.FireProjectile(entity, entity.Pos + fireDir.ToVector2(), GetNumericDirFull(fireDir), projectile);
 					timer.SetValue(0.25f);
 				}
 			}

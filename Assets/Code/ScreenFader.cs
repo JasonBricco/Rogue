@@ -3,42 +3,58 @@
 //
 
 using UnityEngine;
+using UnityEngine.UI;
+using System;
+using static UnityEngine.Mathf;
 
 public sealed class ScreenFader : MonoBehaviour
 {
-	[SerializeField] private Material fadeMaterial;
-	private Color fadeColor = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+	[SerializeField] private Image overlay;
+
+	private float startAlpha, targetAlpha;
+
+	private bool inProgress;
+	private float duration, timeLeft;
+
+	private Action callback;
 
 	private void Awake()
 	{
 		EventManager.Instance.ListenForEvent<FadeInfo>(GameEvent.Fade, OnFade);
+		overlay.color = Color.clear;
 	}
 
 	private void OnFade(FadeInfo info)
 	{
-		fadeColor = new Color(info.fadeR, info.fadeG, info.fadeB, info.fadeIn ? 0.0f : 1.0f);
+		overlay.color = new Color(info.fadeR, info.fadeG, info.fadeB, info.fadeIn ? 1.0f : 0.0f);
 
+		startAlpha = overlay.color.a;
+		targetAlpha = 1.0f - startAlpha;
 
+		duration = info.duration;
+		timeLeft = duration;
+		callback = info.callback;
+
+		Engine.Paused = true;
+		inProgress = true;
 	}
 
-	private void OnPostRender()
+	private void Update()
 	{
-		if (fadeColor.a == 0.0f) return;
+		if (inProgress)
+		{
+			float t = 1.0f - (timeLeft / duration);
+			float a = Lerp(startAlpha, targetAlpha, t);
+			overlay.color = overlay.color.SetAlpha(a);
+			timeLeft -= Time.deltaTime;
 
-		fadeMaterial.SetColor("_Color", fadeColor);
-
-		GL.PushMatrix();
-		GL.LoadOrtho();
-
-		fadeMaterial.SetPass(0);
-		GL.Begin(GL.QUADS);
-
-		GL.Vertex3(0.0f, 0.0f, 0.1f);
-		GL.Vertex3(1.0f, 0.0f, 0.1f);
-		GL.Vertex3(1.0f, 1.0f, 0.1f);
-		GL.Vertex3(0.0f, 1.0f, 0.1f);
-
-		GL.End();
-		GL.PopMatrix();
+			if (timeLeft <= 0.0f)
+			{
+				overlay.color = overlay.color.SetAlpha(targetAlpha);
+				Engine.Paused = false;
+				inProgress = false;
+				callback?.Invoke();
+			}
+		}
 	}
 }

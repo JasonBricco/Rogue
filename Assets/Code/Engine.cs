@@ -8,6 +8,8 @@ using static UnityEngine.Mathf;
 
 public sealed class Engine : MonoBehaviour
 {
+	public static bool Paused { get; set; }
+
 	private void Awake()
 	{
 		Assert.raiseExceptions = true;

@@ -100,7 +100,7 @@ public sealed class RoomEntities
 		effects.RemoveAll(entity);
 	}
 
-	public Entity FireProjectile(Vector2 start, int facing, EntityType type)
+	public void FireProjectile(Entity owner, Vector2 start, int facing, EntityType type)
 	{
 		Queue<Entity> queue = projectiles[(int)type % projectiles.Length];
 
@@ -116,10 +116,10 @@ public sealed class RoomEntities
 		proj.facing = facing;
 		proj.transform.rotation = Quaternion.Euler(Vector3.forward * Direction.Rotations[facing]);
 
+		room.Collision.AddCollisionRule(proj, owner);
+
 		start.y += 0.3f;
 		SpawnEntity(proj, start, facing);
-
-		return proj;
 	}
 
 	public void ReturnProjectile(Entity projectile)
