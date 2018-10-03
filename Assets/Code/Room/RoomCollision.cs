@@ -89,6 +89,7 @@ public class RoomCollision
 	}
 
 	// Adds colliders for all tiles that require them in this room.
+	[Il2CppSetOptions(Option.NullChecks, false)]
 	public void Generate()
 	{
 		Assert.IsFalse(hasColliders);

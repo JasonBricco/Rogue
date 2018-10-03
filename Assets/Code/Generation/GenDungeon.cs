@@ -11,6 +11,8 @@ public sealed class GenDungeon : RoomGenerator
 {
 	private bool familiarSpawned;
 
+	[Il2CppSetOptions(Option.NullChecks, false)]
+	[Il2CppSetOptions(Option.ArrayBoundsChecks, false)]
 	public override void Generate(Room room, Vec2i roomP, bool initial)
 	{
 		room.Init(roomP, 32, 18);

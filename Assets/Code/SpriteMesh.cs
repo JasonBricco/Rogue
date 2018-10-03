@@ -25,6 +25,7 @@ public sealed class SpriteMesh
 		Material = material;
 	}
 
+	[Il2CppSetOptions(Option.NullChecks, false)]
 	public void AddRect(float x, float y, float z, int width, int height, float tex, Vector3 renderOffset, Color32 color)
 	{
 		x += renderOffset.x;

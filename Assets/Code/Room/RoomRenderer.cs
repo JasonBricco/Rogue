@@ -24,6 +24,7 @@ public sealed class RoomRenderer
 			BuildMeshes();
 	}
 
+	[Il2CppSetOptions(Option.NullChecks, false)]
 	private void BuildLayer(int layer, float baseZ)
 	{
 		for (int y = 0; y < room.SizeY; y++)

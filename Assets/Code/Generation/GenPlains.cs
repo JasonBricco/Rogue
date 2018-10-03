@@ -6,6 +6,7 @@ using UnityEngine;
 
 public sealed class GenPlains : RoomGenerator
 {
+	[Il2CppSetOptions(Option.NullChecks, false)]
 	private void SetFloor(Room room)
 	{
 		for (int y = 0; y < room.SizeY; y++)
@@ -23,6 +24,7 @@ public sealed class GenPlains : RoomGenerator
 		}
 	}
 
+	[Il2CppSetOptions(Option.NullChecks, false)]
 	private void CreatePlateau(Room room, int startX, int startY, int endX, int endY)
 	{
 		for (int x = startX + 3; x < endX - 3; x++)
@@ -43,6 +45,7 @@ public sealed class GenPlains : RoomGenerator
 		room.SetTile(endX - 3, startY, Room.Back, new Tile(TileType.PlainsWall, Direction.BackRight));
 	}
 
+	[Il2CppSetOptions(Option.NullChecks, false)]
 	public override void Generate(Room room, Vec2i roomP, bool initial)
 	{
 		if (initial) World.Instance.SetLightMode(false);

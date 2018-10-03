@@ -56,7 +56,8 @@ public sealed class Room
 	}
 
 	// Returns a tile at the given location from this room. Fails if the location is out of bounds of the room.
-	// Coordinates are specified in local room space between 0 and room size - 1. 
+	// Coordinates are specified in local room space between 0 and room size - 1.
+	[Il2CppSetOptions(Option.ArrayBoundsChecks, false)]
 	public Tile GetTile(int x, int y, int layer)
 	{
 		Assert.IsTrue(InBounds(x, y));
@@ -72,6 +73,7 @@ public sealed class Room
 
 	// Sets the given tile at the given location in this room. Fails if the location is out of bounds
 	// of the room. Coordinates are specified in local room space between 0 and room size - 1.
+	[Il2CppSetOptions(Option.ArrayBoundsChecks, false)]
 	public void SetTile(int x, int y, int layer, Tile tile)
 	{
 		Assert.IsTrue(InBounds(x, y));
