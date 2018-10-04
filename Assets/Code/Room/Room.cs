@@ -66,10 +66,7 @@ public sealed class Room
 
 	// Returns a tile from the main layer at the given location from this room. Fails if the location is out of 
 	// bounds of the room. Coordinates are specified in local room space between 0 and room size - 1. 
-	public Tile GetTile(int x, int y)
-	{
-		return GetTile(x, y, Main);
-	}
+	public Tile GetTile(int x, int y) => GetTile(x, y, Main);
 
 	// Sets the given tile at the given location in this room. Fails if the location is out of bounds
 	// of the room. Coordinates are specified in local room space between 0 and room size - 1.
@@ -128,8 +125,6 @@ public sealed class Room
 
 	// Returns true if the given coordinates are within the boundaries of this room.
 	// Coordinates are specified in local room space between 0 and room size - 1.
-	public bool InBounds(int x, int y)
-	{
-		return x >= 0 && x < SizeX && y >= 0 && y < SizeY;
-	}
+	public bool InBounds(int x, int y) 
+		=> x >= 0 && x < SizeX && y >= 0 && y < SizeY;
 }

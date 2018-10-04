@@ -20,10 +20,7 @@ public sealed class TileData : IEquatable<TileData>
 		variants[0] = new TileProperties();
 	}
 
-	public TileProperties GetProperties(int variant)
-	{
-		return variants[variant];
-	}
+	public TileProperties GetProperties(int variant) => variants[variant];
 
 	public void InitializeProperties()
 	{
@@ -34,13 +31,6 @@ public sealed class TileData : IEquatable<TileData>
 		}
 	}
 
-	public bool Equals(TileData other)
-	{
-		return type == other.type;
-	}
-
-	public override int GetHashCode()
-	{
-		return type.GetHashCode();
-	}
+	public bool Equals(TileData other) => type == other.type;
+	public override int GetHashCode() => type.GetHashCode();
 }

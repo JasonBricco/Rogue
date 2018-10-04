@@ -23,9 +23,7 @@ public sealed class EntityImage : MonoBehaviour
 	}
 
 	public void TintRed(WaitForSeconds wait)
-	{
-		StartCoroutine(DoTintRed(wait));
-	}
+		=> StartCoroutine(DoTintRed(wait));
 
 	private IEnumerator DoTintRed(WaitForSeconds wait)
 	{

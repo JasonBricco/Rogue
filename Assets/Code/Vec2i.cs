@@ -33,43 +33,22 @@ public struct Vec2i : IEquatable<Vec2i>
 	}
 
 	// The squared length of the vector.
-	public int LengthSq
-	{
-		get { return Dot(this, this); }
-	}
+	public int LengthSq => Dot(this, this);
 
 	// Convert this vector to a floating-point Vector2.
-	public Vector2 ToVector2()
-	{
-		return new Vector2(x, y);
-	}
+	public Vector2 ToVector2() => new Vector2(x, y);
 
 	// Convert this vector to a floating-point Vector3.
-	public Vector3 ToVector3()
-	{
-		return new Vector3(x, y);
-	}
+	public Vector3 ToVector3() => new Vector3(x, y);
 
 	// Returns the absolute value of this vector.
-	public Vec2i Abs()
-	{
-		return new Vec2i(Mathf.Abs(x), Mathf.Abs(y));
-	}
+	public Vec2i Abs() => new Vec2i(Mathf.Abs(x), Mathf.Abs(y));
 
-	public bool Equals(Vec2i other)
-	{
-		return this == other;
-	}
+	public bool Equals(Vec2i other) => this == other;
 
-	public override bool Equals(object obj)
-	{
-		return Equals((Vec2i)obj);
-	}
+	public override bool Equals(object obj) => Equals((Vec2i)obj);
 
-	public override int GetHashCode()
-	{
-		return 29 * x + 17 * y;
-	}
+	public override int GetHashCode() => 29 * x + 17 * y;
 
 	// Returns the dot product between the two given vectors.
 	public static int Dot(Vec2i a, Vec2i b)
@@ -78,58 +57,17 @@ public struct Vec2i : IEquatable<Vec2i>
 		return tmp.x + tmp.y;
 	}
 
-	public override string ToString()
-	{
-		return x + ", " + y;
-	}
+	public override string ToString() => x + ", " + y;
 
-	public string ToPathString()
-	{
-		return x.ToString() + y.ToString();
-	}
+	public string ToPathString() => x.ToString() + y.ToString();
 
-	public static bool operator ==(Vec2i a, Vec2i b)
-	{
-		return a.x == b.x && a.y == b.y;
-	}
-
-	public static bool operator !=(Vec2i a, Vec2i b)
-	{
-		return a.x != b.x || a.y != b.y;
-	}
-
-	public static Vec2i operator +(Vec2i a, Vec2i b)
-	{
-		return new Vec2i(a.x + b.x, a.y + b.y);
-	}
-
-	public static Vec2i operator +(Vec2i a, int v)
-	{
-		return new Vec2i(a.x + v, a.y + v);
-	}
-
-	public static Vec2i operator -(Vec2i a, Vec2i b)
-	{
-		return new Vec2i(a.x - b.x, a.y - b.y);
-	}
-
-	public static Vec2i operator -(Vec2i a, int v)
-	{
-		return new Vec2i(a.x - v, a.y - v);
-	}
-
-	public static Vec2i operator *(Vec2i a, Vec2i b)
-	{
-		return new Vec2i(a.x * b.x, a.y * b.y);
-	}
-
-	public static Vec2i operator *(Vec2i a, int v)
-	{
-		return new Vec2i(a.x * v, a.y * v);
-	}
-
-	public static Vec2i operator -(Vec2i v)
-	{
-		return new Vec2i(-v.x, -v.y);
-	}
+	public static bool operator ==(Vec2i a, Vec2i b) => a.x == b.x && a.y == b.y;
+	public static bool operator !=(Vec2i a, Vec2i b) => a.x != b.x || a.y != b.y;
+	public static Vec2i operator +(Vec2i a, Vec2i b) => new Vec2i(a.x + b.x, a.y + b.y);
+	public static Vec2i operator +(Vec2i a, int v) => new Vec2i(a.x + v, a.y + v);
+	public static Vec2i operator -(Vec2i a, Vec2i b) => new Vec2i(a.x - b.x, a.y - b.y);
+	public static Vec2i operator -(Vec2i a, int v) => new Vec2i(a.x - v, a.y - v);
+	public static Vec2i operator *(Vec2i a, Vec2i b) => new Vec2i(a.x * b.x, a.y * b.y);
+	public static Vec2i operator *(Vec2i a, int v) => new Vec2i(a.x * v, a.y * v);
+	public static Vec2i operator -(Vec2i v) => new Vec2i(-v.x, -v.y);
 }

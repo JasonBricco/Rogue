@@ -73,20 +73,9 @@ public class RoomCollision
 		exitMatrix.Add(lEnemy, lTerrainTrigger, tcr: TriggerTileExit);
 	}
 
-	public void AddCollisionRule(Entity a, Entity b)
-	{
-		collisionRules.Add(a, b);
-	}
-
-	public bool CollisionRuleExists(Entity a, Entity b)
-	{
-		return collisionRules.Exists(a, b);
-	}
-
-	public void RemoveCollisionRules(Entity entity)
-	{
-		collisionRules.Remove(entity);
-	}
+	public void AddCollisionRule(Entity a, Entity b) => collisionRules.Add(a, b);
+	public bool CollisionRuleExists(Entity a, Entity b) => collisionRules.Exists(a, b);
+	public void RemoveCollisionRules(Entity entity) => collisionRules.Remove(entity);
 
 	// Adds colliders for all tiles that require them in this room.
 	[Il2CppSetOptions(Option.NullChecks, false)]

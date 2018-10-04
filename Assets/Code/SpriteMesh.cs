@@ -73,8 +73,5 @@ public sealed class SpriteMesh
 		colors = null;
 	}
 
-	public void Destroy()
-	{
-		Object.Destroy(Mesh);
-	}
+	public void Destroy() => Object.Destroy(Mesh);
 }

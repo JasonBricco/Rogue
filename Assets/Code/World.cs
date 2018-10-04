@@ -64,25 +64,12 @@ public sealed class World : MonoBehaviour
 
 	public static World Instance { get; private set; }
 
-	public int EntityPrefabCount()
-	{
-		return entityPrefabs.Length;
-	}
+	public int EntityPrefabCount() => entityPrefabs.Length;
 
-	public Entity EntityPrefab(EntityType type)
-	{
-		return entityPrefabs[(int)type];
-	}
+	public Entity EntityPrefab(EntityType type) => entityPrefabs[(int)type];
+	public Entity EntityPrefab(int i) => entityPrefabs[i];
 
-	public Entity EntityPrefab(int i)
-	{
-		return entityPrefabs[i];
-	}
-
-	public bool RoomExists(Vec2i pos)
-	{
-		return loadedRooms.ContainsKey(pos);
-	}
+	public bool RoomExists(Vec2i pos) => loadedRooms.ContainsKey(pos);
 
 	public void AddExit(Vec2i room, Vec2i cell)
 	{
@@ -96,10 +83,8 @@ public sealed class World : MonoBehaviour
 		list.Add(cell);
 	}
 
-	public bool TryGetExit(Vec2i pos, out List<Vec2i> list)
-	{
-		return exitPoints.TryGetValue(pos, out list);
-	}
+	public bool TryGetExit(Vec2i pos, out List<Vec2i> list) 
+		=> exitPoints.TryGetValue(pos, out list);
 
 	// Returns a random room position out of the last loaded rooms.
 	public Vec2i GetRandomRoom()
@@ -129,10 +114,7 @@ public sealed class World : MonoBehaviour
 
 	// Allows running a function after the given amount of seconds on this 
 	// MonoBehaviour, for objects that aren't MonoBehaviours to call.
-	public void Invoke(Action func, float seconds)
-	{
-		StartCoroutine(RunInvoke(func, seconds));
-	}
+	public void Invoke(Action func, float seconds) => StartCoroutine(RunInvoke(func, seconds));
 
 	private IEnumerator RunInvoke(Action func, float seconds)
 	{
@@ -210,9 +192,7 @@ public sealed class World : MonoBehaviour
 	}
 
 	public void ChangeRoomType(RoomType type)
-	{
-		generator = generators[(int)type];
-	}
+		=> generator = generators[(int)type];
 
 	public void SetLightMode(bool dark)
 	{

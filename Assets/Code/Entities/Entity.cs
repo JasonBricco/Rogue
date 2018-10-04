@@ -19,15 +19,8 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	[Tooltip("If true, the entity will not persist when changing rooms")]
 	[SerializeField] private bool transient;
 
-	public EntityType Type
-	{
-		get { return type; }
-	}
-
-	public bool Transient
-	{
-		get { return transient; }
-	}
+	public EntityType Type => type;
+	public bool Transient => transient;
 
 	// Component-modified fields.
 	[HideInInspector] public float speed;
@@ -42,15 +35,8 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 
 	private Transform t;
 
-	public Vector2 Pos
-	{
-		get { return t.position; }
-	}
-
-	public Vector2 FacingDir
-	{
-		get { return velocity.normalized; }
-	}
+	public Vector2 Pos => t.position;
+	public Vector2 FacingDir => velocity.normalized;
 
 	private void Awake()
 	{
@@ -60,41 +46,20 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		speed = defaultSpeed;
 	}
 
-	public void SetFlag(EntityFlags flag)
-	{
-		flags |= flag;
-	}
-
-	public void UnsetFlag(EntityFlags flag)
-	{
-		flags &= ~flag;
-	}
-
-	public bool HasFlag(EntityFlags flag)
-	{
-		return (flags & flag) != 0;
-	}
+	public void SetFlag(EntityFlags flag) => flags |= flag;
+	public void UnsetFlag(EntityFlags flag) => flags &= ~flag;
+	public bool HasFlag(EntityFlags flag) => (flags & flag) != 0;
 
 	public void ListenForEvent(EntityEvent type, Action func)
-	{
-		events[(int)type] += func;
-	}
+		=> events[(int)type] += func;
 
 	public void InvokeEvent(EntityEvent type)
-	{
-		events[(int)type]?.Invoke();
-	}
+		=> events[(int)type]?.Invoke();
 
 	// Sets the entity's speed to its default speed.
-	public void ResetSpeed()
-	{
-		speed = defaultSpeed;
-	}
+	public void ResetSpeed() => speed = defaultSpeed;
 
-	public void MoveTo(Vector2 pos)
-	{
-		t.position = pos;
-	}
+	public void MoveTo(Vector2 pos) => t.position = pos;
 
 	// Updates all updatable entity components and ensures the entity is in the correct room.
 	private void Update()
@@ -221,17 +186,11 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	}
 
 	public int CompareTo(Entity other)
-	{
-		return type.CompareTo(other.type);
-	}
+		=> type.CompareTo(other.type);
 
 	public static bool operator <(Entity a, Entity b)
-	{
-		return a.type < b.type;
-	}
+		=> a.type < b.type;
 
 	public static bool operator >(Entity a, Entity b)
-	{
-		return a.type > b.type;
-	}
+		=> a.type > b.type;
 }
