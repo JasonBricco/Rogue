@@ -7,6 +7,7 @@ using UnityEngine;
 public sealed class TileComponent : MonoBehaviour
 {
 	[SerializeField] private bool enableOnSet;
+	[SerializeField] private bool enableOnCollider;
 
 	public void OnSet(Room room, int x, int y)
 	{
@@ -14,5 +15,13 @@ public sealed class TileComponent : MonoBehaviour
 
 		ITileSet set = GetComponent<ITileSet>();
 		set.OnSet(room, x, y, this);
+	}
+
+	public void OnCollider(TileCollider col)
+	{
+		if (!enableOnCollider) return;
+
+		IColliderSet set = GetComponent<IColliderSet>();
+		set.OnCollider(col);
 	}
 }

@@ -2,9 +2,47 @@
 // Copyright (c) 2018 Jason Bricco
 //
 
+using UnityEngine;
+using System;
+
 public class RoomGenerator
 {
 	protected static bool firstRoom = true;
 
-	public virtual void Generate(Room room, Vec2i roomP, bool initial) { }
+	public void Generate(Room room, GameCamera cam, Vec2i roomP, bool initial)
+	{
+		Init(room, roomP);
+		GenerateInternal(room, roomP, initial);
+		SetProperties(cam);
+	}
+
+	protected virtual void GenerateInternal(Room room, Vec2i roomP, bool initial)
+	{
+		throw new NotImplementedException();
+	}
+
+	protected virtual void Init(Room room, Vec2i roomP)
+	{
+		throw new NotImplementedException();
+	}
+
+	public virtual void SetProperties(GameCamera cam)
+	{
+		throw new NotImplementedException();
+	}
+
+	protected void SetLightMode(bool dark)
+	{
+		if (dark)
+		{
+			Color col = new Color(0.02f, 0.02f, 0.02f, 1.0f);
+			RenderSettings.ambientLight = col;
+			Camera.main.backgroundColor = Color.black;
+		}
+		else
+		{
+			RenderSettings.ambientLight = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+			Camera.main.backgroundColor = new Color(0.58f, 0.8f, 1.0f, 1.0f);
+		}
+	}
 }

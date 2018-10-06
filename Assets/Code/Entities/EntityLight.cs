@@ -16,6 +16,7 @@ public sealed class EntityLight : MonoBehaviour
 		entity = GetComponent<Entity>();
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
 		tLight = Instantiate(lightPrefab).GetComponent<Transform>();
+		tLight.SetParent(entity.transform);
 	}
 
 	public void MakePersist()
@@ -30,7 +31,6 @@ public sealed class EntityLight : MonoBehaviour
 
 	private void OnEnable()
 	{
-		tLight.position = entity.Pos;
 		tLight.gameObject.SetActive(true);
 	}
 

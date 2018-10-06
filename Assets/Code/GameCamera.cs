@@ -33,14 +33,18 @@ public sealed class GameCamera : MonoBehaviour
 		maxX = room.SizeX - minX;
 		minY = cam.orthographicSize;
 		maxY = room.SizeY - minY;
+	}
 
-		following = room.cameraFollow;
-		
-		if (following)
-		{
-			t.position = player.Pos;
-			t.SetZ(-10.0f);
-		}
+	public void SetFollowing()
+	{
+		following = true;
+		t.position = player.Pos;
+		t.SetZ(-10.0f);
+	}
+
+	public void SetFixed()
+	{
+		following = false;
 	}
 
 	// Sets the camera position based on the camera mode. If the camera is following the player,

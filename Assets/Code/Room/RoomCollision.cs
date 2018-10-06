@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using System.Collections.Generic;
 using System;
+using Random = UnityEngine.Random;
 
 public class RoomCollision
 {
@@ -99,6 +100,7 @@ public class RoomCollision
 						Vector2 size = data.colliderSize;
 						Vector2 offset = data.colliderOffset;
 						col.SetInfo(new Vector3(size.x, size.y, room.SizeY), data.trigger, x, y, new Vector3(offset.x, offset.y, room.HalfY));
+						data.component?.OnCollider(col);
 					}
 				}
 			}
@@ -199,8 +201,12 @@ public class RoomCollision
 				{
 					Action callback = () =>
 					{
-						int dir = tile.id == TileType.PlainsDoor ? Direction.Front : Direction.Back;
-						World.Instance.BeginNewSection(Vec2i.Directions[dir], RoomType.Dungeon);
+						if (tile.id == TileType.PlainsDoor)
+						{
+							RoomType nextType = Random.value > 0.85f ? RoomType.DarkDungeon : RoomType.Dungeon;
+							World.Instance.BeginNewSection(Vec2i.Directions[Direction.Front], nextType);
+						}
+						else World.Instance.BeginNewSection(Vec2i.Directions[Direction.Back], RoomType.Plains);
 
 						FadeInfo fadeIn = new FadeInfo(true, 0.0f, 0.0f, 0.0f, 0.2f, null);
 						EventManager.Instance.TriggerEvent(GameEvent.Fade, fadeIn);

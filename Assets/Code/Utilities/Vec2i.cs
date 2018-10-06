@@ -11,6 +11,7 @@ public struct Vec2i : IEquatable<Vec2i>
 	public int x, y;
 
 	public static readonly Vec2i MaxValue = new Vec2i(int.MaxValue, int.MaxValue);
+	public static readonly Vec2i MinValue = new Vec2i(int.MinValue, int.MinValue);
 
 	public static readonly Vec2i[] Directions =
 	{

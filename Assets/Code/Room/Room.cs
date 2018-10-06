@@ -20,8 +20,6 @@ public sealed class Room
 
 	public Vec2i Pos { get; private set; }
 
-	public bool cameraFollow;
-
 	private Tile[] tiles;
 
 	public SpawnPoint Spawn { get; set; }
@@ -31,6 +29,7 @@ public sealed class Room
 	public RoomEntities Entities { get; private set; }
 	public RoomPathfinding Pathfinding { get; private set; }
 
+	public RoomType Type { get; private set; }
 	private bool disabled;
 
 	public Room(Vec2i pos)
@@ -43,8 +42,10 @@ public sealed class Room
 		Pos = pos;
 	}
 
-	public void Init(Vec2i pos, int sizeX, int sizeY)
+	public void Init(Vec2i pos, int sizeX, int sizeY, RoomType type)
 	{
+		Type = type;
+
 		SizeX = sizeX;
 		SizeY = sizeY;
 
@@ -96,9 +97,11 @@ public sealed class Room
 	{
 		Assert.IsFalse(disabled);
 		Collision.Update();
+		Pathfinding.Update();
 		Entities.Update();
 		Renderer.Update();
 		Renderer.Draw();
+		Pathfinding.TestUpdate();
 	}
 
 	// Enables the room so it can be used as the active room.
@@ -129,4 +132,6 @@ public sealed class Room
 	// Coordinates are specified in local room space between 0 and room size - 1.
 	public bool InBounds(int x, int y) 
 		=> x >= 0 && x < SizeX && y >= 0 && y < SizeY;
+
+	public bool InBounds(Vec2i p) => InBounds(p.x, p.y);
 }

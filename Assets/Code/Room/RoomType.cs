@@ -5,5 +5,6 @@
 public enum RoomType
 {
 	Plains,
-	Dungeon
+	Dungeon,
+	DarkDungeon
 }

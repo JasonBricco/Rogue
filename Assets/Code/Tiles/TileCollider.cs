@@ -8,6 +8,10 @@ public sealed class TileCollider : MonoBehaviour
 {
 	public Tile tile;
 	public BoxCollider col;
+	
+	// Score modifier for use in pathfinding. A higher score makes
+	// it less likely that AI will walk on this tile.
+	public int scoreModifier;
 
 	public static TileCollider Create(Tile tile)
 	{

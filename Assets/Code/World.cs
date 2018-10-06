@@ -13,6 +13,9 @@ using Random = UnityEngine.Random;
 public sealed class World : MonoBehaviour
 {
 	[SerializeField] private Entity[] entityPrefabs;
+	[SerializeField] private LayerMask raycastLayers;
+
+	public LayerMask RaycastLayers => raycastLayers;
 
 	public Room Room { get; private set; }
 
@@ -28,15 +31,14 @@ public sealed class World : MonoBehaviour
 	private RoomGenerator[] generators =
 	{
 		new GenPlains(),
-		new GenDungeon()
+		new GenDungeon(),
+		new GenDarkDungeon()
 	};
 
 	// The active generator.
 	private RoomGenerator generator;
 
 	public SpawnPoint SpawnPoint { get; set; }
-
-	private bool isDark;
 
 	private GameCamera cam;
 
@@ -107,9 +109,6 @@ public sealed class World : MonoBehaviour
 	public void Update()
 	{
 		Room.Update();
-
-		if (Input.GetKeyDown(KeyCode.Tab))
-			SetLightMode(!isDark);
 	}
 
 	// Allows running a function after the given amount of seconds on this 
@@ -133,6 +132,7 @@ public sealed class World : MonoBehaviour
 		{
 			Room = newRoom;
 			newRoom.Enable();
+			ChangeRoomType(Room.Type);
 
 			if (initial)
 				SpawnPoint = Room.Spawn;
@@ -140,7 +140,7 @@ public sealed class World : MonoBehaviour
 		else
 		{
 			NewRoom(pos);
-			generator.Generate(Room, pos, initial);
+			generator.Generate(Room, cam, pos, initial);
 		}
 
 		AdjustBarriers();
@@ -155,6 +155,7 @@ public sealed class World : MonoBehaviour
 		Assert.IsTrue(dir != Vec2i.Zero);
 		ChangeRoomType(type);
 		LoadRoom(Room.Pos + dir, true);
+		generator.SetProperties(cam);
 		Room.Entities.MovePlayerTo(SpawnPoint.cell, SpawnPoint.facing);
 	}
 
@@ -166,7 +167,7 @@ public sealed class World : MonoBehaviour
 		loadedRooms.Clear();
 		ChangeRoomType(type);
 		NewRoom(Vec2i.Zero);
-		generator.Generate(Room, Room.Pos, true);
+		generator.Generate(Room, cam, Room.Pos, true);
 		AdjustBarriers();
 		cam.UpdateValues();
 
@@ -193,21 +194,4 @@ public sealed class World : MonoBehaviour
 
 	public void ChangeRoomType(RoomType type)
 		=> generator = generators[(int)type];
-
-	public void SetLightMode(bool dark)
-	{
-		if (dark)
-		{
-			Color col = new Color(0.02f, 0.02f, 0.02f, 1.0f);
-			RenderSettings.ambientLight = col;
-			Camera.main.backgroundColor = Color.black;
-		}
-		else
-		{
-			RenderSettings.ambientLight = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-			Camera.main.backgroundColor = new Color(0.58f, 0.8f, 1.0f, 1.0f);
-		}
-
-		isDark = dark;
-	}
 }

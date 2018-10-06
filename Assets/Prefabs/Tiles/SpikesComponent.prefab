@@ -65,3 +65,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableOnSet: 0
+  enableOnCollider: 1

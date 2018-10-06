@@ -6,6 +6,11 @@ using UnityEngine;
 
 public sealed class GenPlains : RoomGenerator
 {
+	protected override void Init(Room room, Vec2i roomP)
+	{
+		room.Init(roomP, 64, 36, RoomType.Plains);
+	}
+
 	[Il2CppSetOptions(Option.NullChecks, false)]
 	private void SetFloor(Room room)
 	{
@@ -46,13 +51,9 @@ public sealed class GenPlains : RoomGenerator
 	}
 
 	[Il2CppSetOptions(Option.NullChecks, false)]
-	public override void Generate(Room room, Vec2i roomP, bool initial)
+	protected override void GenerateInternal(Room room, Vec2i roomP, bool initial)
 	{
-		if (initial) World.Instance.SetLightMode(false);
-
-		room.Init(roomP, 64, 36);
 		SetFloor(room);
-
 		CreatePlateau(room, 0, 0, room.SizeX, room.SizeY);
 
 		// Raised plateau for the exit door.
@@ -93,7 +94,11 @@ public sealed class GenPlains : RoomGenerator
 		}
 		else if (initial)
 			World.Instance.SpawnPoint = new SpawnPoint(roomP, 4, 4, Direction.Front);
+	}
 
-		room.cameraFollow = true;
+	public override void SetProperties(GameCamera cam)
+	{
+		cam.SetFollowing();
+		SetLightMode(false);
 	}
 }

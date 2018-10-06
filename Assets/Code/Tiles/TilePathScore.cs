@@ -4,9 +4,12 @@
 
 using UnityEngine;
 
-public sealed class TilePathScore : MonoBehaviour
+public sealed class TilePathScore : MonoBehaviour, IColliderSet
 {
 	[SerializeField] private int scoreModifier;
 
-	public int ScoreModifier => scoreModifier;
+	public void OnCollider(TileCollider col)
+	{
+		col.scoreModifier = scoreModifier;
+	}
 }

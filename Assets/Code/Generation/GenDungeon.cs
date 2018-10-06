@@ -7,16 +7,19 @@ using UnityEngine.Assertions;
 using System.Collections.Generic;
 using static Utils;
 
-public sealed class GenDungeon : RoomGenerator
+public class GenDungeon : RoomGenerator
 {
 	private bool familiarSpawned;
 
+	protected override void Init(Room room, Vec2i roomP)
+	{
+		room.Init(roomP, 32, 18, RoomType.Dungeon);
+	}
+
 	[Il2CppSetOptions(Option.NullChecks, false)]
 	[Il2CppSetOptions(Option.ArrayBoundsChecks, false)]
-	public override void Generate(Room room, Vec2i roomP, bool initial)
+	protected override void GenerateInternal(Room room, Vec2i roomP, bool initial)
 	{
-		room.Init(roomP, 32, 18);
-
 		room.Fill(Room.Back, TileType.DungeonFloor);
 
 		for (int x = 2; x <= room.LimX - 2; x++)
@@ -61,8 +64,6 @@ public sealed class GenDungeon : RoomGenerator
 
 		if (initial)
 		{
-			World.Instance.SetLightMode(false);
-
 			room.SetTile(25, 11, Room.Main, TileType.Torch);
 
 			for (int y = 0; y <= 1; y++)
@@ -131,8 +132,6 @@ public sealed class GenDungeon : RoomGenerator
 			room.Entities.SpawnEntity(EntityType.Familiar, new Vec2i(26, 11));
 			familiarSpawned = true;
 		}
-
-		room.cameraFollow = false;
 	}
 
 	private void AddConnection(Room room, Vec2i pos, Vec2i dir)
@@ -164,5 +163,11 @@ public sealed class GenDungeon : RoomGenerator
 				world.AddExit(room.Pos + dir, new Vec2i(pos.x, 0));
 				break;
 		}
+	}
+
+	public override void SetProperties(GameCamera cam)
+	{
+		cam.SetFixed();
+		SetLightMode(false);
 	}
 }

@@ -44,6 +44,7 @@ public sealed class ColliderPool
 		while (colliders.Count > 0)
 		{
 			TileCollider collider = colliders.Dequeue();
+			collider.scoreModifier = 0;
 			collider.Disable();
 			pool.Enqueue(collider);
 		}
