@@ -118,7 +118,7 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		return delta;
 	}
 
-	// Moves the entity using the given accel. Accel represents the move direcction and should 
+	// Moves the entity using the given accel. Accel represents the move direction and should 
 	// have values in the range -1 to 1. When the distRemaining value becomes 0, the callback
 	// 'onDistReached' will be invoked.
 	public void Move(Vector2 accel, ref float distRemaining)

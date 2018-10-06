@@ -132,6 +132,7 @@ MonoBehaviour:
   defaultSpeed: 120
   friction: -12
   rooted: 0
+  transient: 0
   speed: 50
   velocity: {x: 0, y: 0}
   facing: 0

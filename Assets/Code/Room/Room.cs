@@ -29,6 +29,7 @@ public sealed class Room
 	public RoomCollision Collision { get; private set; }
 	public RoomRenderer Renderer { get; private set; }
 	public RoomEntities Entities { get; private set; }
+	public RoomPathfinding Pathfinding { get; private set; }
 
 	private bool disabled;
 
@@ -37,6 +38,7 @@ public sealed class Room
 		Collision = new RoomCollision(this);
 		Renderer = new RoomRenderer(this);
 		Entities = new RoomEntities(this);
+		Pathfinding = new RoomPathfinding(this);
 
 		Pos = pos;
 	}

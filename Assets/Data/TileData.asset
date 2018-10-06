@@ -251,7 +251,8 @@ MonoBehaviour:
       color:
         serializedVersion: 2
         rgba: 0
-      component: {fileID: 0}
+      component: {fileID: 114650601760224922, guid: cad8d22e497accb4a81889da5b4d93c6,
+        type: 2}
       spriteIndex: 0
       index: 10
       width: 32

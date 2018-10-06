@@ -34,20 +34,6 @@ public sealed class World : MonoBehaviour
 	// The active generator.
 	private RoomGenerator generator;
 
-	private void Awake()
-	{
-		Instance = this;
-		ColliderPool = new ColliderPool(transform);
-		cam = Camera.main.GetComponent<GameCamera>();
-		Array.Sort(entityPrefabs);
-	}
-
-	private void Start()
-	{
-		BeginNewSection(RoomType.Plains, true);
-		cam.MoveToPlayer();
-	}
-
 	public SpawnPoint SpawnPoint { get; set; }
 
 	private bool isDark;
@@ -63,6 +49,20 @@ public sealed class World : MonoBehaviour
 	private WaitForEndOfFrame wait = new WaitForEndOfFrame();
 
 	public static World Instance { get; private set; }
+
+	private void Awake()
+	{
+		Instance = this;
+		ColliderPool = new ColliderPool(transform);
+		cam = Camera.main.GetComponent<GameCamera>();
+		Array.Sort(entityPrefabs);
+	}
+
+	private void Start()
+	{
+		BeginNewSection(RoomType.Plains, true);
+		cam.MoveToPlayer();
+	}
 
 	public int EntityPrefabCount() => entityPrefabs.Length;
 

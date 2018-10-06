@@ -600,6 +600,7 @@ MonoBehaviour:
   defaultSpeed: 75
   friction: -12
   rooted: 0
+  transient: 0
   speed: 0
   velocity: {x: 0, y: 0}
   facing: 0
@@ -1136,7 +1137,7 @@ GameObject:
   - component: {fileID: 1991068599}
   m_Layer: 0
   m_Name: World
-  m_TagString: LevelManager
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
