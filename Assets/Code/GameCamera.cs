@@ -10,7 +10,6 @@ public sealed class GameCamera : MonoBehaviour
 	private Transform t;
 	private Entity player;
 
-	private Vector3 velocity;
 	private bool following;
 
 	// Boundary values for clamping the camera within the room.

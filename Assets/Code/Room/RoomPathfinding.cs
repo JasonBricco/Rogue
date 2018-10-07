@@ -16,30 +16,29 @@ public sealed class RoomPathfinding
 	private struct PathCell
 	{
 		public bool passable;
-		public int scoreModifier;
+		public int cost;
 
-		public PathCell(bool passable, int scoreModifier)
+		public PathCell(bool passable, int cost)
 		{
 			this.passable = passable;
-			this.scoreModifier = scoreModifier;
+			this.cost = cost;
 		}
 
 		public override string ToString()
 		{
-			return "Passable: " + passable + ", Score: " + scoreModifier;
+			return "Passable: " + passable + ", Score: " + cost;
 		}
 	}
 
-	private class PathNode : IEquatable<PathNode>
+	private class PathNode : IEquatable<PathNode>, IComparable<PathNode>
 	{
 		public Vec2i pos;
 		public int g, f, h;
 		public PathNode parent;
-		private RoomPathfinding rP;
 
-		public PathNode(RoomPathfinding rP)
+		public int CompareTo(PathNode other)
 		{
-			this.rP = rP;
+			return f.CompareTo(other.f);
 		}
 
 		public bool Equals(PathNode other)
@@ -49,20 +48,14 @@ public sealed class RoomPathfinding
 		{
 			return pos.ToString() + ", F: " + f;
 		}
-
-		~PathNode()
-		{
-			rP.ReturnNode(this);
-			GC.ReRegisterForFinalize(this);
-		}
 	}
 
 	private Room room;
+
 	private PathCell[,] grid;
+	private PathNode[,] nodes;
 
-	private Queue<PathNode> nodePool = new Queue<PathNode>();
-
-	private LinkedList<PathNode> openList = new LinkedList<PathNode>();
+	private SortedList<Vec2i, PathNode> openList = new SortedList<Vec2i, PathNode>();
 	private HashSet<PathNode> closedList = new HashSet<PathNode>();
 
 	private int successorCount = 0;
@@ -87,6 +80,7 @@ public sealed class RoomPathfinding
 		if (!generated)
 		{
 			grid = new PathCell[room.SizeX, room.SizeY];
+			nodes = new PathNode[room.SizeX, room.SizeY];
 
 			for (int y = 0; y < grid.GetLength(1); y++)
 			{
@@ -101,14 +95,14 @@ public sealed class RoomPathfinding
 						Collider col = hit.collider;
 
 						if (!col.isTrigger)
-							grid[x, y] = new PathCell(false, 0);
+							grid[x, y] = new PathCell(false, 1);
 						else
 						{
 							TileCollider tC = col.GetComponent<TileCollider>();
 							grid[x, y] = new PathCell(true, tC.scoreModifier);
 						}
 					}
-					else grid[x, y] = new PathCell(true, 0);
+					else grid[x, y] = new PathCell(true, 1);
 				}
 			}
 
@@ -118,22 +112,16 @@ public sealed class RoomPathfinding
 
 	private PathNode GetNode(Vec2i p)
 	{
-		PathNode node;
+		PathNode node = nodes[p.x, p.y];
 
-		if (nodePool.Count > 0)
-			node = nodePool.Dequeue();
-		else node = new PathNode(this);
+		if (node == null)
+		{
+			node = new PathNode();
+			nodes[p.x, p.y] = node;
+		}
 
 		node.pos = p;
 		return node;
-	}
-
-	private void ReturnNode(PathNode node)
-	{
-		node.f = 0;
-		node.g = 0;
-		node.h = 0;
-		nodePool.Enqueue(node);
 	}
 
 	// Compute the estimated number of cells to reach the destination 
@@ -171,33 +159,6 @@ public sealed class RoomPathfinding
 		}
 	}
 
-	private void AddToOpenList(PathNode next)
-	{
-		Assert.IsTrue(grid[next.pos.x, next.pos.y].passable);
-
-		if (openList.Count == 0)
-			openList.AddFirst(next);
-		else
-		{
-			LinkedListNode<PathNode> node = openList.First;
-			while (true)
-			{
-				if (node.Value.f > next.f)
-				{
-					openList.AddBefore(node, next);
-					break;
-				}
-
-				if (node.Next == null)
-				{
-					openList.AddAfter(node, next);
-					break;
-				}
-				else node = node.Next;
-			}
-		}
-	}
-
 	private void TracePath(Vec2i start, PathNode dest)
 	{
 		PathNode current = dest;
@@ -218,6 +179,7 @@ public sealed class RoomPathfinding
 	{
 		if (!generated) return null;
 
+		path.Clear();
 		openList.Clear();
 		closedList.Clear();
 
@@ -227,41 +189,53 @@ public sealed class RoomPathfinding
 		Assert.IsTrue(grid[start.x, start.y].passable);
 		Assert.IsTrue(grid[target.x, target.y].passable);
 
-		openList.AddFirst(GetNode(start));
+		openList.Add(start, GetNode(start));
 
 		while (openList.Count > 0)
 		{
-			if (openList.Count > 1000) return null;
-
-			PathNode current = openList.First.Value;
-			openList.RemoveFirst();
+			PathNode current = openList.First;
+			openList.RemoveFirst(current.pos, current);
 			closedList.Add(current);
+
+			if (current.pos == target)
+			{
+				Debug.Log("Ended with " + openList.Count + " items in the open list.");
+				TracePath(start, current);
+				return path;
+			}
+
 			GetSuccessors(current, current.pos);
 
 			for (int i = 0; i < successorCount; i++)
 			{
 				PathNode next = successors[i];
-				Vec2i nP = next.pos;
-
-				if (nP == target)
-				{
-					next.parent = current;
-					TracePath(start, next);
-					return path;
-				}
 
 				if (closedList.Contains(next))
 					continue;
 
-				LinkedListNode<PathNode> existingOpen = openList.Find(next);
+				Vec2i nP = next.pos;
+				int cost = grid[nP.x, nP.y].cost;
+				int newG = current.g + cost;
 
-				if (existingOpen == null || existingOpen.Value.f > next.f)
+				PathNode node;
+				if (!openList.TryGetValue(next.pos, out node))
 				{
-					next.g = current.g + 1;
+					next.g = newG;
 					next.h = ComputeHeuristic(nP, target);
-					next.f = next.g + next.h + grid[nP.x, nP.y].scoreModifier;
+					next.f = next.g + next.h;
 					next.parent = current;
-					AddToOpenList(next);
+					openList.Add(next.pos, next);
+				}
+				else 
+				{
+					if (newG < node.g)
+					{
+						openList.Remove(node);
+						node.g = newG;
+						node.f = node.g + node.h;
+						node.parent = current;
+						openList.Add(node);
+					}
 				}
 			}
 		}
@@ -328,7 +302,7 @@ public sealed class RoomPathfinding
 		start = Vec2i.MinValue;
 		end = Vec2i.MinValue;
 
-		GameObject.Destroy(line, 15.0f);
+		GameObject.Destroy(line, 8.0f);
 		Debug.Log("Path computed. Line will disappear in 15 seconds.");
 	}
 }

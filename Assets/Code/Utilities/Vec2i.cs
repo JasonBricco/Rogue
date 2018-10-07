@@ -6,7 +6,7 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public struct Vec2i : IEquatable<Vec2i>
+public struct Vec2i : IEquatable<Vec2i>, IComparable<Vec2i>
 {
 	public int x, y;
 
@@ -61,6 +61,9 @@ public struct Vec2i : IEquatable<Vec2i>
 	public override string ToString() => x + ", " + y;
 
 	public string ToPathString() => x.ToString() + y.ToString();
+
+	public int CompareTo(Vec2i other)
+		=> LengthSq.CompareTo(other.LengthSq);
 
 	public static bool operator ==(Vec2i a, Vec2i b) => a.x == b.x && a.y == b.y;
 	public static bool operator !=(Vec2i a, Vec2i b) => a.x != b.x || a.y != b.y;
