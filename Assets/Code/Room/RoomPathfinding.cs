@@ -134,7 +134,7 @@ public sealed class RoomPathfinding
 	private void GetSuccessors(PathNode current, Vec2i pos)
 	{
 		successorCount = 0;
-
+		1
 		for (int i = 0; i < 4; i++)
 		{
 			Vec2i next = pos + Vec2i.Directions[i];
@@ -199,7 +199,6 @@ public sealed class RoomPathfinding
 
 			if (current.pos == target)
 			{
-				Debug.Log("Ended with " + openList.Count + " items in the open list.");
 				TracePath(start, current);
 				return path;
 			}
