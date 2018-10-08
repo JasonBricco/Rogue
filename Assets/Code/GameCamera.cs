@@ -3,7 +3,6 @@
 //
 
 using UnityEngine;
-using static UnityEngine.Mathf;
 
 public sealed class GameCamera : MonoBehaviour
 {
@@ -55,7 +54,7 @@ public sealed class GameCamera : MonoBehaviour
 		{
 			Vector3 target = player.Pos;
 			t.position = target;
-			t.position = new Vector3(Clamp(t.position.x, minX, maxX), Clamp(t.position.y, minY, maxY), -10.0f);
+			t.position = new Vector3(Mathf.Clamp(t.position.x, minX, maxX), Mathf.Clamp(t.position.y, minY, maxY), -10.0f);
 		}
 		else
 		{

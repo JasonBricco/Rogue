@@ -4,7 +4,6 @@
 
 using UnityEngine;
 using System;
-using static UnityEngine.Mathf;
 using static Utils;
 
 public sealed class Entity : MonoBehaviour, IComparable<Entity>
@@ -94,7 +93,7 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 
 		// Correct diagonal movement speed so that it isn't too fast.
 		if (moveLength > 1.0f)
-			accel *= (1.0f / Sqrt(moveLength));
+			accel *= (1.0f / Mathf.Sqrt(moveLength));
 
 		accel *= speed;
 		accel += (velocity * friction);
@@ -134,7 +133,7 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 
 		// Correct diagonal movement speed so that it isn't too fast.
 		if (moveLength > 1.0f)
-			dir *= (1.0f / Sqrt(moveLength));
+			dir *= (1.0f / Mathf.Sqrt(moveLength));
 
 		Vector2 move = dir * speed * Time.deltaTime;
 		t.Translate(move, Space.World);

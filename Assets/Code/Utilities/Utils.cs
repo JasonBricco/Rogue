@@ -3,7 +3,6 @@
 //
 
 using UnityEngine;
-using static UnityEngine.Mathf;
 
 public static class Utils
 {
@@ -19,7 +18,7 @@ public static class Utils
 
 	public static Vec2i TilePos(float x, float y)
 	{
-		return new Vec2i(RoundToInt(x), RoundToInt(y));
+		return new Vec2i(Mathf.RoundToInt(x), Mathf.RoundToInt(y));
 	}
 
 	public static Vec2i TilePos(Vector2 p)
@@ -29,7 +28,7 @@ public static class Utils
 
 	public static int GetNumericDir(Vec2i dir)
 	{
-		if (Abs(dir.x) > Abs(dir.y))
+		if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
 			return dir.x > 0 ? Direction.Right : Direction.Left;
 
 		return dir.y > 0 ? Direction.Front : Direction.Back;
@@ -37,7 +36,7 @@ public static class Utils
 
 	public static int GetNumericDir(Vector2 dir)
 	{
-		if (Abs(dir.x) > Abs(dir.y))
+		if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
 			return dir.x > 0.0f ? Direction.Right : Direction.Left;
 
 		return dir.y > 0.0f ? Direction.Front : Direction.Back;

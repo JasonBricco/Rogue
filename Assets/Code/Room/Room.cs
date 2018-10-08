@@ -101,7 +101,6 @@ public sealed class Room
 		Entities.Update();
 		Renderer.Update();
 		Renderer.Draw();
-		Pathfinding.TestUpdate();
 	}
 
 	// Enables the room so it can be used as the active room.

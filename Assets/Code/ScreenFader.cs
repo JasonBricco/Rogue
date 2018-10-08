@@ -5,7 +5,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using static UnityEngine.Mathf;
 
 public sealed class ScreenFader : MonoBehaviour
 {
@@ -44,7 +43,7 @@ public sealed class ScreenFader : MonoBehaviour
 		if (inProgress)
 		{
 			float t = 1.0f - (timeLeft / duration);
-			float a = Lerp(startAlpha, targetAlpha, t);
+			float a = Mathf.Lerp(startAlpha, targetAlpha, t);
 			overlay.color = overlay.color.SetAlpha(a);
 			timeLeft -= Time.deltaTime;
 

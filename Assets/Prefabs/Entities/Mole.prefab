@@ -22,11 +22,11 @@ GameObject:
   - component: {fileID: 212986794067182534}
   - component: {fileID: 143894086051093968}
   - component: {fileID: 114033827333210214}
-  - component: {fileID: 114356343550567718}
   - component: {fileID: 114409597518799566}
   - component: {fileID: 114035509704639456}
   - component: {fileID: 114601495318407372}
   - component: {fileID: 114577019811757972}
+  - component: {fileID: 114837454382063052}
   m_Layer: 13
   m_Name: Mole
   m_TagString: Disposable
@@ -118,7 +118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  defaultSpeed: 90
+  defaultSpeed: 50
   friction: -12
   rooted: 0
   transient: 0
@@ -142,17 +142,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: fb3f148be68718843a619c176f3e741e, type: 3}
   - {fileID: 21300000, guid: da4c00af5cde763408adfe7119d15b5c, type: 3}
   directional: 1
---- !u!114 &114356343550567718
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1209834667196016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b414768d5801fb4eb71d767735a07c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114409597518799566
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -193,6 +182,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 10
+--- !u!114 &114837454382063052
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1209834667196016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db8374449dab68c4dad4c3f6c38abbde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  detectRange: 100
 --- !u!114 &114889839167283356
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -2,7 +2,7 @@
 // Copyright (c) 2018 Jason Bricco
 //
 
-using static UnityEngine.Mathf;
+using UnityEngine;
 
 public delegate void EntityColFunc(Entity a, Entity b);
 public delegate void TileColFunc(Entity a, Tile tile);
@@ -30,23 +30,23 @@ public sealed class CollisionMatrix
 
 	public void Add(int layer0, int layer1, EntityColFunc ecr = null, TileColFunc tcr = null, BarrierColFunc bcr = null)
 	{
-		int a = Min(layer0, layer1);
-		int b = Max(layer0, layer1);
+		int a = Mathf.Min(layer0, layer1);
+		int b = Mathf.Max(layer0, layer1);
 		matrix[a, b] = new CollisionHandler(ecr, tcr, bcr);
 	}
 
 	public EntityColFunc GetEntityResponse(int layer0, int layer1)
 	{
-		return matrix[Min(layer0, layer1), Max(layer0, layer1)].ecr;
+		return matrix[Mathf.Min(layer0, layer1), Mathf.Max(layer0, layer1)].ecr;
 	}
 
 	public TileColFunc GetTileResponse(int layer0, int layer1)
 	{
-		return matrix[Min(layer0, layer1), Max(layer0, layer1)].tcr;
+		return matrix[Mathf.Min(layer0, layer1), Mathf.Max(layer0, layer1)].tcr;
 	}
 
 	public BarrierColFunc GetBarrierResponse(int layer0, int layer1)
 	{
-		return matrix[Min(layer0, layer1), Max(layer0, layer1)].bcr;
+		return matrix[Mathf.Min(layer0, layer1), Mathf.Max(layer0, layer1)].bcr;
 	}
 }
