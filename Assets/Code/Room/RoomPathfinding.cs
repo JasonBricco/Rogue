@@ -72,13 +72,13 @@ public sealed class RoomPathfinding
 
 	public void FindPath(Vec2i start, Vec2i target, Stack<Vector2> path, Action callback)
 	{
-		path.Clear();
+		if (!generated || (start == target))
+			return;
 
-		if (!generated) return;
+		path.Clear();
 
 		Assert.IsTrue(room.InBounds(start));
 		Assert.IsTrue(room.InBounds(target));
-		Assert.IsTrue(start != target);
 		Assert.IsTrue(grid[start.x, start.y].passable);
 		Assert.IsTrue(grid[target.x, target.y].passable);
 

@@ -32,7 +32,7 @@ public sealed class EntityMeleeAI : MonoBehaviour
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
 		entity.ListenForEvent(EntityEvent.Kill, Kill);
 
-		timer.SetValue(2.0f);
+		timer.SetValue(Random.Range(1.5f, 2.5f));
 	}
 
 	private void PathFinished()
@@ -57,11 +57,8 @@ public sealed class EntityMeleeAI : MonoBehaviour
 		{
 			if (timer.Value <= 0.0f)
 			{
-				if (Vector2.Distance(lastPlayerPos, player.Pos) >= 2.0f)
-				{
-					GetPath();
-					timer.SetValue(1.0f);
-				}
+				GetPath();
+				timer.SetValue(1.0f);
 			}
 
 			Vector2 next = nextCell.Value;
