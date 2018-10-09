@@ -64,8 +64,6 @@ public class GenDungeon : RoomGenerator
 
 		if (initial)
 		{
-			room.SetTile(25, 11, Room.Main, TileType.Torch);
-
 			for (int y = 0; y <= 1; y++)
 			{
 				room.SetTile(room.HalfX - 1, y, Room.Back, TileType.Barrier);
