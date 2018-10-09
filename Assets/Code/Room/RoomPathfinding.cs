@@ -47,14 +47,14 @@ public sealed class RoomPathfinding
 						Collider col = hit.collider;
 
 						if (!col.isTrigger)
-							grid[x, y] = new PathCellInfo(false, 1);
+							grid[x, y] = new PathCellInfo(false, false, 1);
 						else
 						{
 							TileCollider tC = col.GetComponent<TileCollider>();
-							grid[x, y] = new PathCellInfo(true, tC.scoreModifier);
+							grid[x, y] = new PathCellInfo(true, true, tC.scoreModifier);
 						}
 					}
-					else grid[x, y] = new PathCellInfo(true, 1);
+					else grid[x, y] = new PathCellInfo(true, false, 1);
 				}
 			}
 
@@ -70,7 +70,7 @@ public sealed class RoomPathfinding
 		return new PathComputer(room, grid);
 	}
 
-	public void FindPath(Vec2i start, Vec2i target, Stack<Vec2i> path, Action callback)
+	public void FindPath(Vec2i start, Vec2i target, Stack<Vector2> path, Action callback)
 	{
 		path.Clear();
 

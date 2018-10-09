@@ -14,7 +14,7 @@ public sealed class PathComputer
 
 	private Vec2i start;
 	private Vec2i target;
-	private Stack<Vec2i> path;
+	private Stack<Vector2> path;
 
 	private Room room;
 	private PathNode[,] nodes;
@@ -33,7 +33,7 @@ public sealed class PathComputer
 		nodes = new PathNode[room.SizeX, room.SizeY];
 	}
 
-	public void SetInfo(Vec2i start, Vec2i target, Stack<Vec2i> path)
+	public void SetInfo(Vec2i start, Vec2i target, Stack<Vector2> path)
 	{
 		this.start = start;
 		this.target = target;
@@ -73,13 +73,18 @@ public sealed class PathComputer
 			Vec2i dir = Vec2i.Directions[i];
 			Vec2i next = pos + dir;
 
-			if (room.InBounds(next) && grid[next.x, next.y].passable)
+			if (room.InBounds(next))
 			{
-				Vec2i adjX = new Vec2i(pos.x + dir.x, pos.y);
-				Vec2i adjY = new Vec2i(pos.x, pos.y + dir.y);
+				PathCellInfo diag = grid[next.x, next.y];
 
-				if (grid[adjX.x, adjX.y].passable && grid[adjY.x, adjY.y].passable)
-					successors[successorCount++] = GetNode(next);
+				if (diag.passable)
+				{
+					PathCellInfo adjX = grid[pos.x + dir.x, pos.y];
+					PathCellInfo adjY = grid[pos.x, pos.y + dir.y];
+
+					if (adjX.passable && !adjX.trigger && adjY.passable && !adjY.trigger)
+						successors[successorCount++] = GetNode(next);
+				}
 			}
 		}
 	}
@@ -90,7 +95,7 @@ public sealed class PathComputer
 
 		while (current.pos != start)
 		{
-			path.Push(current.pos);
+			path.Push(new Vector2(current.pos.x + 0.5f, current.pos.y + 0.5f));
 			current = current.parent;
 			Assert.IsNotNull(current);
 		}

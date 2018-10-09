@@ -4,12 +4,13 @@
 
 public struct PathCellInfo
 {
-	public bool passable;
+	public bool passable, trigger;
 	public int cost;
 
-	public PathCellInfo(bool passable, int cost)
+	public PathCellInfo(bool passable, bool trigger, int cost)
 	{
 		this.passable = passable;
+		this.trigger = trigger;
 		this.cost = cost;
 	}
 

@@ -18,7 +18,7 @@ public static class Utils
 
 	public static Vec2i TilePos(float x, float y)
 	{
-		return new Vec2i(Mathf.RoundToInt(x), Mathf.RoundToInt(y));
+		return new Vec2i(Mathf.FloorToInt(x), Mathf.FloorToInt(y));
 	}
 
 	public static Vec2i TilePos(Vector2 p)
@@ -40,6 +40,14 @@ public static class Utils
 			return dir.x > 0.0f ? Direction.Right : Direction.Left;
 
 		return dir.y > 0.0f ? Direction.Front : Direction.Back;
+	}
+
+	// When Abs(dir.x) and Abs(dir.y) are the same, biases the result
+	// to the x-axis for stability. Otherwise, the result will rapidly
+	// change between the two axes.
+	public static int GetStableNumericDir(Vector2 dir)
+	{
+		return GetNumericDir(new Vector2(dir.x, dir.y - 0.1f));
 	}
 
 	public static int GetNumericDirFull(Vec2i dir)

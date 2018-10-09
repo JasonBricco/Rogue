@@ -13,12 +13,13 @@ public sealed class EntityMeleeAI : MonoBehaviour
 
 	private Entity entity;
 	private EntityTimer timer;
-	private Stack<Vec2i> path = new Stack<Vec2i>();
+	private Stack<Vector2> path = new Stack<Vector2>();
 
 	private bool followingPath, pathDrawn;
 	private Vector2? nextCell;
 
 	private static Entity player;
+	private Vector2 lastPlayerPos;
 
 	private void Start()
 	{
@@ -36,8 +37,16 @@ public sealed class EntityMeleeAI : MonoBehaviour
 
 	private void PathFinished()
 	{
-		nextCell = path.Pop().ToVector2();
+		nextCell = path.Pop();
 		pathDrawn = false;
+	}
+
+	private void GetPath()
+	{
+		Room room = World.Instance.Room;
+		room.Pathfinding.FindPath(TilePos(entity.Pos), TilePos(player.Pos), path, PathFinished);
+		lastPlayerPos = player.Pos;
+		followingPath = true;
 	}
 
 	private void UpdateComponent()
@@ -46,14 +55,24 @@ public sealed class EntityMeleeAI : MonoBehaviour
 
 		if (nextCell.HasValue)
 		{
+			if (timer.Value <= 0.0f)
+			{
+				if (Vector2.Distance(lastPlayerPos, player.Pos) >= 2.0f)
+				{
+					GetPath();
+					timer.SetValue(1.0f);
+				}
+			}
+
 			Vector2 next = nextCell.Value;
 			Vector2 dir = (next - entity.Pos).normalized;
+			entity.facing = GetStableNumericDir(dir);
 			entity.Move(dir);
 
 			if ((next - entity.Pos).sqrMagnitude < 0.09f)
 			{
 				if (path.Count > 0)
-					nextCell = path.Pop().ToVector2();
+					nextCell = path.Pop();
 				else
 				{
 					nextCell = null;
@@ -73,16 +92,12 @@ public sealed class EntityMeleeAI : MonoBehaviour
 			else
 			{
 				if (!followingPath && dist <= detectRange)
-				{
-					Room room = World.Instance.Room;
-					room.Pathfinding.FindPath(TilePos(entity.Pos), TilePos(player.Pos), path, PathFinished);
-					followingPath = true;
-				}
+					GetPath();
 			}
 		}
 	}
 
-	[Conditional("DEBUG")]
+	[Conditional("DRAW_PATH")]
 	private void DrawPath()
 	{
 		if (!pathDrawn && followingPath && path.Count > 0)
@@ -90,13 +105,8 @@ public sealed class EntityMeleeAI : MonoBehaviour
 			Vector3[] v3 = new Vector3[path.Count];
 
 			int i = 0;
-			foreach (Vec2i v in path)
-			{
-				v3[i] = v.ToVector3();
-				v3[i].x += 0.5f;
-				v3[i].y += 0.5f;
-				i++;
-			}
+			foreach (Vector2 v in path)
+				v3[i++] = v;
 
 			GameObject line = new GameObject("Debug Path");
 			LineRenderer lR = line.AddComponent<LineRenderer>();
@@ -111,6 +121,6 @@ public sealed class EntityMeleeAI : MonoBehaviour
 
 	private void Kill()
 	{
-
+		if (entity != null) Destroy(entity.gameObject);
 	}
 }
