@@ -146,8 +146,7 @@ public sealed class PathComputer
 					int cost = grid[nP.x, nP.y].cost;
 					int newG = current.g + cost;
 
-					PathNode node;
-					if (!openList.TryGetValue(next.pos, out node))
+					if (!openList.TryGetValue(next.pos, out PathNode node))
 					{
 						next.g = newG;
 						next.h = ComputeHeuristic(nP, target);

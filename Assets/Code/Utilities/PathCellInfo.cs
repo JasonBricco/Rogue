@@ -15,7 +15,5 @@ public struct PathCellInfo
 	}
 
 	public override string ToString()
-	{
-		return "Passable: " + passable + ", Score: " + cost;
-	}
+		=> "Passable: " + passable + ", Score: " + cost;
 }

@@ -27,6 +27,7 @@ GameObject:
   - component: {fileID: 114391663001137270}
   - component: {fileID: 114716107186992758}
   - component: {fileID: 114455818470351710}
+  - component: {fileID: 114636828576763516}
   m_Layer: 11
   m_Name: Fireball
   m_TagString: Disposable
@@ -132,6 +133,21 @@ MonoBehaviour:
   piercing: 1
   hasMaxDistance: 1
   maxDistance: 6
+--- !u!114 &114636828576763516
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1982610807772680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 926765fb84697934daf58a92e87a1e02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lightPrefab: {fileID: 1000012308407584, guid: fcd4bdf83bb21784285a75afb725bc0d,
+    type: 2}
+  radius: 4
+  offset: {x: 0, y: 0}
 --- !u!114 &114716107186992758
 MonoBehaviour:
   m_ObjectHideFlags: 1

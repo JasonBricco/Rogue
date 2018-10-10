@@ -13,23 +13,21 @@ public class RoomGenerator
 	{
 		Init(room, roomP);
 		GenerateInternal(room, roomP, initial);
+		room.OnGenerate();
+		SpawnEntities(room);
 		SetProperties(cam);
 	}
 
 	protected virtual void GenerateInternal(Room room, Vec2i roomP, bool initial)
-	{
-		throw new NotImplementedException();
-	}
+		=> throw new NotImplementedException();
+
+	protected virtual void SpawnEntities(Room room) { }
 
 	protected virtual void Init(Room room, Vec2i roomP)
-	{
-		throw new NotImplementedException();
-	}
+		=> throw new NotImplementedException();
 
 	public virtual void SetProperties(GameCamera cam)
-	{
-		throw new NotImplementedException();
-	}
+		=> throw new NotImplementedException();
 
 	protected void SetLightMode(bool dark)
 	{

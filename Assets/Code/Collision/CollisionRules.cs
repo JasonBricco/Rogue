@@ -10,8 +10,7 @@ public sealed class CollisionRules
 
 	private void AddInternal(Entity key, Entity value)
 	{
-		List<Entity> list;
-		if (rules.TryGetValue(key, out list))
+		if (rules.TryGetValue(key, out List<Entity> list))
 			list.Add(value);
 		else
 		{
@@ -29,8 +28,7 @@ public sealed class CollisionRules
 
 	public void Remove(Entity key)
 	{
-		List<Entity> values;
-		if (rules.TryGetValue(key, out values))
+		if (rules.TryGetValue(key, out List<Entity> values))
 		{
 			for (int i = 0; i < values.Count; i++)
 				rules[values[i]].Remove(key);
@@ -41,8 +39,7 @@ public sealed class CollisionRules
 
 	public bool Exists(Entity key, Entity value)
 	{
-		List<Entity> list;
-		if (rules.TryGetValue(key, out list))
+		if (rules.TryGetValue(key, out List<Entity> list))
 			return list.Contains(value);
 
 		return false;

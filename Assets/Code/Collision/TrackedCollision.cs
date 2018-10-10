@@ -24,9 +24,7 @@ public struct TrackedCollision : IEquatable<TrackedCollision>
 	}
 
 	public TrackedCollision Increment()
-	{
-		return new TrackedCollision(a, layerA, b, layerB, tile, tileLayer, count + 1);
-	}
+		=> new TrackedCollision(a, layerA, b, layerB, tile, tileLayer, count + 1);
 
 	public TrackedCollision Decrement(out bool destroy)
 	{
@@ -37,12 +35,8 @@ public struct TrackedCollision : IEquatable<TrackedCollision>
 	}
 
 	public bool Involves(Entity entity)
-	{
-		return a == entity || b == entity;
-	}
+		=> a == entity || b == entity;
 
 	public bool Equals(TrackedCollision other)
-	{
-		return a == other.a && b == other.b && tile == other.tile;
-	}
+		=> a == other.a && b == other.b && tile == other.tile;
 }

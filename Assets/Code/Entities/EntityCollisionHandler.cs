@@ -9,10 +9,7 @@ public sealed class EntityCollisionHandler : MonoBehaviour
 {
 	private Entity entity;
 
-	private void Start()
-	{
-		entity = GetComponentInParent<Entity>();
-	}
+	private void Start() => entity = GetComponentInParent<Entity>();
 
 	private void OnTriggerEnter(Collider other)
 	{

@@ -636,6 +636,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lightPrefab: {fileID: 1000012308407584, guid: fcd4bdf83bb21784285a75afb725bc0d,
     type: 2}
+  radius: 2
+  offset: {x: 0, y: 0.3}
 --- !u!1 &735743886
 GameObject:
   m_ObjectHideFlags: 0

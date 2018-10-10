@@ -14,6 +14,7 @@ public sealed class Engine : MonoBehaviour
 	{
 		Assert.raiseExceptions = true;
 		Screen.SetResolution(1024, 576, false);
+		Paused = false;
 	}
 
 	private void Update()

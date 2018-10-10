@@ -42,10 +42,6 @@ public class RoomCollision
 	public void Update()
 	{
 		if (Engine.Paused) return;
-
-		if (!hasColliders)
-			Generate();
-
 		RunCollisions();
 	}
 
@@ -268,8 +264,7 @@ public class RoomCollision
 
 		if (index != -1)
 		{
-			bool destroy;
-			list[index] = list[index].Decrement(out destroy);
+			list[index] = list[index].Decrement(out bool destroy);
 
 			if (destroy)
 			{

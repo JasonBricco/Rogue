@@ -40,10 +40,7 @@ public sealed class GameCamera : MonoBehaviour
 		t.SetZ(-10.0f);
 	}
 
-	public void SetFixed()
-	{
-		following = false;
-	}
+	public void SetFixed() => following = false;
 
 	// Sets the camera position based on the camera mode. If the camera is following the player,
 	// the camera will move to the player's position. If it isn't, it will center itself within

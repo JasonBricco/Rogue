@@ -93,11 +93,16 @@ public sealed class Room
 		}
 	}
 
+	public void OnGenerate()
+	{
+		Collision.Generate();
+		Pathfinding.Generate();
+	}
+
 	public void Update()
 	{
 		Assert.IsFalse(disabled);
 		Collision.Update();
-		Pathfinding.Update();
 		Entities.Update();
 		Renderer.Update();
 		Renderer.Draw();

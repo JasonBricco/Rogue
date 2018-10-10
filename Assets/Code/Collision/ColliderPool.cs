@@ -11,9 +11,7 @@ public sealed class ColliderPool
 	private Transform parent;
 
 	public ColliderPool(Transform parent)
-	{
-		this.parent = parent;
-	}
+		=> this.parent = parent;
 
 	// Gets a new collider from the main collider pool and stores it in the given collider queue.
 	// This queue can later be used to return the colliders back to the main pool.

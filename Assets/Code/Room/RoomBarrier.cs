@@ -9,10 +9,7 @@ public sealed class RoomBarrier : MonoBehaviour
 	public Vec2i dir;
 	private BoxCollider barrier;
 
-	private void Awake()
-	{
-		barrier = GetComponent<BoxCollider>();
-	}
+	private void Awake() => barrier = GetComponent<BoxCollider>();
 
 	public void Resize(float x, float y, float width, float height)
 	{

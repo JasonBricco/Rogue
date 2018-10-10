@@ -11,8 +11,7 @@ public sealed class OTEffects
 
 	public void Add(Entity key, OTEffect value)
 	{
-		List<OTEffect> list;
-		if (effects.TryGetValue(key, out list))
+		if (effects.TryGetValue(key, out List<OTEffect> list))
 			list.Add(value);
 		else
 		{
@@ -23,21 +22,17 @@ public sealed class OTEffects
 	}
 
 	public void RemoveAll(Entity key)
-	{
-		effects.Remove(key);
-	}
+		=> effects.Remove(key);
 
 	public void Remove(Entity key, OTEffectType effect)
 	{
-		List<OTEffect> list;
-		if (effects.TryGetValue(key, out list))
+		if (effects.TryGetValue(key, out List<OTEffect> list))
 			list.Remove(effect);
 	}
 
 	public bool Exists(Entity key, OTEffectType type)
 	{
-		List<OTEffect> list;
-		if (effects.TryGetValue(key, out list))
+		if (effects.TryGetValue(key, out List<OTEffect> list))
 		{
 			for (int i = 0; i < list.Count; i++)
 			{

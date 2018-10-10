@@ -12,9 +12,7 @@ public class GenDungeon : RoomGenerator
 	private bool familiarSpawned;
 
 	protected override void Init(Room room, Vec2i roomP)
-	{
-		room.Init(roomP, 32, 18, RoomType.Dungeon);
-	}
+		=> room.Init(roomP, 32, 18, RoomType.Dungeon);
 
 	[Il2CppSetOptions(Option.NullChecks, false)]
 	[Il2CppSetOptions(Option.ArrayBoundsChecks, false)]
@@ -39,7 +37,7 @@ public class GenDungeon : RoomGenerator
 		room.SetTile(0, 0, Room.Back, new Tile(TileType.DungeonWall, Direction.BackLeft));
 		room.SetTile(room.LimX - 1, 0, Room.Back, new Tile(TileType.DungeonWall, Direction.BackRight));
 
-		int spikeCount = Random.Range(0, 6);
+		int spikeCount = Random.Range(0, 11);
 
 		for (int s = 0; s < spikeCount; s++)
 		{
@@ -51,15 +49,6 @@ public class GenDungeon : RoomGenerator
 				for (int x = pX; x <= pX + 1; x++)
 					room.SetTile(x, y, Room.Back, TileType.Spikes);
 			}
-		}
-
-		int enemyCount = Random.Range(2, 6);
-
-		for (int e = 0; e < enemyCount; e++)
-		{
-			int pX = Random.Range(room.HalfX - 4, room.HalfX + 5);
-			int pY = Random.Range(room.HalfY - 3, room.HalfY + 4);
-			room.Entities.SpawnEntity(EntityType.Mole, new Vec2i(pX, pY));
 		}
 
 		if (initial)
@@ -115,20 +104,13 @@ public class GenDungeon : RoomGenerator
 			}
 		}
 
-		List<Vec2i> exits;
-		if (World.Instance.TryGetExit(roomP, out exits))
+		if (World.Instance.TryGetExit(roomP, out List<Vec2i> exits))
 		{
 			for (int i = 0; i < exits.Count; i++)
 			{
 				Vec2i p = exits[i];
 				room.SetTile(p.x, p.y, Room.Back, TileType.DungeonFloor);
 			}
-		}
-
-		if (!familiarSpawned)
-		{
-			room.Entities.SpawnEntity(EntityType.Familiar, new Vec2i(26, 11));
-			familiarSpawned = true;
 		}
 	}
 
@@ -160,6 +142,35 @@ public class GenDungeon : RoomGenerator
 				world.AddExit(room.Pos, new Vec2i(pos.x, room.LimY - 1));
 				world.AddExit(room.Pos + dir, new Vec2i(pos.x, 0));
 				break;
+		}
+	}
+
+	protected override void SpawnEntities(Room room)
+	{
+		int enemyCount = Random.Range(3, 6);
+		int spawned = 0, tries = 0, maxTries = 10;
+
+		while (spawned < enemyCount)
+		{
+			int pX = Random.Range(room.HalfX - 4, room.HalfX + 5);
+			int pY = Random.Range(room.HalfY - 3, room.HalfY + 4);
+
+			if (room.Pathfinding.EmptyCell(pX, pY))
+			{
+				room.Entities.SpawnEntity(EntityType.Mole, new Vec2i(pX, pY));
+				spawned++;
+			}
+			else
+			{
+				if (++tries == maxTries)
+					break;
+			}
+		}
+
+		if (!familiarSpawned)
+		{
+			room.Entities.SpawnEntity(EntityType.Familiar, new Vec2i(26, 11));
+			familiarSpawned = true;
 		}
 	}
 
