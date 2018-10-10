@@ -153,6 +153,7 @@ public sealed class World : MonoBehaviour
 	public void BeginNewSection(Vec2i dir, RoomType type)
 	{
 		Assert.IsTrue(dir != Vec2i.Zero);
+		EventManager.Instance.TriggerEvent(GameEvent.AreaChanging, type);
 		ChangeRoomType(type);
 		LoadRoom(Room.Pos + dir, true);
 		generator.SetProperties(cam);
@@ -161,6 +162,8 @@ public sealed class World : MonoBehaviour
 
 	public void BeginNewSection(RoomType type, bool spawnPlayer)
 	{
+		EventManager.Instance.TriggerEvent(GameEvent.AreaChanging, type);
+
 		foreach (Room room in loadedRooms.Values)
 			room.Destroy();
 

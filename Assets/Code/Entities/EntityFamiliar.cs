@@ -8,6 +8,8 @@ using static Utils;
 [RequireComponent(typeof(EntityTimer))]
 public class EntityFamiliar : MonoBehaviour
 {
+	[SerializeField] private bool boundToArea;
+
 	private Entity entity;
 	private Entity player;
 	private Entity followTarget;
@@ -17,6 +19,14 @@ public class EntityFamiliar : MonoBehaviour
 		entity = GetComponent<Entity>();
 		player = GameObject.FindWithTag("Player").GetComponent<Entity>();
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
+
+		if (boundToArea)
+			EventManager.Instance.ListenForEvent<RoomType>(GameEvent.AreaChanging, SetDisposable);
+	}
+
+	private void SetDisposable(RoomType type)
+	{
+		gameObject.tag = "Disposable";
 	}
 
 	private void OnRoomChanged(Vec2i roomP)
