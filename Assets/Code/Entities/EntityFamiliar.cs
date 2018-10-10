@@ -21,12 +21,12 @@ public class EntityFamiliar : MonoBehaviour
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
 
 		if (boundToArea)
-			EventManager.Instance.ListenForEvent<RoomType>(GameEvent.AreaChanging, SetDisposable);
+			EventManager.Instance.ListenForEvent<RoomType>(GameEvent.AreaChanging, OnAreaChange);
 	}
 
-	private void SetDisposable(RoomType type)
+	private void OnAreaChange(RoomType type)
 	{
-		gameObject.tag = "Disposable";
+		StopFollowing();
 	}
 
 	private void OnRoomChanged(Vec2i roomP)
@@ -34,38 +34,46 @@ public class EntityFamiliar : MonoBehaviour
 		entity.MoveTo(followTarget.Pos);
 	}
 
+	private void StopFollowing()
+	{
+		followTarget = null;
+		gameObject.tag = "Disposable";
+		EventManager.Instance.StopListening<Vec2i>(GameEvent.RoomChanged, OnRoomChanged);
+	}
+
 	private void UpdateComponent()
 	{
 		float sqDist = (entity.Pos - player.Pos).sqrMagnitude;
 
 		if (followTarget == null)
+			TryFollowPlayer();
+		else
+		{
+			if (followTarget.HasFlag(EntityFlags.Dead))
+				StopFollowing();
+			else MoveTowardTarget();
+		}
+
+		void MoveTowardTarget()
+		{
+			Vector2 targetDir = Vector2.zero;
+
+			if (sqDist >= 2.0f)
+			{
+				targetDir = (followTarget.Pos - entity.Pos).normalized;
+				entity.facing = GetNumericDir(targetDir);
+			}
+
+			entity.Move(targetDir);
+		}
+
+		void TryFollowPlayer()
 		{
 			if (!player.HasFlag(EntityFlags.Dead) && sqDist <= 9.0f)
 			{
 				followTarget = player;
 				gameObject.tag = "Untagged";
 				EventManager.Instance.ListenForEvent<Vec2i>(GameEvent.RoomChanged, OnRoomChanged);
-			}
-		}
-		else
-		{
-			if (followTarget.HasFlag(EntityFlags.Dead))
-			{
-				followTarget = null;
-				gameObject.tag = "Disposable";
-				EventManager.Instance.StopListening<Vec2i>(GameEvent.RoomChanged, OnRoomChanged);
-			}
-			else
-			{
-				Vector2 targetDir = Vector2.zero;
-
-				if (sqDist >= 2.0f)
-				{
-					targetDir = (followTarget.Pos - entity.Pos).normalized;
-					entity.facing = GetNumericDir(targetDir);
-				}
-
-				entity.Move(targetDir);
 			}
 		}
 	}
