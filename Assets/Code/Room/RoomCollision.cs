@@ -155,9 +155,7 @@ public class RoomCollision
 	}
 
 	private void BarrierKnockback(Entity a, Vec2i dir)
-	{
-		a.ApplyKnockback(-dir.ToVector2(), 10.0f);
-	}
+		=> a.ApplyKnockback(-dir.ToVector2(), 10.0f);
 
 	private void OnTriggerEntity(Entity a, Entity b)
 	{

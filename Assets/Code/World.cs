@@ -195,6 +195,18 @@ public sealed class World : MonoBehaviour
 		barriers[Direction.Front].Resize(Room.SizeX * 0.5f, Room.SizeY + 0.5f, Room.SizeX, 1.0f);
 	}
 
+	public void LockBarriers()
+	{
+		for (int i = 0; i < barriers.Length; i++)
+			barriers[i].Lock();
+	}
+
+	public void UnlockBarriers()
+	{
+		for (int i = 0; i < barriers.Length; i++)
+			barriers[i].Unlock();
+	}
+
 	public void ChangeRoomType(RoomType type)
 		=> generator = generators[(int)type];
 }

@@ -54,7 +54,7 @@ public sealed class RoomEntities
 	{
 		requireClear = true;
 		enemiesLeft = enemies;
-		// Lock the room somehow.
+		World.Instance.LockBarriers();
 	}
 
 	public void LockerKilled()
@@ -63,7 +63,7 @@ public sealed class RoomEntities
 		{
 			if (--enemiesLeft <= 0)
 			{
-				// Unlock the room somehow.
+				World.Instance.UnlockBarriers();
 			}
 		}
 	}
