@@ -19,14 +19,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4375365530551336}
-  - component: {fileID: 212986794067182534}
-  - component: {fileID: 143894086051093968}
   - component: {fileID: 114033827333210214}
+  - component: {fileID: 114577019811757972}
+  - component: {fileID: 114601495318407372}
+  - component: {fileID: 114837454382063052}
   - component: {fileID: 114409597518799566}
   - component: {fileID: 114035509704639456}
-  - component: {fileID: 114601495318407372}
-  - component: {fileID: 114577019811757972}
-  - component: {fileID: 114837454382063052}
+  - component: {fileID: 114347635726767244}
+  - component: {fileID: 212986794067182534}
+  - component: {fileID: 143894086051093968}
   m_Layer: 13
   m_Name: Mole
   m_TagString: Disposable
@@ -142,6 +143,17 @@ MonoBehaviour:
   - {fileID: 21300000, guid: fb3f148be68718843a619c176f3e741e, type: 3}
   - {fileID: 21300000, guid: da4c00af5cde763408adfe7119d15b5c, type: 3}
   directional: 1
+--- !u!114 &114347635726767244
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1209834667196016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc069c821b1e239409c8bd249b64207a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114409597518799566
 MonoBehaviour:
   m_ObjectHideFlags: 1

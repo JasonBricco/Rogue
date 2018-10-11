@@ -26,6 +26,6 @@ public static class Profiling
 	{
 		Stopwatch watch = watches[(int)section];
 		watch.Stop();
-		Debug.Log(section + ": " + watch.ElapsedTicks);
+		Debug.Log(section + ": " + watch.Elapsed.Ticks);
 	}
 }

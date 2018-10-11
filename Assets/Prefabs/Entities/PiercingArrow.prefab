@@ -19,14 +19,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4646251001968452}
+  - component: {fileID: 114839411273458088}
+  - component: {fileID: 114807591313825452}
+  - component: {fileID: 114181454040715404}
+  - component: {fileID: 114021088216761954}
+  - component: {fileID: 114832343707336312}
   - component: {fileID: 65909780997017356}
   - component: {fileID: 54711845823651994}
   - component: {fileID: 212752531238129550}
-  - component: {fileID: 114839411273458088}
-  - component: {fileID: 114181454040715404}
-  - component: {fileID: 114021088216761954}
-  - component: {fileID: 114807591313825452}
-  - component: {fileID: 114832343707336312}
   m_Layer: 11
   m_Name: PiercingArrow
   m_TagString: Disposable

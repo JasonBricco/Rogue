@@ -19,14 +19,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4196917873932702}
-  - component: {fileID: 143769679427441838}
-  - component: {fileID: 212336897860604028}
   - component: {fileID: 114304071881856946}
+  - component: {fileID: 114584851483852468}
+  - component: {fileID: 114591215474053960}
   - component: {fileID: 114670606437294688}
   - component: {fileID: 114618345674068116}
   - component: {fileID: 114949814385691798}
-  - component: {fileID: 114591215474053960}
-  - component: {fileID: 114584851483852468}
+  - component: {fileID: 143769679427441838}
+  - component: {fileID: 212336897860604028}
   m_Layer: 13
   m_Name: Wolf
   m_TagString: Disposable

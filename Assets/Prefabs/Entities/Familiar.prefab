@@ -19,12 +19,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4813875293191982}
+  - component: {fileID: 114868657365031510}
+  - component: {fileID: 114916348958798802}
+  - component: {fileID: 114571914860783982}
+  - component: {fileID: 114257109620075088}
   - component: {fileID: 212314888717976874}
   - component: {fileID: 143161112789092584}
-  - component: {fileID: 114868657365031510}
-  - component: {fileID: 114571914860783982}
-  - component: {fileID: 114916348958798802}
-  - component: {fileID: 114257109620075088}
   m_Layer: 11
   m_Name: Familiar
   m_TagString: Disposable

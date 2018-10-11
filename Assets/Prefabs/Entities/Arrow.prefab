@@ -19,14 +19,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4238897536768822}
-  - component: {fileID: 65387986389978586}
-  - component: {fileID: 54487220782909218}
-  - component: {fileID: 212160829798084342}
   - component: {fileID: 114946318760873616}
-  - component: {fileID: 114489361325152152}
-  - component: {fileID: 114939541984927876}
   - component: {fileID: 114053138362824020}
+  - component: {fileID: 114489361325152152}
   - component: {fileID: 114810942366729862}
+  - component: {fileID: 114939541984927876}
+  - component: {fileID: 212160829798084342}
+  - component: {fileID: 54487220782909218}
+  - component: {fileID: 65387986389978586}
   m_Layer: 11
   m_Name: Arrow
   m_TagString: Disposable

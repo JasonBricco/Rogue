@@ -20,36 +20,8 @@ public class GenDungeon : RoomGenerator
 	{
 		room.Fill(Room.Back, TileType.DungeonFloor);
 
-		for (int x = 2; x <= room.LimX - 2; x++)
-		{
-			room.SetTile(x, room.LimY - 1, Room.Back, new Tile(TileType.DungeonWall, Direction.Front));
-			room.SetTile(x, 0, Room.Back, new Tile(TileType.DungeonWall, Direction.Back));
-		}
-
-		for (int y = 2; y <= room.LimY - 2; y++)
-		{
-			room.SetTile(0, y, Room.Back, new Tile(TileType.DungeonWall, Direction.Left));
-			room.SetTile(room.LimX - 1, y, Room.Back, new Tile(TileType.DungeonWall, Direction.Right));
-		}
-
-		room.SetTile(0, room.LimY - 1, Room.Back, new Tile(TileType.DungeonWall, Direction.FrontLeft));
-		room.SetTile(room.LimX - 1, room.LimY - 1, Room.Back, new Tile(TileType.DungeonWall, Direction.FrontRight));
-		room.SetTile(0, 0, Room.Back, new Tile(TileType.DungeonWall, Direction.BackLeft));
-		room.SetTile(room.LimX - 1, 0, Room.Back, new Tile(TileType.DungeonWall, Direction.BackRight));
-
-		int spikeCount = Random.Range(0, 11);
-
-		for (int s = 0; s < spikeCount; s++)
-		{
-			int pX = Random.Range(4, room.LimX - 3);
-			int pY = Random.Range(4, room.LimY - 3);
-
-			for (int y = pY; y <= pY + 1; y++)
-			{
-				for (int x = pX; x <= pX + 1; x++)
-					room.SetTile(x, y, Room.Back, TileType.Spikes);
-			}
-		}
+		AddWalls();
+		AddSpikes();
 
 		if (initial)
 		{
@@ -60,7 +32,6 @@ public class GenDungeon : RoomGenerator
 			}
 
 			room.SetTile(room.HalfX, 0, Room.Back, new Tile(TileType.DungeonDoor, 0));
-
 			World.Instance.SpawnPoint = new SpawnPoint(roomP, room.HalfX, 1, Direction.Front);
 		}
 
@@ -99,7 +70,7 @@ public class GenDungeon : RoomGenerator
 				if (paths[i])
 				{
 					Vec2i cen = new Vec2i(room.HalfX, room.HalfY);
-					AddConnection(room, cen, possibleRooms[i] - roomP);
+					AddConnection(cen, possibleRooms[i] - roomP);
 				}
 			}
 		}
@@ -112,42 +83,79 @@ public class GenDungeon : RoomGenerator
 				room.SetTile(p.x, p.y, Room.Back, TileType.DungeonFloor);
 			}
 		}
-	}
 
-	private void AddConnection(Room room, Vec2i pos, Vec2i dir)
-	{
-		Assert.IsTrue(dir != Vec2i.Zero);
-		World world = World.Instance;
-
-		int d = GetNumericDir(dir);
-
-		switch (d)
+		void AddWalls()
 		{
-			case Direction.Left:
-				world.AddExit(room.Pos, new Vec2i(0, pos.y));
-				world.AddExit(room.Pos + dir, new Vec2i(room.LimX - 1, pos.y));
-				break;
+			for (int x = 2; x <= room.LimX - 2; x++)
+			{
+				room.SetTile(x, room.LimY - 1, Room.Back, new Tile(TileType.DungeonWall, Direction.Front));
+				room.SetTile(x, 0, Room.Back, new Tile(TileType.DungeonWall, Direction.Back));
+			}
 
-			case Direction.Right:
-				world.AddExit(room.Pos, new Vec2i(room.LimX - 1, pos.y));
-				world.AddExit(room.Pos + dir, new Vec2i(0, pos.y));
-				break;
+			for (int y = 2; y <= room.LimY - 2; y++)
+			{
+				room.SetTile(0, y, Room.Back, new Tile(TileType.DungeonWall, Direction.Left));
+				room.SetTile(room.LimX - 1, y, Room.Back, new Tile(TileType.DungeonWall, Direction.Right));
+			}
 
-			case Direction.Back:
-				world.AddExit(room.Pos, new Vec2i(pos.x, 0));
-				world.AddExit(room.Pos + dir, new Vec2i(pos.x, room.LimY - 1));
-				break;
+			room.SetTile(0, room.LimY - 1, Room.Back, new Tile(TileType.DungeonWall, Direction.FrontLeft));
+			room.SetTile(room.LimX - 1, room.LimY - 1, Room.Back, new Tile(TileType.DungeonWall, Direction.FrontRight));
+			room.SetTile(0, 0, Room.Back, new Tile(TileType.DungeonWall, Direction.BackLeft));
+			room.SetTile(room.LimX - 1, 0, Room.Back, new Tile(TileType.DungeonWall, Direction.BackRight));
+		}
 
-			case Direction.Front:
-				world.AddExit(room.Pos, new Vec2i(pos.x, room.LimY - 1));
-				world.AddExit(room.Pos + dir, new Vec2i(pos.x, 0));
-				break;
+		void AddSpikes()
+		{
+			int spikeCount = Random.Range(0, 11);
+
+			for (int s = 0; s < spikeCount; s++)
+			{
+				int pX = Random.Range(4, room.LimX - 3);
+				int pY = Random.Range(4, room.LimY - 3);
+
+				for (int y = pY; y <= pY + 1; y++)
+				{
+					for (int x = pX; x <= pX + 1; x++)
+						room.SetTile(x, y, Room.Back, TileType.Spikes);
+				}
+			}
+		}
+
+		void AddConnection(Vec2i pos, Vec2i dir)
+		{
+			Assert.IsTrue(dir != Vec2i.Zero);
+			World world = World.Instance;
+
+			int d = GetNumericDir(dir);
+
+			switch (d)
+			{
+				case Direction.Left:
+					world.AddExit(room.Pos, new Vec2i(0, pos.y));
+					world.AddExit(room.Pos + dir, new Vec2i(room.LimX - 1, pos.y));
+					break;
+
+				case Direction.Right:
+					world.AddExit(room.Pos, new Vec2i(room.LimX - 1, pos.y));
+					world.AddExit(room.Pos + dir, new Vec2i(0, pos.y));
+					break;
+
+				case Direction.Back:
+					world.AddExit(room.Pos, new Vec2i(pos.x, 0));
+					world.AddExit(room.Pos + dir, new Vec2i(pos.x, room.LimY - 1));
+					break;
+
+				case Direction.Front:
+					world.AddExit(room.Pos, new Vec2i(pos.x, room.LimY - 1));
+					world.AddExit(room.Pos + dir, new Vec2i(pos.x, 0));
+					break;
+			}
 		}
 	}
 
 	protected override void SpawnEntities(Room room)
 	{
-		int enemyCount = Random.Range(3, 6);
+		int enemyCount = Random.Range(3, 7);
 		int spawned = 0, tries = 0, maxTries = 10;
 
 		while (spawned < enemyCount)
@@ -172,6 +180,8 @@ public class GenDungeon : RoomGenerator
 			room.Entities.SpawnEntity(EntityType.Familiar, new Vec2i(26, 11));
 			familiarSpawned = true;
 		}
+
+		room.Entities.SetRequireClear(spawned);
 	}
 
 	public override void SetProperties(GameCamera cam)

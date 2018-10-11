@@ -242,6 +242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e58377c529dcd8446a9b1d7dc0c4ced9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obj: {fileID: 0}
 --- !u!4 &406036745
 Transform:
   m_ObjectHideFlags: 0
@@ -454,14 +455,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 549773587}
-  - component: {fileID: 549773588}
-  - component: {fileID: 549773585}
   - component: {fileID: 549773586}
   - component: {fileID: 549773584}
   - component: {fileID: 549773583}
   - component: {fileID: 549773582}
   - component: {fileID: 549773581}
   - component: {fileID: 549773589}
+  - component: {fileID: 549773588}
+  - component: {fileID: 549773585}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player

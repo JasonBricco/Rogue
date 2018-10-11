@@ -19,15 +19,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4003748069328988}
+  - component: {fileID: 114470428554646558}
+  - component: {fileID: 114716107186992758}
+  - component: {fileID: 114552282662159908}
+  - component: {fileID: 114391663001137270}
+  - component: {fileID: 114455818470351710}
+  - component: {fileID: 114636828576763516}
   - component: {fileID: 65397660727313916}
   - component: {fileID: 54428834514443844}
   - component: {fileID: 212671085247182934}
-  - component: {fileID: 114470428554646558}
-  - component: {fileID: 114552282662159908}
-  - component: {fileID: 114391663001137270}
-  - component: {fileID: 114716107186992758}
-  - component: {fileID: 114455818470351710}
-  - component: {fileID: 114636828576763516}
   m_Layer: 11
   m_Name: Fireball
   m_TagString: Disposable

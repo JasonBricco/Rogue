@@ -24,15 +24,8 @@ public class EntityFamiliar : MonoBehaviour
 			EventManager.Instance.ListenForEvent<RoomType>(GameEvent.AreaChanging, OnAreaChange);
 	}
 
-	private void OnAreaChange(RoomType type)
-	{
-		StopFollowing();
-	}
-
-	private void OnRoomChanged(Vec2i roomP)
-	{
-		entity.MoveTo(followTarget.Pos);
-	}
+	private void OnAreaChange(RoomType type) => StopFollowing();
+	private void OnRoomChanged(Vec2i roomP) => entity.MoveTo(followTarget.Pos);
 
 	private void StopFollowing()
 	{

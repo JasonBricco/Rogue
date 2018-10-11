@@ -18,6 +18,10 @@ public sealed class RoomEntities
 	// since FindGameObjectsWithTag() does not find inactive objects.
 	private GameObject[] disposable;
 
+	// If true, this room must be cleared before the player can move on.
+	private bool requireClear;
+	private int enemiesLeft;
+
 	private Entity playerEntity;
 	private EntityPlayer player;
 	private Room room;
@@ -43,6 +47,24 @@ public sealed class RoomEntities
 
 			for (int i = 0; i < projectileCount; i++)
 				projectiles[i] = new Queue<Entity>();
+		}
+	}
+
+	public void SetRequireClear(int enemies)
+	{
+		requireClear = true;
+		enemiesLeft = enemies;
+		// Lock the room somehow.
+	}
+
+	public void LockerKilled()
+	{
+		if (requireClear)
+		{
+			if (--enemiesLeft <= 0)
+			{
+				// Unlock the room somehow.
+			}
 		}
 	}
 
