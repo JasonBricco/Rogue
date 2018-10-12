@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-public sealed class TilePathScore : MonoBehaviour, IColliderSet
+public sealed class TilePathScoreComponent : MonoBehaviour, IColliderSet
 {
 	[SerializeField] private int scoreModifier;
 

@@ -22,15 +22,12 @@ public sealed class Room
 
 	private Tile[] tiles;
 
-	public SpawnPoint Spawn { get; set; }
-
 	public RoomCollision Collision { get; private set; }
 	public RoomRenderer Renderer { get; private set; }
 	public RoomEntities Entities { get; private set; }
 	public RoomPathfinding Pathfinding { get; private set; }
 
 	public RoomType Type { get; private set; }
-	private bool disabled;
 
 	public Room(Vec2i pos)
 	{
@@ -101,7 +98,6 @@ public sealed class Room
 
 	public void Update()
 	{
-		Assert.IsFalse(disabled);
 		Collision.Update();
 		Entities.Update();
 		Renderer.Update();
@@ -113,7 +109,6 @@ public sealed class Room
 	{
 		Collision.Enable();
 		Entities.Enable();
-		disabled = false;
 	}
 
 	// Disables the room so it can exist in memory but not be the active room.
@@ -121,7 +116,6 @@ public sealed class Room
 	{
 		Entities.Disable();
 		Collision.Disable();
-		disabled = true;
 	}
 
 	// Destroys the room, freeing it from memory.

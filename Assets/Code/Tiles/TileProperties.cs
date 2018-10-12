@@ -17,6 +17,10 @@ public sealed class TileProperties
 	public Color32 color;
 	public TileComponent component;
 
+	// Teleportation tile properties.
+	public bool teleporter;
+	public Vector2 facing, spawnOffset;
+
 	// Computed during runtime.
 	public float spriteIndex;
 	public int index;

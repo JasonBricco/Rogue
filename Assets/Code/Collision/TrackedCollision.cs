@@ -8,15 +8,15 @@ using UnityEngine.Assertions;
 public struct TrackedCollision : IEquatable<TrackedCollision>
 {
 	public Entity a, b;
-	public Tile tile;
+	public TileInstance inst;
 	public int layerA, layerB, tileLayer;
 	public int count;
 
-	public TrackedCollision(Entity a, int layerA, Entity b, int layerB, Tile tile, int tileLayer, int count = 0)
+	public TrackedCollision(Entity a, int layerA, Entity b, int layerB, TileInstance inst, int tileLayer, int count = 0)
 	{
 		this.a = a;
 		this.b = b;
-		this.tile = tile;
+		this.inst = inst;
 		this.layerA = layerA;
 		this.layerB = layerB;
 		this.tileLayer = tileLayer;
@@ -24,19 +24,19 @@ public struct TrackedCollision : IEquatable<TrackedCollision>
 	}
 
 	public TrackedCollision Increment()
-		=> new TrackedCollision(a, layerA, b, layerB, tile, tileLayer, count + 1);
+		=> new TrackedCollision(a, layerA, b, layerB, inst, tileLayer, count + 1);
 
 	public TrackedCollision Decrement(out bool destroy)
 	{
 		Assert.IsTrue(count > 0);
 		int newCount = count - 1;
 		destroy = newCount == 0;
-		return new TrackedCollision(a, layerA, b, layerB, tile, tileLayer, newCount);
+		return new TrackedCollision(a, layerA, b, layerB, inst, tileLayer, newCount);
 	}
 
 	public bool Involves(Entity entity)
 		=> a == entity || b == entity;
 
 	public bool Equals(TrackedCollision other)
-		=> a == other.a && b == other.b && tile == other.tile;
+		=> a == other.a && b == other.b && inst == other.inst;
 }

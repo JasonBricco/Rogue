@@ -9,16 +9,16 @@ public class RoomGenerator
 {
 	protected static bool firstRoom = true;
 
-	public void Generate(Room room, GameCamera cam, Vec2i roomP, bool initial)
+	public void Generate(Room room, GameCamera cam, Vec2i roomP, TileInstance? from)
 	{
 		Init(room, roomP);
-		GenerateInternal(room, roomP, initial);
+		GenerateInternal(room, roomP, from);
 		room.OnGenerate();
 		SpawnEntities(room);
 		SetProperties(cam);
 	}
 
-	protected virtual void GenerateInternal(Room room, Vec2i roomP, bool initial)
+	protected virtual void GenerateInternal(Room room, Vec2i roomP, TileInstance? from)
 		=> throw new NotImplementedException();
 
 	protected virtual void SpawnEntities(Room room) { }

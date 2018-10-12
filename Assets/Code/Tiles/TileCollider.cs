@@ -6,14 +6,14 @@ using UnityEngine;
 
 public sealed class TileCollider : MonoBehaviour
 {
-	public Tile tile;
+	public TileInstance inst;
 	public BoxCollider col;
 	
 	// Score modifier for use in pathfinding. A higher score makes
 	// it less likely that AI will walk on this tile.
 	public int scoreModifier;
 
-	public static TileCollider Create(Tile tile)
+	public static TileCollider Create()
 	{
 		GameObject obj = new GameObject("Tile Collider");
 
@@ -26,9 +26,9 @@ public sealed class TileCollider : MonoBehaviour
 		return tileCollider;
 	}
 
-	public TileCollider(Tile tile, BoxCollider col)
+	public TileCollider(TileInstance inst, BoxCollider col)
 	{
-		this.tile = tile;
+		this.inst = inst;
 		this.col = col;
 	}
 

@@ -182,6 +182,18 @@ public class TileEditor : EditorWindow
 					y += 15.0f;
 				}
 
+				y += 25.0f;
+				EditorGUI.LabelField(new Rect(x, y, 60.0f, 20.0f), "Teleport");
+				props.teleporter = EditorGUI.Toggle(new Rect(x + 55.0f, y, 15.0f, 25.0f), props.teleporter);
+
+				if (props.teleporter)
+				{
+					y += 20.0f;
+					props.facing = EditorGUI.Vector2Field(new Rect(x, y, 120.0f, 20.0f), "Facing", props.facing);
+					props.spawnOffset = EditorGUI.Vector2Field(new Rect(x + 135.0f, y, 120.0f, 20.0f), "Offset", props.spawnOffset);
+					y += 15.0f;
+				}
+
 				if (!props.invisible)
 				{
 					y += 25.0f;

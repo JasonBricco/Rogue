@@ -23,7 +23,7 @@ public sealed class EntityCollisionHandler : MonoBehaviour
 			TileCollider tileCollider = other.GetComponent<TileCollider>();
 
 			if (tileCollider != null)
-				room.Collision.TrackCollision(entity, gameObject.layer, tileCollider.tile, other.gameObject.layer);
+				room.Collision.TrackCollision(entity, gameObject.layer, tileCollider.inst, other.gameObject.layer);
 			else
 			{
 				RoomBarrier barrier = other.GetComponent<RoomBarrier>();
@@ -45,7 +45,7 @@ public sealed class EntityCollisionHandler : MonoBehaviour
 			TileCollider tileCollider = other.GetComponent<TileCollider>();
 			
 			if (tileCollider != null)
-				room.Collision.RemoveCollision(entity, gameObject.layer, tileCollider.tile, other.gameObject.layer);
+				room.Collision.RemoveCollision(entity, gameObject.layer, tileCollider.inst, other.gameObject.layer);
 		}
 	}
 }

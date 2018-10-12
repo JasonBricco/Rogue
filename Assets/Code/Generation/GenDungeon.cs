@@ -16,24 +16,15 @@ public class GenDungeon : RoomGenerator
 
 	[Il2CppSetOptions(Option.NullChecks, false)]
 	[Il2CppSetOptions(Option.ArrayBoundsChecks, false)]
-	protected override void GenerateInternal(Room room, Vec2i roomP, bool initial)
+	protected override void GenerateInternal(Room room, Vec2i roomP, TileInstance? from)
 	{
 		room.Fill(Room.Back, TileType.DungeonFloor);
 
 		AddWalls();
 		AddSpikes();
 
-		if (initial)
-		{
-			for (int y = 0; y <= 1; y++)
-			{
-				room.SetTile(room.HalfX - 1, y, Room.Back, TileType.Barrier);
-				room.SetTile(room.HalfX + 1, y, Room.Back, TileType.Barrier);
-			}
-
-			room.SetTile(room.HalfX, 0, Room.Back, new Tile(TileType.DungeonDoor, 0));
-			World.Instance.SpawnPoint = new SpawnPoint(roomP, room.HalfX, 1, Direction.Front);
-		}
+		if (from.HasValue)
+			AddDoor(room.HalfX, 0, 1, true);
 
 		List<Vec2i> possibleRooms = new List<Vec2i>(4)
 		{
@@ -50,8 +41,8 @@ public class GenDungeon : RoomGenerator
 		}
 
 		// No possible ways to generate, exit with a portal.
-		if (Random.value < 0.05f || possibleRooms.Count == 0)
-			room.SetTile(room.HalfX, room.HalfY, Room.Back, TileType.Portal);
+		if (Random.value < 0.3f || possibleRooms.Count == 0)
+			AddDoor(room.HalfX, room.LimY - 1, 0, false);
 		else
 		{
 			bool[] paths = new bool[possibleRooms.Count];
@@ -82,6 +73,21 @@ public class GenDungeon : RoomGenerator
 				Vec2i p = exits[i];
 				room.SetTile(p.x, p.y, Room.Back, TileType.DungeonFloor);
 			}
+		}
+
+		void AddDoor(int doorX, int doorY, int variant, bool setSpawn)
+		{
+			for (int y = 0; y <= 1; y++)
+			{
+				room.SetTile(doorX - 1, doorY + y, Room.Back, TileType.Barrier);
+				room.SetTile(doorX + 1, doorY + y, Room.Back, TileType.Barrier);
+			}
+
+			TileInstance door = new TileInstance(new Tile(TileType.DungeonDoor, variant), doorX, doorY);
+			room.SetTile(doorX, doorY, Room.Back, door.tile);
+			World.Instance.AddTeleport(door, from);
+
+			if (setSpawn) World.Instance.SpawnFromTileInstance(door);
 		}
 
 		void AddWalls()
@@ -155,6 +161,7 @@ public class GenDungeon : RoomGenerator
 
 	protected override void SpawnEntities(Room room)
 	{
+		/*
 		int enemyCount = Random.Range(3, 7);
 		int spawned = 0, tries = 0, maxTries = 10;
 
@@ -181,7 +188,7 @@ public class GenDungeon : RoomGenerator
 			familiarSpawned = true;
 		}
 
-		room.Entities.SetRequireClear(spawned);
+		room.Entities.SetRequireClear(spawned);*/
 	}
 
 	public override void SetProperties(GameCamera cam)

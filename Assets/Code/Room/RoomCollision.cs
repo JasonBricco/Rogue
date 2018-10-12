@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using System.Collections.Generic;
 using System;
-using Random = UnityEngine.Random;
 
 public class RoomCollision
 {
@@ -92,7 +91,7 @@ public class RoomCollision
 
 					if (data.hasCollider)
 					{
-						TileCollider col = pool.GetCollider(tile, colliders);
+						TileCollider col = pool.GetCollider(tile, x, y, colliders);
 						Vector2 size = data.colliderSize;
 						Vector2 offset = data.colliderOffset;
 						col.SetInfo(new Vector3(size.x, size.y, room.SizeY), data.trigger, x, y, new Vector3(offset.x, offset.y, room.HalfY));
@@ -150,7 +149,7 @@ public class RoomCollision
 	private void ShiftRoom(Entity a, Vec2i dir)
 	{
 		World world = World.Instance;
-		world.LoadRoom(world.Room.Pos + dir, false);
+		world.LoadRoom(world.Room.Pos + dir, null);
 		a.ShiftPosition(dir);
 	}
 
@@ -168,47 +167,22 @@ public class RoomCollision
 		ApplyOnTouchEffects(onTouchedB, b, a);
 	}
 
-	private void OnTriggerTile(Entity entity, Tile tile)
+	private void OnTriggerTile(Entity entity, TileInstance inst)
 	{
+		Tile tile = inst.tile;
+
 		switch (tile.id)
 		{
-			case TileType.Portal:
+			case TileType.PlainsDoor:
 			{
 				if (entity.Type == EntityType.Player)
-				{
-					Action callback = () =>
-					{
-						World.Instance.BeginNewSection(RoomType.Plains, false);
-						FadeInfo fadeIn = new FadeInfo(true, 0.0f, 0.0f, 0.0f, 0.2f, null);
-						EventManager.Instance.TriggerEvent(GameEvent.Fade, fadeIn);
-					};
-
-					FadeInfo fadeOut = new FadeInfo(false, 0.0f, 0.0f, 0.0f, 0.2f, callback);
-					EventManager.Instance.TriggerEvent(GameEvent.Fade, fadeOut);
-				}
+					BeginNewSection(RoomType.Dungeon, -new Vec2i(tile.Properties.facing));
 			} break;
 
-			case TileType.PlainsDoor:
 			case TileType.DungeonDoor:
 			{
 				if (entity.Type == EntityType.Player)
-				{
-					Action callback = () =>
-					{
-						if (tile.id == TileType.PlainsDoor)
-						{
-							RoomType nextType = Random.value > 0.85f ? RoomType.DarkDungeon : RoomType.Dungeon;
-							World.Instance.BeginNewSection(Vec2i.Directions[Direction.Front], nextType);
-						}
-						else World.Instance.BeginNewSection(Vec2i.Directions[Direction.Back], RoomType.Plains);
-
-						FadeInfo fadeIn = new FadeInfo(true, 0.0f, 0.0f, 0.0f, 0.2f, null);
-						EventManager.Instance.TriggerEvent(GameEvent.Fade, fadeIn);
-					};
-
-					FadeInfo fadeOut = new FadeInfo(false, 0.0f, 0.0f, 0.0f, 0.2f, callback);
-					EventManager.Instance.TriggerEvent(GameEvent.Fade, fadeOut);
-				}
+					BeginNewSection(RoomType.Plains, -new Vec2i(tile.Properties.facing));
 			} break;
 
 			case TileType.Spikes:
@@ -219,11 +193,25 @@ public class RoomCollision
 					World.Instance.Room.Entities.AddOTEffect(entity, OTEffectType.Spikes);
 			} break;
 		}
+
+		void BeginNewSection(RoomType type, Vec2i dir)
+		{
+			Action callback = () =>
+			{
+				World.Instance.BeginNewSection(dir, type, inst);
+
+				FadeInfo fadeIn = new FadeInfo(true, 0.0f, 0.0f, 0.0f, 0.2f, null);
+				EventManager.Instance.TriggerEvent(GameEvent.Fade, fadeIn);
+			};
+
+			FadeInfo fadeOut = new FadeInfo(false, 0.0f, 0.0f, 0.0f, 0.2f, callback);
+			EventManager.Instance.TriggerEvent(GameEvent.Fade, fadeOut);
+		}
 	}
 
-	private void TriggerTileExit(Entity entity, Tile tile)
+	private void TriggerTileExit(Entity entity, TileInstance inst)
 	{
-		switch (tile.id)
+		switch (inst.tile.id)
 		{
 			case TileType.Spikes:
 				World.Instance.Room.Entities.RemoveOTEffect(entity, OTEffectType.Spikes);
@@ -231,9 +219,9 @@ public class RoomCollision
 		}
 	}
 
-	private void TrackCollisionInternal(List<TrackedCollision> list, Entity a, int layerA, Entity b, int layerB, Tile tile, int tileLayer)
+	private void TrackCollisionInternal(List<TrackedCollision> list, Entity a, int layerA, Entity b, int layerB, TileInstance inst, int tileLayer)
 	{
-		TrackedCollision col = new TrackedCollision(a, layerA, b, layerB, tile, tileLayer);
+		TrackedCollision col = new TrackedCollision(a, layerA, b, layerB, inst, tileLayer);
 		int index = list.IndexOf(col);
 
 		if (index == -1)
@@ -246,18 +234,14 @@ public class RoomCollision
 	}
 
 	public void TrackCollision(Entity a, int layerA, Entity b, int layerB)
-	{
-		TrackCollisionInternal(entityCollisions, a, layerA, b, layerB, default(Tile), 0);
-	}
+		=> TrackCollisionInternal(entityCollisions, a, layerA, b, layerB, default(TileInstance), 0);
 
-	public void TrackCollision(Entity a, int layerA, Tile tile, int tileLayer)
-	{
-		TrackCollisionInternal(tileCollisions, a, layerA, null, 0, tile, tileLayer);
-	}
+	public void TrackCollision(Entity a, int layerA, TileInstance inst, int tileLayer)
+		=> TrackCollisionInternal(tileCollisions, a, layerA, null, 0, inst, tileLayer);
 
-	private bool RemoveCollisionInternal(List<TrackedCollision> list, Entity a, int layerA, Entity b, int layerB, Tile tile, int tileLayer)
+	private bool RemoveCollisionInternal(List<TrackedCollision> list, Entity a, int layerA, Entity b, int layerB, TileInstance inst, int tileLayer)
 	{
-		TrackedCollision col = new TrackedCollision(a, layerA, b, layerB, tile, tileLayer);
+		TrackedCollision col = new TrackedCollision(a, layerA, b, layerB, inst, tileLayer);
 		int index = list.IndexOf(col);
 
 		if (index != -1)
@@ -276,50 +260,33 @@ public class RoomCollision
 
 	public void RemoveCollision(Entity a, int layerA, Entity b, int layerB)
 	{
-		if (RemoveCollisionInternal(entityCollisions, a, layerA, b, layerB, default(Tile), 0))
+		if (RemoveCollisionInternal(entityCollisions, a, layerA, b, layerB, default(TileInstance), 0))
 			HandleCollisionExit(a, layerA, b, layerB);
 	}
 
-	public void RemoveCollision(Entity a, int layerA, Tile tile, int tileLayer)
+	public void RemoveCollision(Entity a, int layerA, TileInstance inst, int tileLayer)
 	{
-		if (RemoveCollisionInternal(tileCollisions, a, layerA, null, 0, tile, tileLayer))
-			HandleCollisionExit(a, layerA, tile, tileLayer);
+		if (RemoveCollisionInternal(tileCollisions, a, layerA, null, 0, inst, tileLayer))
+			HandleCollisionExit(a, layerA, inst, tileLayer);
 	}
 
-	public void KillOnBarrier(Entity a, Vec2i dir)
-	{
-		a.SetFlag(EntityFlags.Dead);
-	}
-
-	public void KillOnCollide(Entity a, Tile tile)
-	{
-		a.SetFlag(EntityFlags.Dead);
-	}
+	public void KillOnBarrier(Entity a, Vec2i dir) => a.SetFlag(EntityFlags.Dead);
+	public void KillOnCollide(Entity a, TileInstance inst) => a.SetFlag(EntityFlags.Dead);
 
 	public void HandleCollision(Entity a, int layerA, Entity b, int layerB)
-	{
-		collisionMatrix.GetEntityResponse(layerA, layerB)?.Invoke(a, b);
-	}
+		=> collisionMatrix.GetEntityResponse(layerA, layerB)?.Invoke(a, b);
 
-	public void HandleCollision(Entity a, int layerA, Tile tile, int tileLayer)
-	{
-		collisionMatrix.GetTileResponse(layerA, tileLayer)?.Invoke(a, tile);
-	}
+	public void HandleCollision(Entity a, int layerA, TileInstance inst, int tileLayer)
+		=> collisionMatrix.GetTileResponse(layerA, tileLayer)?.Invoke(a, inst);
 
 	public void HandleBarrier(Entity a, int layerA, int barrierLayer, Vec2i dir)
-	{
-		collisionMatrix.GetBarrierResponse(layerA, barrierLayer)?.Invoke(a, dir);
-	}
+		=> collisionMatrix.GetBarrierResponse(layerA, barrierLayer)?.Invoke(a, dir);
 
 	public void HandleCollisionExit(Entity a, int layerA, Entity b, int layerB)
-	{
-		exitMatrix.GetEntityResponse(layerA, layerB)?.Invoke(a, b);
-	}
+		=> exitMatrix.GetEntityResponse(layerA, layerB)?.Invoke(a, b);
 
-	public void HandleCollisionExit(Entity a, int layerA, Tile tile, int tileLayer)
-	{
-		exitMatrix.GetTileResponse(layerA, tileLayer)?.Invoke(a, tile);
-	}
+	public void HandleCollisionExit(Entity a, int layerA, TileInstance inst, int tileLayer)
+		=> exitMatrix.GetTileResponse(layerA, tileLayer)?.Invoke(a, inst);
 
 	private void RunCollisions()
 	{
@@ -332,7 +299,7 @@ public class RoomCollision
 		for (int i = 0; i < tileCollisions.Count; i++)
 		{
 			TrackedCollision col = tileCollisions[i];
-			HandleCollision(col.a, col.layerA, col.tile, col.tileLayer);
+			HandleCollision(col.a, col.layerA, col.inst, col.tileLayer);
 		}
 	}
 
@@ -351,10 +318,7 @@ public class RoomCollision
 		ClearTrackedCollisions(tileCollisions, entity);
 	}
 
-	public void Enable()
-	{
-		Generate();
-	}
+	public void Enable() => Generate();
 
 	public void Disable()
 	{

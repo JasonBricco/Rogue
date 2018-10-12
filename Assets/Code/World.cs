@@ -9,6 +9,7 @@ using System.Collections;
 using System;
 using System.Linq;
 using Random = UnityEngine.Random;
+using static Utils;
 
 public sealed class World : MonoBehaviour
 {
@@ -48,6 +49,9 @@ public sealed class World : MonoBehaviour
 	// connect properly to each other.
 	private Dictionary<Vec2i, List<Vec2i>> exitPoints = new Dictionary<Vec2i, List<Vec2i>>();
 
+	// Stores links between doors in the world.
+	private Dictionary<TileInstance, TileInstance?> teleports = new Dictionary<TileInstance, TileInstance?>();
+
 	private WaitForEndOfFrame wait = new WaitForEndOfFrame();
 
 	public static World Instance { get; private set; }
@@ -62,7 +66,12 @@ public sealed class World : MonoBehaviour
 
 	private void Start()
 	{
-		BeginNewSection(RoomType.Plains, true);
+		ChangeRoomType(RoomType.Plains);
+		NewRoom(Vec2i.Zero);
+		generator.Generate(Room, cam, Room.Pos, null);
+		AdjustBarriers();
+		cam.UpdateValues();
+		Room.Entities.SpawnPlayer();
 		cam.MoveToPlayer();
 	}
 
@@ -106,10 +115,7 @@ public sealed class World : MonoBehaviour
 		loadedRooms.Add(Room.Pos, Room);
 	}
 
-	public void Update()
-	{
-		Room.Update();
-	}
+	public void Update() => Room.Update();
 
 	// Allows running a function after the given amount of seconds on this 
 	// MonoBehaviour, for objects that aren't MonoBehaviours to call.
@@ -121,7 +127,23 @@ public sealed class World : MonoBehaviour
 		func.Invoke();
 	}
 
-	public void LoadRoom(Vec2i pos, bool initial)
+	public void AddTeleport(TileInstance inst, TileInstance? target = null)
+	{
+		teleports.Add(inst, target);
+
+		if (target.HasValue)
+			teleports[target.Value] = inst;
+	}
+
+	public void SpawnFromTileInstance(TileInstance inst)
+	{
+		TileProperties props = inst.tile.Properties;
+		Vec2i facing = new Vec2i(props.facing);
+		Vec2i spawnP = new Vec2i(inst.x, inst.y) + facing;
+		SpawnPoint = new SpawnPoint(Room.Pos, spawnP.x, spawnP.y, props.spawnOffset, GetNumericDir(facing));
+	}
+
+	public void LoadRoom(Vec2i pos, TileInstance? from)
 	{
 		Assert.IsTrue(pos != Room.Pos);
 
@@ -133,14 +155,12 @@ public sealed class World : MonoBehaviour
 			Room = newRoom;
 			newRoom.Enable();
 			ChangeRoomType(Room.Type);
-
-			if (initial)
-				SpawnPoint = Room.Spawn;
+			SpawnFromTileInstance(teleports[from.Value].Value);
 		}
 		else
 		{
 			NewRoom(pos);
-			generator.Generate(Room, cam, pos, initial);
+			generator.Generate(Room, cam, pos, from);
 		}
 
 		AdjustBarriers();
@@ -150,35 +170,14 @@ public sealed class World : MonoBehaviour
 		GC.Collect();
 	}
 
-	public void BeginNewSection(Vec2i dir, RoomType type)
+	public void BeginNewSection(Vec2i dir, RoomType type, TileInstance? from)
 	{
 		Assert.IsTrue(dir != Vec2i.Zero);
 		EventManager.Instance.TriggerEvent(GameEvent.AreaChanging, type);
 		ChangeRoomType(type);
-		LoadRoom(Room.Pos + dir, true);
+		LoadRoom(Room.Pos + dir, from);
 		generator.SetProperties(cam);
-		Room.Entities.MovePlayerTo(SpawnPoint.cell, SpawnPoint.facing);
-	}
-
-	public void BeginNewSection(RoomType type, bool spawnPlayer)
-	{
-		EventManager.Instance.TriggerEvent(GameEvent.AreaChanging, type);
-
-		foreach (Room room in loadedRooms.Values)
-			room.Destroy();
-
-		loadedRooms.Clear();
-		ChangeRoomType(type);
-		NewRoom(Vec2i.Zero);
-		generator.Generate(Room, cam, Room.Pos, true);
-		AdjustBarriers();
-		cam.UpdateValues();
-
-		if (spawnPlayer) Room.Entities.SpawnPlayer();
-		else Room.Entities.MovePlayerTo(SpawnPoint.cell, SpawnPoint.facing);
-
-		StartCoroutine(TriggerRoomChanged(Vec2i.Zero));
-		GC.Collect();
+		Room.Entities.MovePlayerTo(SpawnPoint);
 	}
 
 	private IEnumerator TriggerRoomChanged(Vec2i pos)

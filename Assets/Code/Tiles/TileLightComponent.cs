@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-public sealed class TileLight : MonoBehaviour, ITileSet
+public sealed class TileLightComponent : MonoBehaviour, ITileSet
 {
 	[SerializeField] private GameObject lightPrefab;
 

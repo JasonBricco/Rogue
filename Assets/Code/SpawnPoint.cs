@@ -2,15 +2,23 @@
 // Copyright (c) 2018 Jason Bricco
 //
 
-public struct SpawnPoint
-{
-	public Vec2i room, cell;
-	public int facing;
+using UnityEngine;
+using System;
 
-	public SpawnPoint(Vec2i room, int x, int y, int facing)
+public struct SpawnPoint : IEquatable<SpawnPoint>
+{
+	public Vec2i room, pos;
+	public int facing;
+	public Vector2 offset;
+
+	public SpawnPoint(Vec2i room, int x, int y, Vector2 offset, int facing)
 	{
 		this.room = room;
 		this.facing = facing;
-		cell = new Vec2i(x, y);
+		this.offset = offset;
+		pos = new Vec2i(x, y);
 	}
+
+	public bool Equals(SpawnPoint other)
+		=> room == other.room && pos == other.pos;
 }

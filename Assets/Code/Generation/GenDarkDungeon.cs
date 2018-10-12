@@ -7,9 +7,9 @@ public sealed class GenDarkDungeon : GenDungeon
 	protected override void Init(Room room, Vec2i roomP)
 		=> room.Init(roomP, 32, 18, RoomType.DarkDungeon);
 
-	protected override void GenerateInternal(Room room, Vec2i roomP, bool initial)
+	protected override void GenerateInternal(Room room, Vec2i roomP, TileInstance? from)
 	{
-		base.GenerateInternal(room, roomP, initial);
+		base.GenerateInternal(room, roomP, from);
 		room.SetTile(25, 11, Room.Main, TileType.Torch);
 	}
 

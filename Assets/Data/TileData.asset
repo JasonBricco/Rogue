@@ -28,6 +28,9 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
       index: 0
       width: 0
@@ -49,6 +52,9 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
       index: 0
       width: 32
@@ -66,6 +72,9 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
       index: 1
       width: 32
@@ -83,6 +92,9 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
       index: 2
       width: 64
@@ -100,6 +112,9 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
       index: 3
       width: 64
@@ -117,6 +132,9 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
       index: 4
       width: 64
@@ -134,6 +152,9 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
       index: 5
       width: 64
@@ -151,6 +172,9 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
       index: 6
       width: 64
@@ -168,6 +192,9 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
       index: 7
       width: 64
@@ -189,31 +216,13 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
       index: 0
       width: 0
       height: 0
-      material: {fileID: 0}
-  - name: Portal
-    type: 3
-    variantCount: 1
-    variants:
-    - invisible: 0
-      hasCollider: 1
-      trigger: 1
-      colliderSize: {x: 0.3, y: 0.3}
-      colliderOffset: {x: 0, y: 0}
-      renderOffset: {x: 0, y: 0, z: 0}
-      baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
-      sprite: {fileID: 21300000, guid: 008069a4edcd5b2419556768df79f9af, type: 3}
-      color:
-        serializedVersion: 2
-        rgba: 0
-      component: {fileID: 0}
-      spriteIndex: 0
-      index: 8
-      width: 32
-      height: 32
       material: {fileID: 0}
   - name: DungeonFloor
     type: 4
@@ -231,8 +240,11 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 9
+      index: 8
       width: 32
       height: 32
       material: {fileID: 0}
@@ -253,8 +265,11 @@ MonoBehaviour:
         rgba: 0
       component: {fileID: 114650601760224922, guid: cad8d22e497accb4a81889da5b4d93c6,
         type: 2}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 10
+      index: 9
       width: 32
       height: 64
       material: {fileID: 0}
@@ -275,8 +290,11 @@ MonoBehaviour:
         rgba: 0
       component: {fileID: 114650601760224922, guid: 027191cf76e633f45951bac149c3db5a,
         type: 2}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 11
+      index: 10
       width: 64
       height: 64
       material: {fileID: 0}
@@ -296,8 +314,11 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 12
+      index: 11
       width: 32
       height: 32
       material: {fileID: 0}
@@ -313,8 +334,11 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 13
+      index: 12
       width: 32
       height: 32
       material: {fileID: 0}
@@ -330,8 +354,11 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 14
+      index: 13
       width: 32
       height: 32
       material: {fileID: 0}
@@ -347,8 +374,11 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 15
+      index: 14
       width: 32
       height: 32
       material: {fileID: 0}
@@ -364,8 +394,11 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 16
+      index: 15
       width: 32
       height: 32
       material: {fileID: 0}
@@ -381,8 +414,11 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 17
+      index: 16
       width: 32
       height: 32
       material: {fileID: 0}
@@ -402,8 +438,11 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 18
+      index: 17
       width: 32
       height: 96
       material: {fileID: 0}
@@ -419,8 +458,11 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 19
+      index: 18
       width: 32
       height: 96
       material: {fileID: 0}
@@ -436,8 +478,11 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 20
+      index: 19
       width: 96
       height: 32
       material: {fileID: 0}
@@ -453,8 +498,11 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 21
+      index: 20
       width: 96
       height: 32
       material: {fileID: 0}
@@ -470,8 +518,11 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 22
+      index: 21
       width: 96
       height: 96
       material: {fileID: 0}
@@ -487,8 +538,11 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 23
+      index: 22
       width: 96
       height: 96
       material: {fileID: 0}
@@ -504,8 +558,11 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 24
+      index: 23
       width: 96
       height: 96
       material: {fileID: 0}
@@ -521,14 +578,17 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 25
+      index: 24
       width: 96
       height: 96
       material: {fileID: 0}
   - name: PlainsDoor
     type: 9
-    variantCount: 1
+    variantCount: 2
     variants:
     - invisible: 0
       hasCollider: 1
@@ -541,8 +601,30 @@ MonoBehaviour:
       color:
         serializedVersion: 2
         rgba: 0
-      component: {fileID: 114650601760224922, guid: 641ee5c3443e80648a1eadaf2ac9768d,
-        type: 2}
+      component: {fileID: 0}
+      teleporter: 1
+      facing: {x: 0, y: -1}
+      spawnOffset: {x: 0, y: 0.7}
+      spriteIndex: 0
+      index: 25
+      width: 96
+      height: 96
+      material: {fileID: 0}
+    - invisible: 0
+      hasCollider: 1
+      trigger: 1
+      colliderSize: {x: 1, y: 1}
+      colliderOffset: {x: 0, y: 0}
+      renderOffset: {x: -1, y: 0, z: 0}
+      baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+      sprite: {fileID: 21300000, guid: c67378ee88894844da2f0131a339d283, type: 3}
+      color:
+        serializedVersion: 2
+        rgba: 0
+      component: {fileID: 0}
+      teleporter: 1
+      facing: {x: 0, y: 1}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
       index: 26
       width: 96
@@ -550,8 +632,28 @@ MonoBehaviour:
       material: {fileID: 0}
   - name: DungeonDoor
     type: 10
-    variantCount: 1
+    variantCount: 4
     variants:
+    - invisible: 0
+      hasCollider: 1
+      trigger: 1
+      colliderSize: {x: 1, y: 1}
+      colliderOffset: {x: 0, y: 0.4}
+      renderOffset: {x: -1, y: 0, z: 0}
+      baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+      sprite: {fileID: 21300000, guid: fcbcdc0ddddc26f488a6759863dbb9c0, type: 3}
+      color:
+        serializedVersion: 2
+        rgba: 0
+      component: {fileID: 0}
+      teleporter: 1
+      facing: {x: 0, y: -1}
+      spawnOffset: {x: 0, y: 0}
+      spriteIndex: 0
+      index: 27
+      width: 96
+      height: 64
+      material: {fileID: 0}
     - invisible: 0
       hasCollider: 1
       trigger: 1
@@ -563,10 +665,52 @@ MonoBehaviour:
       color:
         serializedVersion: 2
         rgba: 0
-      component: {fileID: 114650601760224922, guid: 15f32587187780b4196813e7eab43bd0,
-        type: 2}
+      component: {fileID: 0}
+      teleporter: 1
+      facing: {x: 0, y: 1}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
-      index: 27
+      index: 28
+      width: 96
+      height: 64
+      material: {fileID: 0}
+    - invisible: 0
+      hasCollider: 1
+      trigger: 0
+      colliderSize: {x: 3, y: 2}
+      colliderOffset: {x: 0, y: -1}
+      renderOffset: {x: 0, y: 0, z: 0}
+      baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+      sprite: {fileID: 21300000, guid: ae257c5e7ad4bee42bfe6b6eb8428b5b, type: 3}
+      color:
+        serializedVersion: 2
+        rgba: 0
+      component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
+      spriteIndex: 0
+      index: 29
+      width: 96
+      height: 64
+      material: {fileID: 0}
+    - invisible: 0
+      hasCollider: 1
+      trigger: 0
+      colliderSize: {x: 3, y: 2}
+      colliderOffset: {x: 0, y: 1}
+      renderOffset: {x: 0, y: 0, z: 0}
+      baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
+      sprite: {fileID: 21300000, guid: cb4e1943e1890544b9bb6502aeb9ac1a, type: 3}
+      color:
+        serializedVersion: 2
+        rgba: 0
+      component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
+      spriteIndex: 0
+      index: 30
       width: 96
       height: 64
       material: {fileID: 0}
@@ -586,6 +730,9 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 0
       component: {fileID: 0}
+      teleporter: 0
+      facing: {x: 0, y: 0}
+      spawnOffset: {x: 0, y: 0}
       spriteIndex: 0
       index: 0
       width: 0

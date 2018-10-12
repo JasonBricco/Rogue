@@ -51,7 +51,7 @@ public sealed class GenPlains : RoomGenerator
 	}
 
 	[Il2CppSetOptions(Option.NullChecks, false)]
-	protected override void GenerateInternal(Room room, Vec2i roomP, bool initial)
+	protected override void GenerateInternal(Room room, Vec2i roomP, TileInstance? from)
 	{
 		SetFloor(room);
 		CreatePlateau(room, 0, 0, room.SizeX, room.SizeY);
@@ -62,11 +62,7 @@ public sealed class GenPlains : RoomGenerator
 		int midX = start.x + (end.x - start.x) / 2;
 
 		CreatePlateau(room, start.x, start.y, end.x, end.y);
-
-		room.SetTile(midX, start.y, Room.Back, TileType.PlainsDoor);
-		room.SetTile(midX - 1, start.y, Room.Back, TileType.Barrier);
-		room.SetTile(midX + 1, start.y, Room.Back, TileType.Barrier);
-		room.SetTile(midX, start.y + 1, Room.Back, TileType.Barrier);
+		AddDoor(midX, start.y, 0, false);
 
 		start -= 1;
 		end += 1;
@@ -89,11 +85,24 @@ public sealed class GenPlains : RoomGenerator
 		// switching from another generation type or when starting the world.
 		if (firstRoom)
 		{
-			World.Instance.SpawnPoint = new SpawnPoint(roomP, 4, 4, Direction.Front);
+			World.Instance.SpawnPoint = new SpawnPoint(roomP, 4, 4, Vector2.zero, Direction.Front);
 			firstRoom = false;
 		}
-		else if (initial)
-			World.Instance.SpawnPoint = new SpawnPoint(roomP, 4, 4, Direction.Front);
+		else if (from.HasValue)
+			AddDoor(midX, end.y, 1, true);
+
+		void AddDoor(int doorX, int doorY, int variant, bool setSpawn)
+		{
+			TileInstance door = new TileInstance(new Tile(TileType.PlainsDoor, variant), doorX, doorY);
+			room.SetTile(doorX, doorY, Room.Back, door.tile);
+			World.Instance.AddTeleport(door);
+
+			room.SetTile(midX - 1, start.y, Room.Back, TileType.Barrier);
+			room.SetTile(midX + 1, start.y, Room.Back, TileType.Barrier);
+			room.SetTile(midX, start.y + 1, Room.Back, TileType.Barrier);
+
+			if (setSpawn) World.Instance.SpawnFromTileInstance(door);
+		}
 	}
 
 	public override void SetProperties(GameCamera cam)

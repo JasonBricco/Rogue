@@ -5,7 +5,7 @@
 using UnityEngine;
 
 public delegate void EntityColFunc(Entity a, Entity b);
-public delegate void TileColFunc(Entity a, Tile tile);
+public delegate void TileColFunc(Entity a, TileInstance inst);
 public delegate void BarrierColFunc(Entity a, Vec2i dir);
 
 public sealed class CollisionMatrix
@@ -36,17 +36,11 @@ public sealed class CollisionMatrix
 	}
 
 	public EntityColFunc GetEntityResponse(int layer0, int layer1)
-	{
-		return matrix[Mathf.Min(layer0, layer1), Mathf.Max(layer0, layer1)].ecr;
-	}
+		=> matrix[Mathf.Min(layer0, layer1), Mathf.Max(layer0, layer1)].ecr;
 
 	public TileColFunc GetTileResponse(int layer0, int layer1)
-	{
-		return matrix[Mathf.Min(layer0, layer1), Mathf.Max(layer0, layer1)].tcr;
-	}
+		=> matrix[Mathf.Min(layer0, layer1), Mathf.Max(layer0, layer1)].tcr;
 
 	public BarrierColFunc GetBarrierResponse(int layer0, int layer1)
-	{
-		return matrix[Mathf.Min(layer0, layer1), Mathf.Max(layer0, layer1)].bcr;
-	}
+		=> matrix[Mathf.Min(layer0, layer1), Mathf.Max(layer0, layer1)].bcr;
 }

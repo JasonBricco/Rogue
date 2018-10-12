@@ -7,7 +7,6 @@ public enum TileType : ushort
 	Air,
 	DungeonWall,
 	Barrier,
-	Portal,
 	DungeonFloor,
 	Spikes,
 	Torch,

@@ -68,38 +68,24 @@ public sealed class RoomEntities
 		}
 	}
 
-	public void MovePlayerTo(Vec2i cell, int facing)
-	{
-		Assert.IsNotNull(playerEntity);
-		playerEntity.MoveTo(new Vector2(cell.x + 0.5f, cell.y + 0.5f));
-	}
+	public void MovePlayerTo(SpawnPoint p)
+		=> SpawnEntity(playerEntity, p.pos.ToVector2() + p.offset, p.facing);
 
 	private void SpawnEntity(Entity entity, Vector2 pos, int facing = 0)
 	{
-		entity.MoveTo(pos);
+		entity.MoveTo(new Vector2(pos.x + 0.5f, pos.y + 0.5f));
 		entity.facing = facing;
-	}
-
-	private void SpawnEntity(Entity entity, Vec2i cell, int facing = 0)
-	{
-		Vector2 pos = new Vector2(cell.x + 0.5f, cell.y + 0.5f);
-		SpawnEntity(entity, pos, facing);
 	}
 
 	public void SpawnEntity(EntityType type, Vec2i cell, int facing = 0)
 	{
 		Entity entity = Object.Instantiate(World.Instance.EntityPrefab(type), World.Instance.transform).GetComponent<Entity>();
-		SpawnEntity(entity, cell, facing);
+		SpawnEntity(entity, cell.ToVector2(), facing);
 	}
 
 	public void SpawnPlayer()
 	{
-		SpawnPoint spawn = World.Instance.SpawnPoint;
-
-		if (spawn.room != room.Pos)
-			World.Instance.LoadRoom(spawn.room, false);
-
-		SpawnEntity(playerEntity, spawn.cell, spawn.facing);
+		MovePlayerTo(World.Instance.SpawnPoint);
 		player.OnSpawn();
 	}
 
