@@ -6,11 +6,13 @@ using System;
 
 public struct TileInstance : IEquatable<TileInstance>
 {
+	public Vec2i room;
 	public int x, y;
 	public Tile tile;
 
-	public TileInstance(Tile tile, int x, int y)
+	public TileInstance(Tile tile, Vec2i room, int x, int y)
 	{
+		this.room = room;
 		this.x = x;
 		this.y = y;
 		this.tile = tile;
@@ -18,7 +20,7 @@ public struct TileInstance : IEquatable<TileInstance>
 
 	public bool Equals(TileInstance other)
 	{
-		return x == other.x && y == other.y && tile == other.tile;
+		return room == other.room && x == other.x && y == other.y && tile == other.tile;
 	}
 
 	public override bool Equals(object obj)
@@ -34,6 +36,12 @@ public struct TileInstance : IEquatable<TileInstance>
 		int hash = 17;
 		hash = hash * 31 + x.GetHashCode();
 		hash = hash * 31 + y.GetHashCode();
+		hash = hash * 31 + room.GetHashCode();
 		return hash;
+	}
+
+	public override string ToString()
+	{
+		return "Room: " + room.ToString() + ", Tile: " + tile.ToString();
 	}
 }

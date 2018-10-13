@@ -16,15 +16,16 @@ public class GenDungeon : RoomGenerator
 
 	[Il2CppSetOptions(Option.NullChecks, false)]
 	[Il2CppSetOptions(Option.ArrayBoundsChecks, false)]
-	protected override void GenerateInternal(Room room, Vec2i roomP, TileInstance? from)
+	protected override void GenerateInternal(Room room, Vec2i roomP, TileInstance? from, out SpawnPoint spawn)
 	{
+		spawn = default(SpawnPoint);
 		room.Fill(Room.Back, TileType.DungeonFloor);
 
 		AddWalls();
 		AddSpikes();
 
 		if (from.HasValue)
-			AddDoor(room.HalfX, 0, 1, true);
+			spawn = World.Instance.SpawnFromTileInstance(AddDoor(room.HalfX, 0, 1, from));
 
 		List<Vec2i> possibleRooms = new List<Vec2i>(4)
 		{
@@ -41,8 +42,8 @@ public class GenDungeon : RoomGenerator
 		}
 
 		// No possible ways to generate, exit with a portal.
-		if (Random.value < 0.3f || possibleRooms.Count == 0)
-			AddDoor(room.HalfX, room.LimY - 1, 0, false);
+		if (Random.value < 1.3f || possibleRooms.Count == 0)
+			AddDoor(room.HalfX, room.LimY - 1, 0, null);
 		else
 		{
 			bool[] paths = new bool[possibleRooms.Count];
@@ -75,7 +76,7 @@ public class GenDungeon : RoomGenerator
 			}
 		}
 
-		void AddDoor(int doorX, int doorY, int variant, bool setSpawn)
+		TileInstance AddDoor(int doorX, int doorY, int variant, TileInstance? target)
 		{
 			for (int y = 0; y <= 1; y++)
 			{
@@ -83,11 +84,11 @@ public class GenDungeon : RoomGenerator
 				room.SetTile(doorX + 1, doorY + y, Room.Back, TileType.Barrier);
 			}
 
-			TileInstance door = new TileInstance(new Tile(TileType.DungeonDoor, variant), doorX, doorY);
+			TileInstance door = new TileInstance(new Tile(TileType.DungeonDoor, variant), roomP, doorX, doorY);
 			room.SetTile(doorX, doorY, Room.Back, door.tile);
-			World.Instance.AddTeleport(door, from);
+			World.Instance.AddTeleport(door, target);
 
-			if (setSpawn) World.Instance.SpawnFromTileInstance(door);
+			return door;
 		}
 
 		void AddWalls()

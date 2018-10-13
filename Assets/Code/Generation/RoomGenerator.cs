@@ -7,18 +7,16 @@ using System;
 
 public class RoomGenerator
 {
-	protected static bool firstRoom = true;
-
-	public void Generate(Room room, GameCamera cam, Vec2i roomP, TileInstance? from)
+	public void Generate(Room room, GameCamera cam, Vec2i roomP, TileInstance? from, out SpawnPoint spawn)
 	{
 		Init(room, roomP);
-		GenerateInternal(room, roomP, from);
+		GenerateInternal(room, roomP, from, out spawn);
 		room.OnGenerate();
 		SpawnEntities(room);
 		SetProperties(cam);
 	}
 
-	protected virtual void GenerateInternal(Room room, Vec2i roomP, TileInstance? from)
+	protected virtual void GenerateInternal(Room room, Vec2i roomP, TileInstance? from, out SpawnPoint spawn)
 		=> throw new NotImplementedException();
 
 	protected virtual void SpawnEntities(Room room) { }

@@ -7,9 +7,7 @@ using UnityEngine;
 public sealed class GenPlains : RoomGenerator
 {
 	protected override void Init(Room room, Vec2i roomP)
-	{
-		room.Init(roomP, 64, 36, RoomType.Plains);
-	}
+		=> room.Init(roomP, 64, 36, RoomType.Plains);
 
 	[Il2CppSetOptions(Option.NullChecks, false)]
 	private void SetFloor(Room room)
@@ -51,8 +49,10 @@ public sealed class GenPlains : RoomGenerator
 	}
 
 	[Il2CppSetOptions(Option.NullChecks, false)]
-	protected override void GenerateInternal(Room room, Vec2i roomP, TileInstance? from)
+	protected override void GenerateInternal(Room room, Vec2i roomP, TileInstance? from, out SpawnPoint spawn)
 	{
+		spawn = default(SpawnPoint);
+
 		SetFloor(room);
 		CreatePlateau(room, 0, 0, room.SizeX, room.SizeY);
 
@@ -62,7 +62,7 @@ public sealed class GenPlains : RoomGenerator
 		int midX = start.x + (end.x - start.x) / 2;
 
 		CreatePlateau(room, start.x, start.y, end.x, end.y);
-		AddDoor(midX, start.y, 0, false);
+		AddDoor(midX, start.y, 0, null);
 
 		start -= 1;
 		end += 1;
@@ -80,28 +80,22 @@ public sealed class GenPlains : RoomGenerator
 			room.Entities.SpawnEntity(EntityType.Wolf, new Vec2i(pX, pY));
 		}
 
-		// If this is the first room of the world, we pick an arbitrary spawn point.
-		// If initial is true, it's the first room of this generation type after
-		// switching from another generation type or when starting the world.
-		if (firstRoom)
-		{
-			World.Instance.SpawnPoint = new SpawnPoint(roomP, 4, 4, Vector2.zero, Direction.Front);
-			firstRoom = false;
-		}
-		else if (from.HasValue)
-			AddDoor(midX, end.y, 1, true);
+		if (from.HasValue)
+			spawn = World.Instance.SpawnFromTileInstance(AddDoor(midX, end.y - 4, 1, from));
 
-		void AddDoor(int doorX, int doorY, int variant, bool setSpawn)
+		TileInstance AddDoor(int doorX, int doorY, int variant, TileInstance? target)
 		{
-			TileInstance door = new TileInstance(new Tile(TileType.PlainsDoor, variant), doorX, doorY);
+			TileInstance door = new TileInstance(new Tile(TileType.PlainsDoor, variant), roomP, doorX, doorY);
 			room.SetTile(doorX, doorY, Room.Back, door.tile);
-			World.Instance.AddTeleport(door);
+			World.Instance.AddTeleport(door, target);
 
-			room.SetTile(midX - 1, start.y, Room.Back, TileType.Barrier);
-			room.SetTile(midX + 1, start.y, Room.Back, TileType.Barrier);
-			room.SetTile(midX, start.y + 1, Room.Back, TileType.Barrier);
+			room.SetTile(doorX - 1, doorY, Room.Back, TileType.Barrier);
+			room.SetTile(doorX + 1, doorY, Room.Back, TileType.Barrier);
 
-			if (setSpawn) World.Instance.SpawnFromTileInstance(door);
+			Vec2i endBarrier = new Vec2i(doorX, doorY) - new Vec2i(door.tile.Properties.facing);
+			room.SetTile(endBarrier, Room.Back, TileType.Barrier);
+
+			return door;
 		}
 	}
 

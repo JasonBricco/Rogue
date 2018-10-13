@@ -80,6 +80,9 @@ public sealed class Room
 		data.component?.OnSet(this, x, y);
 	}
 
+	public void SetTile(Vec2i p, int layer, Tile tile)
+		=> SetTile(p.x, p.y, layer, tile);
+
 	// Replaces every tile in the given layer with the given tile.
 	public void Fill(int layer, Tile tile)
 	{

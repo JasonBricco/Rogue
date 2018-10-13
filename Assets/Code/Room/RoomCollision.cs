@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using System.Collections.Generic;
 using System;
+using Random = UnityEngine.Random;
 
 public class RoomCollision
 {
@@ -91,7 +92,8 @@ public class RoomCollision
 
 					if (data.hasCollider)
 					{
-						TileCollider col = pool.GetCollider(tile, x, y, colliders);
+						TileCollider col = pool.GetCollider(tile, colliders);
+						col.inst = new TileInstance(tile, room.Pos, x, y);
 						Vector2 size = data.colliderSize;
 						Vector2 offset = data.colliderOffset;
 						col.SetInfo(new Vector3(size.x, size.y, room.SizeY), data.trigger, x, y, new Vector3(offset.x, offset.y, room.HalfY));
@@ -149,7 +151,7 @@ public class RoomCollision
 	private void ShiftRoom(Entity a, Vec2i dir)
 	{
 		World world = World.Instance;
-		world.LoadRoom(world.Room.Pos + dir, null);
+		world.LoadRoom(world.Room.Pos + dir, null, out _);
 		a.ShiftPosition(dir);
 	}
 
@@ -176,7 +178,10 @@ public class RoomCollision
 			case TileType.PlainsDoor:
 			{
 				if (entity.Type == EntityType.Player)
-					BeginNewSection(RoomType.Dungeon, -new Vec2i(tile.Properties.facing));
+				{
+					RoomType target = Random.value < 0.15f ? RoomType.DarkDungeon : RoomType.Dungeon;
+					BeginNewSection(target, -new Vec2i(tile.Properties.facing));
+				}
 			} break;
 
 			case TileType.DungeonDoor:

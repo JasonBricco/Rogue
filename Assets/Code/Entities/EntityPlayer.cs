@@ -27,11 +27,8 @@ public sealed class EntityPlayer : MonoBehaviour
 		entity.ListenForEvent(EntityEvent.HealthChanged, HealthChanged);
 	}
 
-	public void OnSpawn()
+	private void Start()
 	{
-		entity.velocity = Vector2.zero;
-		entityHealth.FullHeal();
-
 		EntityLight light = GetComponent<EntityLight>();
 		light.MakePersist();
 	}

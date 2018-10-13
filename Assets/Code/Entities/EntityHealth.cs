@@ -15,7 +15,7 @@ public sealed class EntityHealth : MonoBehaviour
 
 	private WaitForSeconds wait = new WaitForSeconds(0.1f);
 
-	private void Awake()
+	private void Start()
 	{
 		entity = GetComponent<Entity>();
 		image = GetComponent<EntityImage>();

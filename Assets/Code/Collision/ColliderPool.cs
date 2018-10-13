@@ -15,7 +15,7 @@ public sealed class ColliderPool
 
 	// Gets a new collider from the main collider pool and stores it in the given collider queue.
 	// This queue can later be used to return the colliders back to the main pool.
-	public TileCollider GetCollider(Tile tile, int x, int y, Queue<TileCollider> colliders)
+	public TileCollider GetCollider(Tile tile, Queue<TileCollider> colliders)
 	{
 		TileCollider col;
 
@@ -30,7 +30,6 @@ public sealed class ColliderPool
 			col.transform.SetParent(parent);
 		}
 
-		col.inst = new TileInstance(tile, x, y);
 		colliders.Enqueue(col);
 		return col;
 	}

@@ -62,31 +62,23 @@ public sealed class RoomEntities
 		if (requireClear)
 		{
 			if (--enemiesLeft <= 0)
-			{
 				World.Instance.UnlockBarriers();
-			}
 		}
 	}
 
 	public void MovePlayerTo(SpawnPoint p)
-		=> SpawnEntity(playerEntity, p.pos.ToVector2() + p.offset, p.facing);
-
-	private void SpawnEntity(Entity entity, Vector2 pos, int facing = 0)
 	{
-		entity.MoveTo(new Vector2(pos.x + 0.5f, pos.y + 0.5f));
-		entity.facing = facing;
+		Vector2 pos = p.pos.ToVector2() + p.offset + new Vector2(0.5f, 0.5f);
+		playerEntity.MoveTo(pos);
+		playerEntity.facing = p.facing;
 	}
 
 	public void SpawnEntity(EntityType type, Vec2i cell, int facing = 0)
 	{
 		Entity entity = Object.Instantiate(World.Instance.EntityPrefab(type), World.Instance.transform).GetComponent<Entity>();
-		SpawnEntity(entity, cell.ToVector2(), facing);
-	}
-
-	public void SpawnPlayer()
-	{
-		MovePlayerTo(World.Instance.SpawnPoint);
-		player.OnSpawn();
+		Vector2 pos = cell.ToVector2();
+		entity.MoveTo(new Vector2(pos.x + 0.5f, pos.y + 0.5f));
+		entity.facing = facing;
 	}
 
 	public void AddOTEffect(Entity entity, OTEffectType type)
@@ -99,14 +91,10 @@ public sealed class RoomEntities
 	}
 
 	public void RemoveOTEffect(Entity entity, OTEffectType type)
-	{
-		effects.Remove(entity, type);
-	}
+		=> effects.Remove(entity, type);
 
 	public void RemoveOTEffects(Entity entity)
-	{
-		effects.RemoveAll(entity);
-	}
+		=> effects.RemoveAll(entity);
 
 	public void FireProjectile(Entity owner, Vector2 start, int facing, EntityType type)
 	{
@@ -127,7 +115,7 @@ public sealed class RoomEntities
 		room.Collision.AddCollisionRule(proj, owner);
 
 		start.y += 0.3f;
-		SpawnEntity(proj, start, facing);
+		proj.MoveTo(start);
 	}
 
 	public void ReturnProjectile(Entity projectile)
@@ -144,9 +132,7 @@ public sealed class RoomEntities
 	}
 
 	private void GetDisposable()
-	{
-		disposable = GameObject.FindGameObjectsWithTag("Disposable");
-	}
+		=> disposable = GameObject.FindGameObjectsWithTag("Disposable");
 
 	public void Enable()
 	{

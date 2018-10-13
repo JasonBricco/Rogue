@@ -39,8 +39,6 @@ public sealed class World : MonoBehaviour
 	// The active generator.
 	private RoomGenerator generator;
 
-	public SpawnPoint SpawnPoint { get; set; }
-
 	private GameCamera cam;
 
 	private Dictionary<Vec2i, Room> loadedRooms = new Dictionary<Vec2i, Room>();
@@ -68,10 +66,10 @@ public sealed class World : MonoBehaviour
 	{
 		ChangeRoomType(RoomType.Plains);
 		NewRoom(Vec2i.Zero);
-		generator.Generate(Room, cam, Room.Pos, null);
+		generator.Generate(Room, cam, Room.Pos, null, out _);
 		AdjustBarriers();
 		cam.UpdateValues();
-		Room.Entities.SpawnPlayer();
+		Room.Entities.MovePlayerTo(new SpawnPoint(Vec2i.Zero, 4, 4, Vector2.zero, Direction.Front));
 		cam.MoveToPlayer();
 	}
 
@@ -135,18 +133,17 @@ public sealed class World : MonoBehaviour
 			teleports[target.Value] = inst;
 	}
 
-	public void SpawnFromTileInstance(TileInstance inst)
+	public SpawnPoint SpawnFromTileInstance(TileInstance inst)
 	{
 		TileProperties props = inst.tile.Properties;
 		Vec2i facing = new Vec2i(props.facing);
 		Vec2i spawnP = new Vec2i(inst.x, inst.y) + facing;
-		SpawnPoint = new SpawnPoint(Room.Pos, spawnP.x, spawnP.y, props.spawnOffset, GetNumericDir(facing));
+		return new SpawnPoint(Room.Pos, spawnP.x, spawnP.y, props.spawnOffset, GetNumericDir(facing));
 	}
 
-	public void LoadRoom(Vec2i pos, TileInstance? from)
+	public void LoadRoom(Vec2i pos, TileInstance? from, out SpawnPoint spawn)
 	{
 		Assert.IsTrue(pos != Room.Pos);
-
 		Room.Disable();
 
 		Room newRoom;
@@ -155,12 +152,14 @@ public sealed class World : MonoBehaviour
 			Room = newRoom;
 			newRoom.Enable();
 			ChangeRoomType(Room.Type);
-			SpawnFromTileInstance(teleports[from.Value].Value);
+
+			if (from.HasValue) spawn = SpawnFromTileInstance(teleports[from.Value].Value);
+			else spawn = default(SpawnPoint);
 		}
 		else
 		{
 			NewRoom(pos);
-			generator.Generate(Room, cam, pos, from);
+			generator.Generate(Room, cam, pos, from, out spawn);
 		}
 
 		AdjustBarriers();
@@ -175,9 +174,9 @@ public sealed class World : MonoBehaviour
 		Assert.IsTrue(dir != Vec2i.Zero);
 		EventManager.Instance.TriggerEvent(GameEvent.AreaChanging, type);
 		ChangeRoomType(type);
-		LoadRoom(Room.Pos + dir, from);
+		LoadRoom(Room.Pos + dir, from, out SpawnPoint spawn);
 		generator.SetProperties(cam);
-		Room.Entities.MovePlayerTo(SpawnPoint);
+		Room.Entities.MovePlayerTo(spawn);
 	}
 
 	private IEnumerator TriggerRoomChanged(Vec2i pos)

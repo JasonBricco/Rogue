@@ -24,47 +24,16 @@ public struct Tile : IEquatable<Tile>
 	// Returns the tile data for this tile. This contains all information about
 	// this particular tile.
 	public TileProperties Properties
-	{
-		get { return TileManager.Instance.GetProperties(this); }
-	}
+		=> TileManager.Instance.GetProperties(this);
 
-	public static implicit operator Tile(TileType id)
-	{
-		return new Tile(id);
-	}
+	public static implicit operator Tile(TileType id) => new Tile(id);
+	public static bool operator ==(Tile a, TileType b) => a.id == b;
+	public static bool operator ==(Tile a, Tile b) => a.id == b.id;
+	public static bool operator !=(Tile a, Tile b) => a.id != b.id;
+	public static bool operator !=(Tile a, TileType b) => a.id != b;
 
-	public static bool operator ==(Tile a, TileType b)
-	{
-		return a.id == b;
-	}
-
-	public static bool operator ==(Tile a, Tile b)
-	{
-		return a.id == b.id;
-	}
-
-	public static bool operator !=(Tile a, Tile b)
-	{
-		return a.id != b.id;
-	}
-
-	public static bool operator !=(Tile a, TileType b)
-	{
-		return a.id != b;
-	}
-
-	public bool Equals(Tile other)
-	{
-		return id == other.id;
-	}
-
-	public override bool Equals(object obj)
-	{
-		return Equals((Tile)obj);
-	}
-
-	public override int GetHashCode()
-	{
-		return id.GetHashCode();
-	}
+	public bool Equals(Tile other) => id == other.id;
+	public override bool Equals(object obj) => Equals((Tile)obj);
+	public override int GetHashCode() => id.GetHashCode();
+	public override string ToString() => id.ToString();
 }
