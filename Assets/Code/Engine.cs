@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 public sealed class Engine : MonoBehaviour
 {
 	public static bool Paused { get; set; }
+	public static bool SignalQuit { get; set; }
 
 	private void Awake()
 	{
@@ -24,6 +25,9 @@ public sealed class Engine : MonoBehaviour
 
 		if (Input.GetKeyDown(KeyCode.End))
 			SceneManager.LoadScene("Game");
+
+		if (SignalQuit)
+			Application.Quit();
 	}
 
 	private void OnDestroy()

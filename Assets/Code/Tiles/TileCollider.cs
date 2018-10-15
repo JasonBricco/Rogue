@@ -26,6 +26,5 @@ public sealed class TileCollider : MonoBehaviour, IPoolable
 	public void SetTileInstance(TileInstance inst)
 		=> this.inst = inst;
 
-	public void ResetObject()
-		=> scoreModifier = 0;
+	public void ResetObject() { }
 }
