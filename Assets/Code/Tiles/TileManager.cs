@@ -4,10 +4,13 @@
 
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public sealed class TileManager : MonoBehaviour
 {
 	[SerializeField] private TileDataList dataList;
+
+	private TileBehavior[] behaviors = new TileBehavior[(int)TileType.Count];
 
 	public static TileManager Instance { get; private set; }
 
@@ -15,12 +18,28 @@ public sealed class TileManager : MonoBehaviour
 	{
 		Instance = this;
 		InitTiles();
+
+		// Fill the behaviors array. If a behavior class has been created it will be loaded
+		// into its appropriate spot in the array. If not, it will remain null.
+		string[] names = Enum.GetNames(typeof(TileType));
+
+		for (int i = 0; i < names.Length - 1; i++)
+		{
+			Type t = Type.GetType(names[i] + "Behavior");
+
+			if (t != null)
+			{
+				object obj = Activator.CreateInstance(t);
+				behaviors[i] = (TileBehavior)obj;
+			}
+		}
 	}
 
 	public TileProperties GetProperties(Tile tile)
-	{
-		return dataList.GetProperties(tile);
-	}
+		=> dataList.GetProperties(tile);
+
+	public TileBehavior GetBehavior(TileType id)
+		=> behaviors[(int)id];
 
 	// Takes information provided in the inspector and stored in the tile group array and assigns the
 	// appropriate tile data into the TileData arrays. This allows the code to access tile information.

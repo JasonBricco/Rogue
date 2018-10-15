@@ -87,14 +87,9 @@ public sealed class GenPlains : RoomGenerator
 		{
 			TileInstance door = new TileInstance(new Tile(TileType.PlainsDoor, variant), roomP, doorX, doorY);
 			room.SetTile(doorX, doorY, Room.Back, door.tile);
+			room.SetTile(doorX - 1, doorY, Room.Back, TileType.Air);
+			room.SetTile(doorX + 1, doorY, Room.Back, TileType.Air);
 			World.Instance.AddTeleport(door, target);
-
-			room.SetTile(doorX - 1, doorY, Room.Back, TileType.Barrier);
-			room.SetTile(doorX + 1, doorY, Room.Back, TileType.Barrier);
-
-			Vec2i endBarrier = new Vec2i(doorX, doorY) - new Vec2i(door.tile.Properties.facing);
-			room.SetTile(endBarrier, Room.Back, TileType.Barrier);
-
 			return door;
 		}
 	}

@@ -41,8 +41,10 @@ public class GenDungeon : RoomGenerator
 				possibleRooms.RemoveAt(i);
 		}
 
+		Assert.IsTrue(possibleRooms.Count > 0);
+
 		// No possible ways to generate, exit with a portal.
-		if (Random.value < 1.3f || possibleRooms.Count == 0)
+		if (Random.value < 0.1f && possibleRooms.Contains(roomP + Vec2i.Directions[Direction.Front]))
 			AddDoor(room.HalfX, room.LimY - 1, 0, null);
 		else
 		{
@@ -78,16 +80,11 @@ public class GenDungeon : RoomGenerator
 
 		TileInstance AddDoor(int doorX, int doorY, int variant, TileInstance? target)
 		{
-			for (int y = 0; y <= 1; y++)
-			{
-				room.SetTile(doorX - 1, doorY + y, Room.Back, TileType.Barrier);
-				room.SetTile(doorX + 1, doorY + y, Room.Back, TileType.Barrier);
-			}
-
 			TileInstance door = new TileInstance(new Tile(TileType.DungeonDoor, variant), roomP, doorX, doorY);
 			room.SetTile(doorX, doorY, Room.Back, door.tile);
+			room.SetTile(doorX - 1, doorY, Room.Back, TileType.Air);
+			room.SetTile(doorX + 1, doorY, Room.Back, TileType.Air);
 			World.Instance.AddTeleport(door, target);
-
 			return door;
 		}
 
@@ -162,7 +159,6 @@ public class GenDungeon : RoomGenerator
 
 	protected override void SpawnEntities(Room room)
 	{
-		/*
 		int enemyCount = Random.Range(3, 7);
 		int spawned = 0, tries = 0, maxTries = 10;
 
@@ -189,7 +185,7 @@ public class GenDungeon : RoomGenerator
 			familiarSpawned = true;
 		}
 
-		room.Entities.SetRequireClear(spawned);*/
+		room.Entities.LockRoom(spawned);
 	}
 
 	public override void SetProperties(GameCamera cam)

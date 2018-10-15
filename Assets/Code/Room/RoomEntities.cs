@@ -3,15 +3,11 @@
 //
 
 using UnityEngine;
-using UnityEngine.Assertions;
-using System.Collections.Generic;
 
 public sealed class RoomEntities
 {
 	// Stores all active over-time effects within the world.
 	private OTEffects effects = new OTEffects();
-
-	private static Queue<Entity>[] projectiles;
 
 	// Stores disposable objects that are disabled when the room shifts. 
 	// This allows us to enable them again when the room is loaded again,
@@ -32,29 +28,14 @@ public sealed class RoomEntities
 
 		playerEntity = GameObject.FindWithTag("Player").GetComponent<Entity>();
 		player = playerEntity.GetComponent<EntityPlayer>();
-
-		if (projectiles == null)
-		{
-			int projectileCount = 0;
-
-			for (int i = 0; i < World.Instance.EntityPrefabCount(); i++)
-			{
-				if (World.Instance.EntityPrefab(i).GetComponent<EntityProjectile>() != null)
-					projectileCount++;
-			}
-
-			projectiles = new Queue<Entity>[projectileCount];
-
-			for (int i = 0; i < projectileCount; i++)
-				projectiles[i] = new Queue<Entity>();
-		}
 	}
 
-	public void SetRequireClear(int enemies)
+	public void LockRoom(int enemies)
 	{
 		requireClear = true;
 		enemiesLeft = enemies;
 		World.Instance.LockBarriers();
+		room.TriggerEvent(TileEvent.RoomLocked);
 	}
 
 	public void LockerKilled()
@@ -62,7 +43,10 @@ public sealed class RoomEntities
 		if (requireClear)
 		{
 			if (--enemiesLeft <= 0)
+			{
 				World.Instance.UnlockBarriers();
+				room.TriggerEvent(TileEvent.RoomUnlocked);
+			}
 		}
 	}
 
@@ -75,7 +59,7 @@ public sealed class RoomEntities
 
 	public void SpawnEntity(EntityType type, Vec2i cell, int facing = 0)
 	{
-		Entity entity = Object.Instantiate(World.Instance.EntityPrefab(type), World.Instance.transform).GetComponent<Entity>();
+		Entity entity = ObjectPool.Get(World.Instance.EntityPrefab(type), World.Instance.transform).GetComponent<Entity>();
 		Vector2 pos = cell.ToVector2();
 		entity.MoveTo(new Vector2(pos.x + 0.5f, pos.y + 0.5f));
 		entity.facing = facing;
@@ -91,23 +75,14 @@ public sealed class RoomEntities
 	}
 
 	public void RemoveOTEffect(Entity entity, OTEffectType type)
-		=> effects.Remove(entity, type);
+		=> effects.FlagForRemoval(entity, type);
 
 	public void RemoveOTEffects(Entity entity)
 		=> effects.RemoveAll(entity);
 
 	public void FireProjectile(Entity owner, Vector2 start, int facing, EntityType type)
 	{
-		Queue<Entity> queue = projectiles[(int)type % projectiles.Length];
-
-		Entity proj;
-
-		if (queue.Count > 0)
-		{
-			proj = queue.Dequeue();
-			proj.gameObject.SetActive(true);
-		}
-		else proj = Object.Instantiate(World.Instance.EntityPrefab(type).GetComponent<Entity>());
+		Entity proj = ObjectPool.Get(World.Instance.EntityPrefab(type)).GetComponent<Entity>();
 
 		proj.facing = facing;
 		proj.transform.rotation = Quaternion.Euler(Vector3.forward * Direction.Rotations[facing]);
@@ -119,11 +94,7 @@ public sealed class RoomEntities
 	}
 
 	public void ReturnProjectile(Entity projectile)
-	{
-		Queue<Entity> queue = projectiles[(int)projectile.Type % projectiles.Length];
-		projectile.gameObject.SetActive(false);
-		queue.Enqueue(projectile);
-	}
+		=> ObjectPool.Return(projectile.gameObject);
 
 	public void Update()
 	{
@@ -164,6 +135,6 @@ public sealed class RoomEntities
 		GetDisposable();
 
 		for (int i = 0; i < disposable.Length; i++)
-			Object.Destroy(disposable[i]);
+			ObjectPool.Return(disposable[i]);
 	}
 }

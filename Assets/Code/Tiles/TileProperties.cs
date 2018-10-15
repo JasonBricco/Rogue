@@ -9,13 +9,13 @@ using System;
 public sealed class TileProperties
 {
 	// Filled in by the tile data editor.
-	public bool invisible, hasCollider, trigger;
-	public Vector2 colliderSize, colliderOffset;
+	public bool invisible, hasCollider, trigger, hasLight;
 	public Vector3 renderOffset;
 	public Material baseMaterial;
 	public Sprite sprite;
 	public Color32 color;
-	public TileComponent component;
+	public GameObject light;
+	public TileCollider collider;
 
 	// Teleportation tile properties.
 	public bool teleporter;

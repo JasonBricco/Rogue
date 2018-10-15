@@ -3,13 +3,20 @@
 
 using UnityEngine;
 using UnityEditor;
-using System.IO;
 
 public static class MenuTools
 {
 	[MenuItem("Tools/Open Save Folder")]
 	private static void OpenSaveFolder()
+		=> EditorUtility.RevealInFinder(Application.persistentDataPath);
+
+	[MenuItem("GameObject/Create Other/Tile Collider")]
+	private static void CreateTileCollider()
 	{
-		EditorUtility.RevealInFinder(Application.persistentDataPath);
+		GameObject obj = new GameObject("Tile Collider");
+		obj.AddComponent<TileCollider>();
+		BoxCollider col = obj.AddComponent<BoxCollider>();
+		col.size = new Vector3(1.0f, 1.0f, 64.0f);
+		obj.layer = LayerMask.NameToLayer("Terrain");
 	}
 }

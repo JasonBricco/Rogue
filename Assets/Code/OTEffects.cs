@@ -24,10 +24,19 @@ public sealed class OTEffects
 	public void RemoveAll(Entity key)
 		=> effects.Remove(key);
 
-	public void Remove(Entity key, OTEffectType effect)
+	public void FlagForRemoval(Entity key, OTEffectType effect)
 	{
 		if (effects.TryGetValue(key, out List<OTEffect> list))
-			list.Remove(effect);
+		{
+			int index = list.IndexOf(effect);
+
+			if (index != -1)
+			{
+				OTEffect e = list[index];
+				e.remove = true;
+				list[index] = e;
+			}
+		}
 	}
 
 	public bool Exists(Entity key, OTEffectType type)
@@ -72,9 +81,14 @@ public sealed class OTEffects
 
 				if (effect.timer <= 0.0f)
 				{
-					if (!ApplyEffect(entity, effect.type, ref effect.timer))
+					if (effect.remove)
 						effects.RemoveAt(i);
-					else effects[i] = effect;
+					else
+					{
+						if (!ApplyEffect(entity, effect.type, ref effect.timer))
+							effects.RemoveAt(i);
+						else effects[i] = effect;
+					}
 				}
 				else effects[i] = effect;
 			}

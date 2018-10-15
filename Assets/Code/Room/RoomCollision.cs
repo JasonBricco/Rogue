@@ -13,9 +13,7 @@ public class RoomCollision
 	private Room room;
 	private bool hasColliders;
 
-	// Stores box colliders being used by this room. We store them here so that we can return 
-	// them when the room doesn't need them anymore.
-	private Queue<TileCollider> colliders = new Queue<TileCollider>(16);
+	private Queue<GameObject> activeColliders = new Queue<GameObject>();
 
 	// Stores collisions that have occurred within the level between two entities. 
 	// Not all collisions are stored here; this structure is used when an entity
@@ -31,12 +29,16 @@ public class RoomCollision
 	private static CollisionMatrix collisionMatrix;
 	private static CollisionMatrix exitMatrix;
 
+	private Transform colliderParent;
+
 	public RoomCollision(Room room)
 	{
 		this.room = room;
 
 		if (collisionMatrix == null)
 			BuildCollisionMatrices();
+
+		colliderParent = World.Instance.transform;
 	}
 
 	public void Update()
@@ -59,7 +61,7 @@ public class RoomCollision
 		collisionMatrix.Add(lPlayer, lTerrainTrigger, tcr: OnTriggerTile, bcr: ShiftRoom);
 		collisionMatrix.Add(lEnemy, lTerrainTrigger, tcr: OnTriggerTile, bcr: BarrierKnockback);
 
-		collisionMatrix.Add(lProjectile, lTerrain, tcr: KillOnCollide);
+		collisionMatrix.Add(lProjectile, lTerrain, tcr: KillOnCollide, dcr: KillOnDefault);
 		collisionMatrix.Add(lProjectile, lPlayer, ecr: OnTriggerEntity);
 		collisionMatrix.Add(lProjectile, lEnemy, ecr: OnTriggerEntity);
 		collisionMatrix.Add(lProjectile, lTerrainTrigger, bcr: KillOnBarrier);
@@ -78,8 +80,8 @@ public class RoomCollision
 	[Il2CppSetOptions(Option.NullChecks, false)]
 	public void Generate()
 	{
-		Assert.IsFalse(hasColliders);
-		ColliderPool pool = World.Instance.ColliderPool;
+		if (hasColliders)
+			RemoveColliders();
 
 		for (int z = 0; z < Room.Layers; z++)
 		{
@@ -92,18 +94,28 @@ public class RoomCollision
 
 					if (data.hasCollider)
 					{
-						TileCollider col = pool.GetCollider(tile, colliders);
+						TileCollider col = ObjectPool.Get(data.collider.gameObject, colliderParent).GetComponent<TileCollider>();
 						col.inst = new TileInstance(tile, room.Pos, x, y);
-						Vector2 size = data.colliderSize;
-						Vector2 offset = data.colliderOffset;
-						col.SetInfo(new Vector3(size.x, size.y, room.SizeY), data.trigger, x, y, new Vector3(offset.x, offset.y, room.HalfY));
-						data.component?.OnCollider(col);
+						col.SetPosition(x, y);
+						activeColliders.Enqueue(col.gameObject);
 					}
 				}
 			}
 		}
 
 		hasColliders = true;
+	}
+
+	// Removes all colliders for this room.
+	public void RemoveColliders()
+	{
+		if (hasColliders)
+		{
+			while (activeColliders.Count > 0)
+				ObjectPool.Return(activeColliders.Dequeue());
+
+			hasColliders = false;
+		}
 	}
 
 	private Vector2 GetKnockbackDir(Entity pusher, Entity other, KnockbackType type)
@@ -277,6 +289,7 @@ public class RoomCollision
 
 	public void KillOnBarrier(Entity a, Vec2i dir) => a.SetFlag(EntityFlags.Dead);
 	public void KillOnCollide(Entity a, TileInstance inst) => a.SetFlag(EntityFlags.Dead);
+	public void KillOnDefault(Entity a) => a.SetFlag(EntityFlags.Dead);
 
 	public void HandleCollision(Entity a, int layerA, Entity b, int layerB)
 		=> collisionMatrix.GetEntityResponse(layerA, layerB)?.Invoke(a, b);
@@ -286,6 +299,9 @@ public class RoomCollision
 
 	public void HandleBarrier(Entity a, int layerA, int barrierLayer, Vec2i dir)
 		=> collisionMatrix.GetBarrierResponse(layerA, barrierLayer)?.Invoke(a, dir);
+
+	public void HandleDefault(Entity a, int layerA, int layerB)
+		=> collisionMatrix.GetDefaultResponse(layerA, layerB)?.Invoke(a);
 
 	public void HandleCollisionExit(Entity a, int layerA, Entity b, int layerB)
 		=> exitMatrix.GetEntityResponse(layerA, layerB)?.Invoke(a, b);
@@ -330,15 +346,5 @@ public class RoomCollision
 		RemoveColliders();
 		entityCollisions.Clear();
 		tileCollisions.Clear();
-	}
-
-	// Removes all colliders for this room.
-	public void RemoveColliders()
-	{
-		if (hasColliders)
-		{
-			World.Instance.ColliderPool.ReturnColliders(colliders);
-			hasColliders = false;
-		}
 	}
 }

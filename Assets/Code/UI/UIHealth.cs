@@ -28,7 +28,7 @@ public sealed class UIHealth : MonoBehaviour
 			heart.SetActive(true);
 			return heart;
 		}
-		else return Instantiate(heartPrefab);
+		else return ObjectPool.Get(heartPrefab);
 	}
 
 	private void ReturnHearts()

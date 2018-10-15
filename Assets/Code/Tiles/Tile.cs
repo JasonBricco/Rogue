@@ -26,6 +26,9 @@ public struct Tile : IEquatable<Tile>
 	public TileProperties Properties
 		=> TileManager.Instance.GetProperties(this);
 
+	public TileBehavior Behavior
+		=> TileManager.Instance.GetBehavior(id);
+
 	public static implicit operator Tile(TileType id) => new Tile(id);
 	public static bool operator ==(Tile a, TileType b) => a.id == b;
 	public static bool operator ==(Tile a, Tile b) => a.id == b.id;

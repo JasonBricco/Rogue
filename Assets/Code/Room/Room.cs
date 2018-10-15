@@ -3,6 +3,7 @@
 //
 
 using UnityEngine.Assertions;
+using System.Collections.Generic;
 
 public sealed class Room
 {
@@ -21,6 +22,8 @@ public sealed class Room
 	public Vec2i Pos { get; private set; }
 
 	private Tile[] tiles;
+
+	private List<TileInstance> onTileEvent = new List<TileInstance>();
 
 	public RoomCollision Collision { get; private set; }
 	public RoomRenderer Renderer { get; private set; }
@@ -55,6 +58,9 @@ public sealed class Room
 		tiles = new Tile[sizeX * sizeY * Layers];
 	}
 
+	public void ListenForEvent(int x, int y, Tile tile)
+		=> onTileEvent.Add(new TileInstance(tile, Pos, x, y));
+
 	// Returns a tile at the given location from this room. Fails if the location is out of bounds of the room.
 	// Coordinates are specified in local room space between 0 and room size - 1.
 	[Il2CppSetOptions(Option.ArrayBoundsChecks, false)]
@@ -75,13 +81,14 @@ public sealed class Room
 	{
 		Assert.IsTrue(InBounds(x, y));
 		tiles[x + SizeX * (y + SizeY * layer)] = tile;
-
-		TileProperties data = tile.Properties;
-		data.component?.OnSet(this, x, y);
+		tile.Behavior?.OnSet(this, x, y, tile);
 	}
 
 	public void SetTile(Vec2i p, int layer, Tile tile)
 		=> SetTile(p.x, p.y, layer, tile);
+
+	public void SetVariant(int x, int y, int layer, int variant)
+		=> tiles[x + SizeX * (y + SizeY * layer)].variant = (ushort)variant;
 
 	// Replaces every tile in the given layer with the given tile.
 	public void Fill(int layer, Tile tile)
@@ -127,6 +134,15 @@ public sealed class Room
 		Entities.Destroy();
 		Renderer.Destroy();
 		Collision.RemoveColliders();
+	}
+
+	public void TriggerEvent(TileEvent e)
+	{
+		for (int i = 0; i < onTileEvent.Count; i++)
+		{
+			TileInstance inst = onTileEvent[i];
+			inst.tile.Behavior?.OnEvent(this, inst.x, inst.y, e);
+		}
 	}
 
 	// Returns true if the given coordinates are within the boundaries of this room.

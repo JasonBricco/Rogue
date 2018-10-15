@@ -14,9 +14,10 @@ public sealed class RoomRenderer
 	private bool built;
 
 	public RoomRenderer(Room room)
-	{
-		this.room = room;
-	}
+		=> this.room = room;
+
+	public void FlagForRebuild()
+		=> built = false;
 
 	public void Update()
 	{
@@ -55,6 +56,8 @@ public sealed class RoomRenderer
 	// One mesh will be built for each mesh index used by tiles in the room.
 	public void BuildMeshes()
 	{
+		Destroy();
+
 		BuildLayer(Room.Back, 2.0f);
 		BuildLayer(Room.Main, 0.0f);
 		BuildLayer(Room.Front, -2.0f);
@@ -77,7 +80,12 @@ public sealed class RoomRenderer
 
 	public void Destroy()
 	{
-		foreach (SpriteMesh mesh in meshes.Values)
-			mesh.Destroy();
+		if (meshes.Count > 0)
+		{
+			foreach (SpriteMesh mesh in meshes.Values)
+				mesh.Destroy();
+
+			meshes.Clear();
+		}
 	}
 }

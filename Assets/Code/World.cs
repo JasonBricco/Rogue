@@ -23,8 +23,6 @@ public sealed class World : MonoBehaviour
 	private const int MaxRecent = 10;
 	private Queue<Vec2i> recentRooms = new Queue<Vec2i>(MaxRecent);
 
-	public ColliderPool ColliderPool { get; private set; }
-
 	// Barriers that surround a room. They trap enemies within the room and 
 	// allow the player to load new rooms.
 	[SerializeField] private RoomBarrier[] barriers;
@@ -57,7 +55,6 @@ public sealed class World : MonoBehaviour
 	private void Awake()
 	{
 		Instance = this;
-		ColliderPool = new ColliderPool(transform);
 		cam = Camera.main.GetComponent<GameCamera>();
 		Array.Sort(entityPrefabs);
 	}
@@ -75,8 +72,8 @@ public sealed class World : MonoBehaviour
 
 	public int EntityPrefabCount() => entityPrefabs.Length;
 
-	public Entity EntityPrefab(EntityType type) => entityPrefabs[(int)type];
-	public Entity EntityPrefab(int i) => entityPrefabs[i];
+	public GameObject EntityPrefab(EntityType type) => entityPrefabs[(int)type].gameObject;
+	public GameObject EntityPrefab(int i) => entityPrefabs[i].gameObject;
 
 	public bool RoomExists(Vec2i pos) => loadedRooms.ContainsKey(pos);
 

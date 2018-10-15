@@ -17,7 +17,7 @@ public sealed class EntityLight : MonoBehaviour
 	{
 		entity = GetComponent<Entity>();
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
-		tLight = Instantiate(lightPrefab).GetComponent<Transform>();
+		tLight = ObjectPool.Get(lightPrefab).GetComponent<Transform>();
 		tLight.SetParent(entity.transform);
 		UpdateSize();
 	}

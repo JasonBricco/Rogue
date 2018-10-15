@@ -175,16 +175,14 @@ public class TileEditor : EditorWindow
 				{
 					EditorGUI.LabelField(new Rect(x + 190.0f, y, 60.0f, 20.0f), "Trigger");
 					props.trigger = EditorGUI.Toggle(new Rect(x + 240.0f, y, 15.0f, 25.0f), props.trigger);
-
-					y += 25.0f;
-					props.colliderSize = EditorGUI.Vector2Field(new Rect(x, y, 120.0f, 20.0f), "Collider Size", props.colliderSize);
-					props.colliderOffset = EditorGUI.Vector2Field(new Rect(x + 135.0f, y, 120.0f, 20.0f), "Collider Offset", props.colliderOffset);
-					y += 15.0f;
 				}
 
-				y += 25.0f;
+				y += 20.0f;
 				EditorGUI.LabelField(new Rect(x, y, 60.0f, 20.0f), "Teleport");
 				props.teleporter = EditorGUI.Toggle(new Rect(x + 55.0f, y, 15.0f, 25.0f), props.teleporter);
+
+				EditorGUI.LabelField(new Rect(x + 85.0f, y, 60.0f, 20.0f), "Has Light");
+				props.hasLight = EditorGUI.Toggle(new Rect(x + 160.0f, y, 15.0f, 25.0f), props.hasLight);
 
 				if (props.teleporter)
 				{
@@ -205,15 +203,7 @@ public class TileEditor : EditorWindow
 					props.sprite = (Sprite)EditorGUI.ObjectField(new Rect(x, y, 150.0f, 15.0f), props.sprite, typeof(Sprite), false);
 
 					if (EditorGUI.EndChangeCheck())
-					{
-						if (props.hasCollider)
-						{
-							props.colliderSize.x = props.sprite.rect.width / props.sprite.pixelsPerUnit;
-							props.colliderSize.y = props.sprite.rect.height / props.sprite.pixelsPerUnit;
-						}
-
 						props.baseMaterial = defaultMat;
-					}
 
 					props.color = EditorGUI.ColorField(new Rect(x + 165.0f, y, 150.0f, 15.0f), props.color);
 					y += 20.0f;
@@ -221,8 +211,14 @@ public class TileEditor : EditorWindow
 					props.baseMaterial = (Material)EditorGUI.ObjectField(new Rect(x, y, 150.0f, 15.0f), props.baseMaterial, typeof(Material), false);
 				}
 
-				y += 25.0f;
-				props.component = (TileComponent)EditorGUI.ObjectField(new Rect(x, y, 160.0f, 15.0f), props.component, typeof(TileComponent), false);
+				if (props.hasLight)
+				{
+					y += 25.0f;
+					props.light = (GameObject)EditorGUI.ObjectField(new Rect(x, y, 160.0f, 15.0f), props.light, typeof(GameObject), false);
+				}
+
+				y += 20.0f;
+				props.collider = (TileCollider)EditorGUI.ObjectField(new Rect(x, y, 160.0f, 15.0f), props.collider, typeof(TileCollider), false);
 
 				if (v % 2 == 0)
 				{
@@ -241,6 +237,8 @@ public class TileEditor : EditorWindow
 				}
 			}
 		}
+
+		y += 15.0f;
 
 		GUILayout.Space(y - 15.0f);
 		EditorGUILayout.EndScrollView();

@@ -118,6 +118,6 @@ public sealed class EntityMeleeAI : MonoBehaviour
 
 	private void Kill()
 	{
-		if (entity != null) Destroy(entity.gameObject);
+		if (entity != null) ObjectPool.Return(entity.gameObject);
 	}
 }

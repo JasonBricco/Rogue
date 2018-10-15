@@ -35,9 +35,7 @@ public class TileDataList : ScriptableObject
 	}
 	
 	public TileProperties GetProperties(Tile tile)
-	{
-		return data[(int)tile.id].GetProperties(tile.variant);
-	}
+		=> data[(int)tile.id].GetProperties(tile.variant);
 
 	public bool Refresh()
 	{
@@ -55,9 +53,11 @@ public class TileDataList : ScriptableObject
 
 			for (int i = 0; i < names.Length; i++)
 			{
-				TileData td;
-				if (map.TryGetValue(names[i], out td))
+				if (map.TryGetValue(names[i], out TileData td))
+				{
+					td.type = values[i];
 					newData.Add(td);
+				}
 				else
 				{
 					td = new TileData();
@@ -78,8 +78,5 @@ public class TileDataList : ScriptableObject
 		}
 	}
 
-	public TileData this[int i]
-	{
-		get { return data[i]; }
-	}
+	public TileData this[int i] => data[i];
 }

@@ -4,16 +4,13 @@
 
 using UnityEngine;
 
-public class EntityProjectile : MonoBehaviour
+public class EntityProjectile : MonoBehaviour, IPoolable
 {
 	[SerializeField] private bool piercing;
 	[SerializeField] private bool hasMaxDistance;
 	[SerializeField] private float maxDistance;
 
-	public bool Piercing
-	{
-		get { return piercing; }
-	}
+	public bool Piercing => piercing;
 
 	private Entity entity;
 	private float distRemaining;
@@ -42,4 +39,12 @@ public class EntityProjectile : MonoBehaviour
 		distRemaining = maxDistance;
 		World.Instance.Room.Entities.ReturnProjectile(entity);
 	}
+
+	public void Enable()
+		=> gameObject.SetActive(true);
+
+	public void Disable()
+		=> gameObject.SetActive(false);
+
+	public void ResetObject() { }
 }

@@ -25,4 +25,7 @@ public sealed class Engine : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.End))
 			SceneManager.LoadScene("Game");
 	}
+
+	private void OnDestroy()
+		=> ObjectPool.Clear();
 }
