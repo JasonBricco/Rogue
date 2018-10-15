@@ -13,13 +13,13 @@ public sealed class EntityMeleeAI : MonoBehaviour
 
 	private Entity entity;
 	private EntityTimer timer;
+
 	private Stack<Vector2> path = new Stack<Vector2>();
 
 	private bool followingPath, pathDrawn;
 	private Vector2? nextCell;
 
 	private static Entity player;
-	private Vector2 lastPlayerPos;
 
 	private void Start()
 	{
@@ -31,6 +31,7 @@ public sealed class EntityMeleeAI : MonoBehaviour
 
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
 		entity.ListenForEvent(EntityEvent.Kill, Kill);
+		entity.ListenForEvent(EntityEvent.Reset, OnReset);
 
 		timer.SetValue(Random.Range(1.5f, 2.5f));
 	}
@@ -45,7 +46,6 @@ public sealed class EntityMeleeAI : MonoBehaviour
 	{
 		Room room = World.Instance.Room;
 		room.Pathfinding.FindPath(TilePos(entity.Pos), TilePos(player.Pos), path, PathFinished);
-		lastPlayerPos = player.Pos;
 		followingPath = true;
 	}
 
@@ -118,6 +118,14 @@ public sealed class EntityMeleeAI : MonoBehaviour
 
 	private void Kill()
 	{
-		if (entity != null) ObjectPool.Return(entity.gameObject);
+		if (entity != null)
+			ObjectPool.Return(entity.gameObject);
+	}
+
+	private void OnReset()
+	{
+		nextCell = null;
+		followingPath = false;
+		timer.SetValue(2.0f);
 	}
 }

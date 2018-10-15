@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-public class EntityProjectile : MonoBehaviour, IPoolable
+public class EntityProjectile : MonoBehaviour
 {
 	[SerializeField] private bool piercing;
 	[SerializeField] private bool hasMaxDistance;
@@ -39,12 +39,4 @@ public class EntityProjectile : MonoBehaviour, IPoolable
 		distRemaining = maxDistance;
 		World.Instance.Room.Entities.ReturnProjectile(entity);
 	}
-
-	public void Enable()
-		=> gameObject.SetActive(true);
-
-	public void Disable()
-		=> gameObject.SetActive(false);
-
-	public void ResetObject() { }
 }

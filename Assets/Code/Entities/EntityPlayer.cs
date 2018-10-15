@@ -38,8 +38,6 @@ public sealed class EntityPlayer : MonoBehaviour
 
 	private void UpdateComponent()
 	{
-		if (entity.HasFlag(EntityFlags.Dead)) return;
-
 		Room room = World.Instance.Room;
 
 		if (Input.GetKey(KeyCode.K))
@@ -72,7 +70,7 @@ public sealed class EntityPlayer : MonoBehaviour
 		{
 			if (Input.GetKey(KeyCode.LeftShift))
 				entity.speed = 200.0f;
-			else entity.ResetSpeed();
+			else entity.speed = entity.DefaultSpeed;
 
 			Vec2i facing = Vec2i.Directions[entity.facing];
 

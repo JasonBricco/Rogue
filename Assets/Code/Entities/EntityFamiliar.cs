@@ -18,7 +18,9 @@ public class EntityFamiliar : MonoBehaviour
 	{
 		entity = GetComponent<Entity>();
 		player = GameObject.FindWithTag("Player").GetComponent<Entity>();
+
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
+		entity.ListenForEvent(EntityEvent.Reset, OnReset);
 
 		if (boundToArea)
 			EventManager.Instance.ListenForEvent<RoomType>(GameEvent.AreaChanging, OnAreaChange);
@@ -70,4 +72,7 @@ public class EntityFamiliar : MonoBehaviour
 			}
 		}
 	}
+
+	private void OnReset()
+		=> followTarget = null;
 }

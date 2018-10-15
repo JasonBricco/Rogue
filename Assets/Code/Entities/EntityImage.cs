@@ -19,7 +19,9 @@ public sealed class EntityImage : MonoBehaviour
 		entity = GetComponent<Entity>();
 		rend = GetComponent<SpriteRenderer>();
 		rend.sprite = sprites[0];
+
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
+		entity.ListenForEvent(EntityEvent.Reset, OnReset);
 	}
 
 	public void TintRed(WaitForSeconds wait)
@@ -34,6 +36,10 @@ public sealed class EntityImage : MonoBehaviour
 
 	private void UpdateComponent()
 	{
-		if (directional) rend.sprite = sprites[entity.facing];
+		if (directional)
+			rend.sprite = sprites[entity.facing];
 	}
+
+	private void OnReset()
+		=> rend.color = Color.white;
 }

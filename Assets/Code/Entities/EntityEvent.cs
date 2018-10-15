@@ -7,5 +7,6 @@ public enum EntityEvent
 	Update,
 	Kill,
 	HealthChanged,
+	Reset,
 	Count
 }

@@ -680,7 +680,7 @@ MonoBehaviour:
       hasLight: 0
       renderOffset: {x: -1, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
-      sprite: {fileID: 21300000, guid: 4c571f5a4fb43cf41814d7b355037c49, type: 3}
+      sprite: {fileID: 21300000, guid: 9abe79add5df3384a99ba6ab5dafb5ec, type: 3}
       color:
         serializedVersion: 2
         rgba: 0
@@ -722,7 +722,7 @@ MonoBehaviour:
       hasLight: 0
       renderOffset: {x: -1, y: 0, z: 0}
       baseMaterial: {fileID: 2100000, guid: 0d434cfec9f42d74b9b15827ebf4fd4d, type: 2}
-      sprite: {fileID: 21300000, guid: cb4e1943e1890544b9bb6502aeb9ac1a, type: 3}
+      sprite: {fileID: 21300000, guid: 47ec823e0e34b6546bed11b4fd80a582, type: 3}
       color:
         serializedVersion: 2
         rgba: 0

@@ -19,7 +19,7 @@ public sealed class EntityHealth : MonoBehaviour
 	{
 		entity = GetComponent<Entity>();
 		image = GetComponent<EntityImage>();
-
+		entity.ListenForEvent(EntityEvent.Reset, OnReset);
 		FullHeal();
 	}
 
@@ -30,9 +30,7 @@ public sealed class EntityHealth : MonoBehaviour
 	}
 
 	public void FullHeal()
-	{
-		SetHealth(maxHealth);
-	}
+		=> SetHealth(maxHealth);
 
 	public void ApplyDamage(int damage)
 	{
@@ -57,6 +55,12 @@ public sealed class EntityHealth : MonoBehaviour
 	private IEnumerator ResetInvincibility()
 	{
 		yield return wait;
+		entity.UnsetFlag(EntityFlags.Invincible);
+	}
+
+	private void OnReset()
+	{
+		FullHeal();
 		entity.UnsetFlag(EntityFlags.Invincible);
 	}
 }

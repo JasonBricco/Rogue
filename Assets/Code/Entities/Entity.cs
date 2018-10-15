@@ -6,11 +6,13 @@ using UnityEngine;
 using System;
 using static Utils;
 
-public sealed class Entity : MonoBehaviour, IComparable<Entity>
+public sealed class Entity : MonoBehaviour, IComparable<Entity>, IPoolable
 {
 	[SerializeField] private EntityType type;
 	[SerializeField] private float defaultSpeed;
 	[SerializeField] private float friction;
+
+	public float DefaultSpeed => defaultSpeed;
 
 	[Tooltip("If true, the entity cannot be affected by pushback")]
 	[SerializeField] private bool rooted;
@@ -41,8 +43,7 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	{
 		t = GetComponent<Transform>();
 		controller = GetComponent<CharacterController>();
-
-		speed = defaultSpeed;
+		MakeDefault();
 	}
 
 	public void SetFlag(EntityFlags flag) => flags |= flag;
@@ -55,9 +56,6 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 	public void InvokeEvent(EntityEvent type)
 		=> events[(int)type]?.Invoke();
 
-	// Sets the entity's speed to its default speed.
-	public void ResetSpeed() => speed = defaultSpeed;
-
 	public void MoveTo(Vector2 pos) => t.position = pos;
 
 	// Updates all updatable entity components and ensures the entity is in the correct room.
@@ -66,7 +64,10 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		if (Engine.Paused) return;
 
 		if (HasFlag(EntityFlags.Dead))
+		{
 			Kill();
+			return;
+		}
 
 		InvokeEvent(EntityEvent.Update);
 
@@ -182,6 +183,25 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>
 		}
 
 		MoveTo(p);
+	}
+
+	public void MakeDefault()
+	{
+		speed = defaultSpeed;
+		UnsetFlag(EntityFlags.Dead);
+		velocity = Vector2.zero;
+	}
+
+	public void Enable()
+		=> gameObject.SetActive(true);
+
+	public void Disable()
+		=> gameObject.SetActive(false);
+
+	public void ResetObject()
+	{
+		MakeDefault();
+		InvokeEvent(EntityEvent.Reset);
 	}
 
 	public int CompareTo(Entity other)

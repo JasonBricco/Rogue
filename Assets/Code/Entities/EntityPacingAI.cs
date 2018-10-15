@@ -16,8 +16,10 @@ public sealed class EntityPacingAI : MonoBehaviour
 	{
 		entity = GetComponent<Entity>();
 		timer = GetComponent<EntityTimer>();
+
 		entity.ListenForEvent(EntityEvent.Update, UpdateComponent);
 		entity.ListenForEvent(EntityEvent.Kill, Kill);
+		entity.ListenForEvent(EntityEvent.Reset, OnReset);
 
 		timer.SetValue(2.0f);
 	}
@@ -43,6 +45,13 @@ public sealed class EntityPacingAI : MonoBehaviour
 
 	private void Kill()
 	{
-		if (entity != null) ObjectPool.Return(entity.gameObject);
+		if (entity != null)
+			ObjectPool.Return(entity.gameObject);
+	}
+
+	private void OnReset()
+	{
+		entity.UnsetFlag(EntityFlags.Invincible);
+		timer.SetValue(2.0f);
 	}
 }
