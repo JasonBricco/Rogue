@@ -29,7 +29,7 @@ GameObject:
   - component: {fileID: 65387986389978586}
   m_Layer: 11
   m_Name: Arrow
-  m_TagString: Disposable
+  m_TagString: DisposableEntity
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

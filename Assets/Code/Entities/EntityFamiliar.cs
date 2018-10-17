@@ -32,7 +32,7 @@ public class EntityFamiliar : MonoBehaviour
 	private void StopFollowing()
 	{
 		followTarget = null;
-		gameObject.tag = "Disposable";
+		gameObject.tag = "DisposableEntity";
 		EventManager.Instance.StopListening<Vec2i>(GameEvent.RoomChanged, OnRoomChanged);
 	}
 

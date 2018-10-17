@@ -9,10 +9,13 @@ public sealed class RoomEntities
 	// Stores all active over-time effects within the world.
 	private OTEffects effects = new OTEffects();
 
-	// Stores disposable objects that are disabled when the room shifts. 
-	// This allows us to enable them again when the room is loaded again,
-	// since FindGameObjectsWithTag() does not find inactive objects.
+	// Stores disposable objects and the entities among them that are disabled when the room shifts. 
+	// This allows us to enable them again when the room is loaded again, since FindGameObjectsWithTag() 
+	// does not find inactive objects. These lists are populated when the room is disabled.
 	private GameObject[] disposable;
+	private Entity[] entities;
+
+	public Entity[] GetEntities() => entities;
 
 	// If true, this room must be cleared before the player can move on.
 	private bool requireClear;
@@ -103,12 +106,21 @@ public sealed class RoomEntities
 	}
 
 	private void GetDisposable()
-		=> disposable = GameObject.FindGameObjectsWithTag("Disposable");
+	{
+		disposable = GameObject.FindGameObjectsWithTag("Disposable");
+		GameObject[] entityObjects = GameObject.FindGameObjectsWithTag("DisposableEntity");
+
+		for (int i = 0; i < entityObjects.Length; i++)
+			entities[i] = entityObjects[i].GetComponent<Entity>();
+	}
 
 	public void Enable()
 	{
 		for (int i = 0; i < disposable.Length; i++)
-			disposable[i]?.SetActive(true);
+			disposable[i].SetActive(true);
+
+		for (int i = 0; i < entities.Length; i++)
+			entities[i]?.gameObject.SetActive(true);
 	}
 
 	public void Disable()
@@ -116,17 +128,18 @@ public sealed class RoomEntities
 		GetDisposable();
 
 		for (int i = 0; i < disposable.Length; i++)
-		{
-			GameObject disp = disposable[i];
-			disp.SetActive(false);
+			disposable[i].SetActive(false);
 
-			Entity entity = disp.GetComponent<Entity>();
+		for (int i = 0; i < entities.Length; i++)
+		{
+			Entity entity = entities[i];
 
 			if (entity != null && entity.Transient)
 			{
 				entity.Kill();
-				disposable[i] = null;
+				entities[i] = null;
 			}
+			else entities[i].gameObject.SetActive(false);
 		}
 	}
 
@@ -136,5 +149,8 @@ public sealed class RoomEntities
 
 		for (int i = 0; i < disposable.Length; i++)
 			ObjectPool.Return(disposable[i]);
+
+		for (int i = 0; i < entities.Length; i++)
+			ObjectPool.Return(entities[i].gameObject);
 	}
 }

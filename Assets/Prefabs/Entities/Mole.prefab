@@ -30,7 +30,7 @@ GameObject:
   - component: {fileID: 143894086051093968}
   m_Layer: 13
   m_Name: Mole
-  m_TagString: Disposable
+  m_TagString: DisposableEntity
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

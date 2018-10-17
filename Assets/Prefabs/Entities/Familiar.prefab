@@ -27,7 +27,7 @@ GameObject:
   - component: {fileID: 143161112789092584}
   m_Layer: 11
   m_Name: Familiar
-  m_TagString: Disposable
+  m_TagString: DisposableEntity
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

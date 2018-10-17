@@ -23,12 +23,15 @@ public sealed class Room
 
 	private Tile[] tiles;
 
+	public int TileCount => tiles.Length;
+
 	private List<TileInstance> onTileEvent = new List<TileInstance>();
 
 	public RoomCollision Collision { get; private set; }
 	public RoomRenderer Renderer { get; private set; }
 	public RoomEntities Entities { get; private set; }
 	public RoomPathfinding Pathfinding { get; private set; }
+	public RoomSerializer Serializer { get; private set; }
 
 	public RoomType Type { get; private set; }
 
@@ -38,6 +41,7 @@ public sealed class Room
 		Renderer = new RoomRenderer(this);
 		Entities = new RoomEntities(this);
 		Pathfinding = new RoomPathfinding(this);
+		Serializer = new RoomSerializer(this);
 
 		Pos = pos;
 	}
@@ -73,6 +77,8 @@ public sealed class Room
 	// Returns a tile from the main layer at the given location from this room. Fails if the location is out of 
 	// bounds of the room. Coordinates are specified in local room space between 0 and room size - 1. 
 	public Tile GetTile(int x, int y) => GetTile(x, y, Main);
+
+	public Tile GetTile(int i) => tiles[i];
 
 	// Sets the given tile at the given location in this room. Fails if the location is out of bounds
 	// of the room. Coordinates are specified in local room space between 0 and room size - 1.
@@ -112,6 +118,12 @@ public sealed class Room
 		Entities.Update();
 		Renderer.Update();
 		Renderer.Draw();
+
+		if (UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.Return))
+		{
+			Serializer.Serialize();
+			UnityEngine.Debug.Log("SERIALIZED!");
+		}
 	}
 
 	// Enables the room so it can be used as the active room.
