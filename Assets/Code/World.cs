@@ -7,8 +7,7 @@ using UnityEngine.Assertions;
 using System.Collections.Generic;
 using System.Collections;
 using System;
-using System.Linq;
-using Random = UnityEngine.Random;
+using System.IO;
 using static Utils;
 
 public sealed class World : MonoBehaviour
@@ -19,9 +18,6 @@ public sealed class World : MonoBehaviour
 	public LayerMask RaycastLayers => raycastLayers;
 
 	public Room Room { get; private set; }
-
-	private const int MaxRecent = 10;
-	private Queue<Vec2i> recentRooms = new Queue<Vec2i>(MaxRecent);
 
 	// Barriers that surround a room. They trap enemies within the room and 
 	// allow the player to load new rooms.
@@ -39,7 +35,7 @@ public sealed class World : MonoBehaviour
 
 	private GameCamera cam;
 
-	private Dictionary<Vec2i, Room> loadedRooms = new Dictionary<Vec2i, Room>();
+	private LinkedList<Room> loadedRooms = new LinkedList<Room>();
 
 	// Stores the positions of each exit point for each room (key). This ensures rooms will
 	// connect properly to each other.
@@ -50,6 +46,8 @@ public sealed class World : MonoBehaviour
 
 	private WaitForEndOfFrame wait = new WaitForEndOfFrame();
 
+	private FileInfo worldPath;
+
 	public static World Instance { get; private set; }
 
 	private void Awake()
@@ -57,12 +55,16 @@ public sealed class World : MonoBehaviour
 		Instance = this;
 		cam = Camera.main.GetComponent<GameCamera>();
 		Array.Sort(entityPrefabs);
+
+		worldPath = new FileInfo(Application.persistentDataPath + "/World/");
+		worldPath.Directory.Create();
 	}
 
 	private void Start()
 	{
 		ChangeRoomType(RoomType.Plains);
-		NewRoom(Vec2i.Zero);
+		Room room = new Room(Vec2i.Zero);
+		loadedRooms.AddFirst(Room);
 		generator.Generate(Room, cam, Room.Pos, null, out _);
 		AdjustBarriers();
 		cam.UpdateValues();
@@ -75,7 +77,29 @@ public sealed class World : MonoBehaviour
 	public GameObject EntityPrefab(EntityType type) => entityPrefabs[(int)type].gameObject;
 	public GameObject EntityPrefab(int i) => entityPrefabs[i].gameObject;
 
-	public bool RoomExists(Vec2i pos) => loadedRooms.ContainsKey(pos);
+	private Room FindRoom(Vec2i p)
+	{
+		for (LinkedListNode<Room> it = loadedRooms.First; it != null; it = it.Next)
+		{
+			if (it.Value.Pos == p)
+			{
+				loadedRooms.Remove(it);
+				return it.Value;
+			}
+		}
+
+		return null;
+	}
+
+	public bool RoomExists(Vec2i p)
+	{
+		Room room = FindRoom(p);
+
+		if (room == null)
+			return RoomSerializer.Exists(worldPath, p);
+
+		return true;
+	}
 
 	public void AddExit(Vec2i room, Vec2i cell)
 	{
@@ -91,24 +115,6 @@ public sealed class World : MonoBehaviour
 
 	public bool TryGetExit(Vec2i pos, out List<Vec2i> list) 
 		=> exitPoints.TryGetValue(pos, out list);
-
-	// Returns a random room position out of the last loaded rooms.
-	public Vec2i GetRandomRoom()
-	{
-		int index = Random.Range(0, recentRooms.Count);
-		return recentRooms.ElementAt(index);
-	}
-
-	public void NewRoom(Vec2i pos)
-	{
-		Room = new Room(pos);
-
-		if (recentRooms.Count > MaxRecent)
-			recentRooms.Dequeue();
-
-		recentRooms.Enqueue(Room.Pos);
-		loadedRooms.Add(Room.Pos, Room);
-	}
 
 	public void Update() => Room.Update();
 
@@ -143,9 +149,11 @@ public sealed class World : MonoBehaviour
 		Assert.IsTrue(pos != Room.Pos);
 		Room.Disable();
 
-		Room newRoom;
-		if (loadedRooms.TryGetValue(pos, out newRoom))
+		Room newRoom = FindRoom(pos);
+
+		if (newRoom != null)
 		{
+			loadedRooms.AddFirst(newRoom);
 			Room = newRoom;
 			newRoom.Enable();
 			ChangeRoomType(Room.Type);
@@ -155,8 +163,15 @@ public sealed class World : MonoBehaviour
 		}
 		else
 		{
-			NewRoom(pos);
-			generator.Generate(Room, cam, pos, from, out spawn);
+			Room room = new Room(pos);
+			loadedRooms.AddFirst(Room);
+
+			if (RoomSerializer.Exists(worldPath, pos))
+			{
+				RoomSerializer.Load(worldPath, room);
+				spawn = default(SpawnPoint);
+			}
+			else generator.Generate(Room, cam, pos, from, out spawn);
 		}
 
 		AdjustBarriers();

@@ -13,4 +13,5 @@ public sealed class RoomFileData
 	public int[] entityIds;
 	public Vector2[] entityPositions;
 	public int roomType;
+	public List<Vec2i> exitPoints;
 }

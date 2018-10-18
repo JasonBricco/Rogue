@@ -31,7 +31,6 @@ public sealed class Room
 	public RoomRenderer Renderer { get; private set; }
 	public RoomEntities Entities { get; private set; }
 	public RoomPathfinding Pathfinding { get; private set; }
-	public RoomSerializer Serializer { get; private set; }
 
 	public RoomType Type { get; private set; }
 
@@ -41,7 +40,6 @@ public sealed class Room
 		Renderer = new RoomRenderer(this);
 		Entities = new RoomEntities(this);
 		Pathfinding = new RoomPathfinding(this);
-		Serializer = new RoomSerializer(this);
 
 		Pos = pos;
 	}

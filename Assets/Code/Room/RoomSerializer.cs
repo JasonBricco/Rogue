@@ -5,25 +5,19 @@
 using UnityEngine;
 using System.IO;
 
-public sealed class RoomSerializer
+public static class RoomSerializer
 {
-	private Room room;
-	private RoomFileData data = new RoomFileData();
-	private FileInfo path;
-
-	public RoomSerializer(Room room)
-	{
-		this.room = room;
-		path = new FileInfo(Application.persistentDataPath + "/World/");
-		path.Directory.Create();
-	}
-	
 	[Il2CppSetOptions(Option.NullChecks, false)]
-	public void Serialize()
+	[Il2CppSetOptions(Option.ArrayBoundsChecks, false)]
+	public static void Serialize(FileInfo path, Room room)
 	{
-		CompressTiles();
-
+		RoomFileData data = new RoomFileData();
 		data.roomType = (int)room.Type;
+
+		if (World.Instance.TryGetExit(room.Pos, out var list))
+			data.exitPoints = list;
+
+		CompressTiles();
 
 		Entity[] entities = room.Entities.GetEntities();
 		data.entityIds = new int[entities.Length];
@@ -47,14 +41,14 @@ public sealed class RoomSerializer
 
 			for (int i = 1; i < room.TileCount; i++)
 			{
-				int data = room.GetTile(i).GetInt();
+				int tile = room.GetTile(i).GetInt();
 
-				if (data != currentData)
+				if (tile != currentData)
 				{
 					tileData.Add(count);
 					tileData.Add(currentData);
 					count = 1;
-					currentData = data;
+					currentData = tile;
 				}
 				else count++;
 
@@ -66,4 +60,17 @@ public sealed class RoomSerializer
 			}
 		}
 	}
+
+	[Il2CppSetOptions(Option.NullChecks, false)]
+	[Il2CppSetOptions(Option.ArrayBoundsChecks, false)]
+	public static void Load(FileInfo path, Room room)
+	{
+		string json = File.ReadAllText(path.FullName + room.Pos.ToPathString());
+		RoomFileData data = JsonUtility.FromJson<RoomFileData>(json);
+
+		
+	}
+
+	public static bool Exists(FileInfo path, Vec2i pos)
+		=> File.Exists(path.FullName + pos.ToPathString());
 }
