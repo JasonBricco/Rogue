@@ -24,7 +24,16 @@ public sealed class RoomSerializer
 		CompressTiles();
 
 		data.roomType = (int)room.Type;
-		data.entities = room.Entities.GetEntities();
+
+		Entity[] entities = room.Entities.GetEntities();
+		data.entityIds = new int[entities.Length];
+		data.entityPositions = new Vector2[entities.Length];
+
+		for (int i = 0; i < entities.Length; i++)
+		{
+			data.entityIds[i] = (int)entities[i].Type;
+			data.entityPositions[i] = entities[i].Pos;
+		}
 
 		string json = JsonUtility.ToJson(data);
 		File.WriteAllText(path.FullName + room.Pos.ToPathString(), json);

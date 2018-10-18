@@ -118,12 +118,6 @@ public sealed class Room
 		Entities.Update();
 		Renderer.Update();
 		Renderer.Draw();
-
-		if (UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.Return))
-		{
-			Serializer.Serialize();
-			UnityEngine.Debug.Log("SERIALIZED!");
-		}
 	}
 
 	// Enables the room so it can be used as the active room.

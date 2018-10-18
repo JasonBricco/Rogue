@@ -14,10 +14,10 @@ public sealed class Entity : MonoBehaviour, IComparable<Entity>, IPoolable
 
 	public float DefaultSpeed => defaultSpeed;
 
-	[Tooltip("If true, the entity cannot be affected by pushback")]
+	[Tooltip("If true, the entity cannot be affected by pushback.")]
 	[SerializeField] private bool rooted;
 
-	[Tooltip("If true, the entity will not persist when changing rooms")]
+	[Tooltip("If true, the entity will not persist when changing rooms.")]
 	[SerializeField] private bool transient;
 
 	public EntityType Type => type;

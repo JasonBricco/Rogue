@@ -15,8 +15,6 @@ public sealed class RoomEntities
 	private GameObject[] disposable;
 	private Entity[] entities;
 
-	public Entity[] GetEntities() => entities;
-
 	// If true, this room must be cleared before the player can move on.
 	private bool requireClear;
 	private int enemiesLeft;
@@ -31,6 +29,14 @@ public sealed class RoomEntities
 
 		playerEntity = GameObject.FindWithTag("Player").GetComponent<Entity>();
 		player = playerEntity.GetComponent<EntityPlayer>();
+	}
+
+	public Entity[] GetEntities()
+	{
+		if (entities == null)
+			GetDisposable();
+
+		return entities;
 	}
 
 	public void LockRoom(int enemies)
@@ -108,7 +114,9 @@ public sealed class RoomEntities
 	private void GetDisposable()
 	{
 		disposable = GameObject.FindGameObjectsWithTag("Disposable");
+
 		GameObject[] entityObjects = GameObject.FindGameObjectsWithTag("DisposableEntity");
+		entities = new Entity[entityObjects.Length];
 
 		for (int i = 0; i < entityObjects.Length; i++)
 			entities[i] = entityObjects[i].GetComponent<Entity>();
