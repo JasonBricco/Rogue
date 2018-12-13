@@ -1,0 +1,9 @@
+.vs/
+Library/
+Logs/
+obj/
+Assembly-CSharp-firstpass.csproj
+Assembly-CSharp-Editor-firstpass.csproj
+Assembly-CSharp-Editor.csproj
+Assembly-CSharp.csproj
+Adventure.sln
